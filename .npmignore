@@ -1,0 +1,28 @@
+# Tests
+tests/
+test/
+*.test.ts
+*.spec.ts
+
+# Development files
+.aether/
+.vscode/
+.github/
+coverage/
+docs/
+aether-vscode/
+
+# Config
+.eslintrc*
+.prettierrc*
+tsconfig.json
+biome.json
+bun.lockb
+
+# Misc
+*.md
+!README.md
+!LICENSE
+.gitignore
+.DS_Store
+Thumbs.db

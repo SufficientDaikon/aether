@@ -1,0 +1,263 @@
+{
+  "name": "aether-vscode",
+  "displayName": "AETHER — Multi-Agent Orchestrator",
+  "description": "33 specialized AI agents with 3-tier hierarchy, visual orchestration, approval workflows, cost tracking, and codebase memory",
+  "version": "0.1.0",
+  "publisher": "aether",
+  "icon": "media/aether-icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aether-framework/aether"
+  },
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": [
+    "AI",
+    "Chat",
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "workspaceContains:.aether/config.json"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "chatParticipants": [
+      {
+        "id": "aether.chat",
+        "name": "aether",
+        "fullName": "AETHER Agent Orchestrator",
+        "description": "Multi-agent AI with 33 specialists — route tasks, review code, run tests, and architect systems",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "plan",
+            "description": "Decompose task into sub-tasks with agent assignments"
+          },
+          {
+            "name": "run",
+            "description": "Execute task on best-fit agent"
+          },
+          {
+            "name": "review",
+            "description": "Code review with security analysis"
+          },
+          {
+            "name": "test",
+            "description": "Generate and run tests"
+          },
+          {
+            "name": "debug",
+            "description": "Investigate and fix errors"
+          },
+          {
+            "name": "architect",
+            "description": "System design and architecture"
+          },
+          {
+            "name": "group",
+            "description": "Multi-agent group discussion"
+          },
+          {
+            "name": "status",
+            "description": "Show tasks, costs, agent states"
+          },
+          {
+            "name": "context",
+            "description": "Switch agent namespace/context"
+          }
+        ]
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aether-sidebar",
+          "title": "AETHER",
+          "icon": "media/aether-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "aether-sidebar": [
+        {
+          "id": "aether.agents",
+          "name": "Agents",
+          "icon": "media/aether-icon.svg"
+        },
+        {
+          "id": "aether.tasks",
+          "name": "Tasks"
+        },
+        {
+          "id": "aether.contexts",
+          "name": "Contexts"
+        },
+        {
+          "id": "aether.knowledge",
+          "name": "Knowledge"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "aether.runTask",
+        "title": "AETHER: Run Task",
+        "icon": "$(play)"
+      },
+      {
+        "command": "aether.planTask",
+        "title": "AETHER: Plan Task",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "aether.showOrchestrator",
+        "title": "AETHER: Show Orchestrator",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "aether.showCosts",
+        "title": "AETHER: Show Cost Dashboard",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "aether.showMemory",
+        "title": "AETHER: Show Memory Explorer",
+        "icon": "$(database)"
+      },
+      {
+        "command": "aether.showSettings",
+        "title": "AETHER: Edit Settings",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "aether.switchContext",
+        "title": "AETHER: Switch Context",
+        "icon": "$(layers)"
+      },
+      {
+        "command": "aether.approveAll",
+        "title": "AETHER: Approve All Pending",
+        "icon": "$(check-all)"
+      },
+      {
+        "command": "aether.rejectAll",
+        "title": "AETHER: Reject All Pending",
+        "icon": "$(close-all)"
+      },
+      {
+        "command": "aether.agentRunTask",
+        "title": "Run Task on This Agent",
+        "icon": "$(play)"
+      },
+      {
+        "command": "aether.agentDetail",
+        "title": "View Agent Detail",
+        "icon": "$(info)"
+      },
+      {
+        "command": "aether.refreshAgents",
+        "title": "Refresh Agents",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "aether.agentRunTask",
+          "when": "view == aether.agents",
+          "group": "inline"
+        },
+        {
+          "command": "aether.agentDetail",
+          "when": "view == aether.agents"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "aether.refreshAgents",
+          "when": "view == aether.agents",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AETHER",
+      "properties": {
+        "aether.runtimePath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to AETHER installation directory. Auto-detected from workspace .aether/ if empty."
+        },
+        "aether.autoApprove": {
+          "type": "string",
+          "enum": [
+            "none",
+            "workers",
+            "all"
+          ],
+          "default": "none",
+          "description": "Auto-approve file changes from which agent tiers",
+          "enumDescriptions": [
+            "Require manual approval for all changes",
+            "Auto-approve worker agent changes, require approval for managers and masters",
+            "Auto-approve all changes (not recommended)"
+          ]
+        },
+        "aether.budgetLimit": {
+          "type": "number",
+          "default": 0,
+          "description": "Max spend per session in USD (0 = unlimited)"
+        },
+        "aether.showCostInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show running cost in the status bar"
+        },
+        "aether.defaultContext": {
+          "type": "string",
+          "default": "default",
+          "description": "Default agent context/namespace to use"
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "synapse",
+        "aliases": [
+          "Synapse",
+          "syn"
+        ],
+        "extensions": [
+          ".syn"
+        ],
+        "configuration": "./language/synapse-language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "synapse",
+        "scopeName": "source.synapse",
+        "path": "./language/synapse.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "node esbuild.config.mjs",
+    "watch": "node esbuild.config.mjs --watch",
+    "lint": "eslint src/",
+    "test": "vscode-test",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.93.0",
+    "@types/node": "^20.0.0",
+    "@vscode/vsce": "^3.0.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {}
+}

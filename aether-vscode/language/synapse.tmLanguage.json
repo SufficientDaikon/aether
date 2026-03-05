@@ -1,0 +1,77 @@
+{
+  "scopeName": "source.synapse",
+  "name": "Synapse",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#keywords" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#agents" },
+    { "include": "#directives" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        { "name": "comment.line.double-slash.synapse", "match": "//.*$" },
+        { "name": "comment.block.synapse", "begin": "/\\*", "end": "\\*/" }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.synapse",
+          "match": "\\b(agent|task|when|then|route|escalate|delegate|emit|on|if|else|parallel|sequence|await|return)\\b"
+        },
+        {
+          "name": "keyword.other.synapse",
+          "match": "\\b(tier|section|capability|model|provider|context|namespace)\\b"
+        },
+        {
+          "name": "constant.language.synapse",
+          "match": "\\b(master|manager|worker|idle|busy|failed|true|false|null)\\b"
+        },
+        {
+          "name": "storage.type.synapse",
+          "match": "\\b(string|number|boolean|object|array|any)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.synapse",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.synapse", "match": "\\\\." }
+          ]
+        },
+        {
+          "name": "string.quoted.single.synapse",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            { "name": "constant.character.escape.synapse", "match": "\\\\." }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.synapse",
+          "match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+        }
+      ]
+    },
+    "agents": {
+      "patterns": [
+        { "name": "entity.name.function.synapse", "match": "@[\\w-]+" },
+        { "name": "variable.other.synapse", "match": "\\$[\\w-]+" }
+      ]
+    },
+    "directives": {
+      "patterns": [{ "name": "meta.directive.synapse", "match": "^#[a-z]+" }]
+    }
+  }
+}

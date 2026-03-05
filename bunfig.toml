@@ -1,0 +1,7 @@
+[install]
+peer = false
+optional = true
+
+[test]
+coverage = true
+coverageDir = "./coverage"

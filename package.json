@@ -1,0 +1,63 @@
+{
+  "name": "@aether/core",
+  "version": "0.2.0",
+  "description": "AETHER — Autonomous Agent Orchestration Framework",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "aether": "./bin/aether.ts",
+    "aether-mcp": "./bin/aether-mcp.ts"
+  },
+  "scripts": {
+    "dev": "bun run bin/aether.ts",
+    "link:start": "bun run protocol/server.ts",
+    "test": "bun test",
+    "build": "bun build bin/aether.ts --outdir ./dist --target bun",
+    "build:mcp": "bun build bin/aether-mcp.ts --outdir ./dist --target bun",
+    "compile": "bun run dsl/cli.ts",
+    "prepublishOnly": "bun run build && bun run build:mcp"
+  },
+  "files": [
+    "dist/",
+    "bin/",
+    "core/",
+    "nexus/",
+    "protocol/",
+    "providers/",
+    "transports/",
+    "dsl/",
+    "agents/",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./core/*": "./core/*",
+    "./protocol/*": "./protocol/*"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "orchestration",
+    "llm",
+    "framework",
+    "multi-agent",
+    "rag",
+    "bun"
+  ],
+  "license": "BSL-1.1",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "msgpackr": "^1.11.8",
+    "sqlite-vec": "^0.1.7-alpha.2"
+  }
+}

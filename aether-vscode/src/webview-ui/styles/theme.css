@@ -1,0 +1,126 @@
+/* VS Code theme-aware CSS variables for AETHER webviews */
+
+:root {
+  --aether-master: #f5a623;
+  --aether-manager: #4a9eff;
+  --aether-worker: #5cb85c;
+  --aether-error: #d9534f;
+  --aether-border: var(--vscode-panel-border);
+  --aether-bg: var(--vscode-editor-background);
+  --aether-fg: var(--vscode-editor-foreground);
+  --aether-muted: var(--vscode-descriptionForeground);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--aether-bg);
+  color: var(--aether-fg);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  color: var(--aether-fg);
+}
+
+a {
+  color: var(--vscode-textLink-foreground);
+}
+a:hover {
+  color: var(--vscode-textLink-activeForeground);
+}
+
+button {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button:hover {
+  background: var(--vscode-button-hoverBackground);
+}
+
+input,
+select,
+textarea {
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 1px solid var(--vscode-focusBorder);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--aether-border);
+}
+
+th {
+  font-weight: 600;
+  color: var(--aether-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-master {
+  background: var(--aether-master);
+  color: #000;
+}
+.badge-manager {
+  background: var(--aether-manager);
+  color: #fff;
+}
+.badge-worker {
+  background: var(--aether-worker);
+  color: #fff;
+}
+.badge-error {
+  background: var(--aether-error);
+  color: #fff;
+}
+
+.card {
+  border: 1px solid var(--aether-border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
