@@ -1,0 +1,24 @@
+agent test-worker {
+  name "Integration Test Worker"
+  tier worker
+  sections [TOOLS]
+  capabilities [testing, validation]
+  dependencies [file-io]
+  llm haiku
+  format markdown
+  escalates-to system-architect
+
+  prompt {
+    You are a test worker for integration testing.
+    Verify all systems operational.
+  }
+}
+
+workflow test-flow {
+  trigger "test"
+
+  step validate {
+    agent test-worker
+    action "Validate all systems"
+  }
+}

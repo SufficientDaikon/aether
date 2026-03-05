@@ -1,0 +1,14 @@
+{
+  "type": "workflow",
+  "id": "test-flow",
+  "trigger": "test",
+  "steps": [
+    {
+      "id": "validate",
+      "agent": "test-worker",
+      "action": "Validate all systems",
+      "requires": null,
+      "onFail": null
+    }
+  ]
+}

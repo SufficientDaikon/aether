@@ -1,0 +1,25 @@
+{
+  "id": "test-worker",
+  "name": "Integration Test Worker",
+  "tier": "worker",
+  "sections": [
+    "TOOLS"
+  ],
+  "capabilities": [
+    "testing",
+    "validation"
+  ],
+  "dependencies": [
+    "file-io"
+  ],
+  "llmRequirement": "haiku",
+  "format": "markdown",
+  "escalationTarget": "system-architect",
+  "filePath": "agents/test-worker.agent.md",
+  "status": "idle",
+  "metadata": {
+    "tools": [],
+    "prompt": "You are a test worker for integration testing.\nVerify all systems operational.",
+    "handlers": []
+  }
+}

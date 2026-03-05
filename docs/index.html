@@ -1,0 +1,3996 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AETHER &mdash; Architecture &amp; Design</title>
+    <style>
+      /* ── Reset & Base ────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0a0a0f;
+        --bg-surface: #111118;
+        --bg-card: #16161f;
+        --bg-code: #1a1a25;
+        --border: #1e1e2e;
+        --border-glow: #2a2a42;
+        --text: #c8c8d8;
+        --text-dim: #7a7a90;
+        --text-bright: #eeeef4;
+        --accent: #6c63ff;
+        --accent-dim: #4a43cc;
+        --accent-glow: rgba(108, 99, 255, 0.15);
+        --cyan: #4dd9e0;
+        --green: #4de094;
+        --amber: #e0a84d;
+        --rose: #e04d7a;
+        --font-body:
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+        --max-w: 860px;
+      }
+
+      html {
+        font-size: 17px;
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.72;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ── Ambient Background ──────────────────────────────── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 600px 400px at 20% 10%,
+            rgba(108, 99, 255, 0.06),
+            transparent
+          ),
+          radial-gradient(
+            ellipse 500px 500px at 80% 50%,
+            rgba(77, 217, 224, 0.04),
+            transparent
+          ),
+          radial-gradient(
+            ellipse 400px 300px at 50% 90%,
+            rgba(77, 224, 148, 0.03),
+            transparent
+          );
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── Canvas (floating particles) ─────────────────────── */
+      #particles {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* ── Layout ──────────────────────────────────────────── */
+      .wrapper {
+        position: relative;
+        z-index: 1;
+        max-width: var(--max-w);
+        margin: 0 auto;
+        padding: 0 2rem 6rem;
+      }
+
+      /* ── Hero ────────────────────────────────────────────── */
+      .hero {
+        padding: 6rem 0 4rem;
+        text-align: center;
+      }
+
+      .hero-glyph {
+        display: inline-block;
+        font-size: 1rem;
+        letter-spacing: 0.6em;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 1.2rem;
+        opacity: 0.7;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.6rem, 6vw, 4rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--text-bright);
+        line-height: 1.1;
+        margin-bottom: 1rem;
+      }
+
+      .hero h1 span {
+        background: linear-gradient(135deg, var(--accent), var(--cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-sub {
+        font-size: 1.15rem;
+        color: var(--text-dim);
+        max-width: 560px;
+        margin: 0 auto 2.5rem;
+        line-height: 1.65;
+      }
+
+      .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2.5rem;
+        flex-wrap: wrap;
+      }
+
+      .hero-stat {
+        text-align: center;
+      }
+
+      .hero-stat .num {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        font-family: var(--font-mono);
+      }
+
+      .hero-stat .label {
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      /* ── Table of Contents ───────────────────────────────── */
+      .toc {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem 2.5rem;
+        margin: 0 0 4rem;
+      }
+
+      .toc h2 {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--text-dim);
+        margin-bottom: 1.2rem;
+      }
+
+      .toc-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.45rem 2rem;
+      }
+
+      .toc a {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.92rem;
+        padding: 0.3rem 0;
+        display: block;
+        transition: color 0.2s;
+        border-bottom: 1px solid transparent;
+      }
+
+      .toc a:hover {
+        color: var(--accent);
+      }
+
+      .toc a .num {
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        color: var(--text-dim);
+        margin-right: 0.5rem;
+      }
+
+      /* ── Sections ────────────────────────────────────────── */
+      section {
+        margin-bottom: 4.5rem;
+      }
+
+      section h2 {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        letter-spacing: -0.01em;
+        margin-bottom: 0.3rem;
+        padding-top: 2rem;
+      }
+
+      section h2 .sec-num {
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        color: var(--accent);
+        margin-right: 0.6rem;
+        font-weight: 400;
+      }
+
+      section h3 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--text-bright);
+        margin: 2rem 0 0.6rem;
+      }
+
+      .section-line {
+        height: 1px;
+        background: linear-gradient(90deg, var(--accent), transparent 60%);
+        margin-bottom: 1.5rem;
+        opacity: 0.4;
+      }
+
+      p {
+        margin-bottom: 1rem;
+      }
+
+      strong {
+        color: var(--text-bright);
+        font-weight: 600;
+      }
+
+      em {
+        color: var(--text-dim);
+        font-style: italic;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration-color: rgba(108, 99, 255, 0.3);
+        text-underline-offset: 3px;
+        transition: text-decoration-color 0.2s;
+      }
+
+      a:hover {
+        text-decoration-color: var(--accent);
+      }
+
+      /* ── Lists ───────────────────────────────────────────── */
+      ul,
+      ol {
+        margin: 0.8rem 0 1.2rem 1.2rem;
+      }
+
+      li {
+        margin-bottom: 0.4rem;
+      }
+
+      li::marker {
+        color: var(--text-dim);
+      }
+
+      /* ── Code ────────────────────────────────────────────── */
+      code {
+        font-family: var(--font-mono);
+        font-size: 0.88em;
+        background: var(--bg-code);
+        padding: 0.15em 0.45em;
+        border-radius: 4px;
+        color: var(--cyan);
+      }
+
+      pre {
+        background: var(--bg-code);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.3rem 1.6rem;
+        overflow-x: auto;
+        margin: 1rem 0 1.4rem;
+        font-size: 0.85rem;
+        line-height: 1.7;
+        position: relative;
+      }
+
+      pre code {
+        background: none;
+        padding: 0;
+        font-size: inherit;
+        color: var(--text);
+      }
+
+      pre .lang-tag {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.8rem;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-dim);
+        opacity: 0.5;
+      }
+
+      /* ── Tables ──────────────────────────────────────────── */
+      .table-wrap {
+        overflow-x: auto;
+        margin: 1rem 0 1.4rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      thead th {
+        text-align: left;
+        font-weight: 600;
+        color: var(--text-bright);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 0.7rem 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      tbody td {
+        padding: 0.6rem 1rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      tbody tr:hover {
+        background: var(--accent-glow);
+      }
+
+      /* ── Callout Cards ───────────────────────────────────── */
+      .callout {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 8px;
+        padding: 1.2rem 1.5rem;
+        margin: 1.4rem 0;
+      }
+
+      .callout.decision {
+        border-left-color: var(--amber);
+      }
+
+      .callout.decision .callout-title {
+        color: var(--amber);
+      }
+
+      .callout .callout-title {
+        font-weight: 700;
+        font-size: 0.88rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+      }
+
+      .callout p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* ── "Not" List (what AETHER isn't) ──────────────────── */
+      .not-list {
+        list-style: none;
+        margin-left: 0;
+      }
+
+      .not-list li {
+        padding-left: 1.6rem;
+        position: relative;
+        margin-bottom: 0.6rem;
+      }
+
+      .not-list li::before {
+        content: "✕";
+        position: absolute;
+        left: 0;
+        color: var(--rose);
+        font-weight: 700;
+        font-size: 0.85em;
+      }
+
+      /* ── Tier Diagram ────────────────────────────────────── */
+      .tier-diagram {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        margin: 2rem 0 2.5rem;
+        user-select: none;
+      }
+
+      .tier-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        position: relative;
+      }
+
+      .tier-node {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.9rem 1.4rem;
+        text-align: center;
+        min-width: 140px;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
+        cursor: default;
+      }
+
+      .tier-node:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+
+      .tier-node.master {
+        border-color: var(--accent-dim);
+        background: linear-gradient(
+          135deg,
+          var(--bg-card),
+          rgba(108, 99, 255, 0.08)
+        );
+      }
+
+      .tier-node.manager {
+        border-color: rgba(77, 217, 224, 0.25);
+      }
+
+      .tier-node.worker {
+        border-color: rgba(77, 224, 148, 0.2);
+      }
+
+      .tier-node .tier-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-dim);
+        margin-bottom: 0.2rem;
+      }
+
+      .tier-node .tier-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-bright);
+      }
+
+      .tier-node .tier-model {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        margin-top: 0.15rem;
+      }
+
+      .tier-connector {
+        width: 1px;
+        height: 28px;
+        background: var(--border-glow);
+        margin: 0 auto;
+      }
+
+      .tier-branch {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 1rem;
+        position: relative;
+      }
+
+      .tier-branch::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: calc(50% - 80px);
+        width: 160px;
+        height: 1px;
+        background: var(--border-glow);
+      }
+
+      /* ── Flow Diagram (data flow) ────────────────────────── */
+      .flow {
+        margin: 2rem 0 2.5rem;
+      }
+
+      .flow-step {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        margin-bottom: 0.2rem;
+      }
+
+      .flow-num {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--accent-glow);
+        border: 1px solid var(--accent-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-top: 0.15rem;
+      }
+
+      .flow-text {
+        flex: 1;
+        padding-bottom: 1rem;
+        border-left: 1px solid var(--border);
+        padding-left: 1rem;
+        margin-left: -0.55rem;
+      }
+
+      .flow-step:last-child .flow-text {
+        border-left-color: transparent;
+      }
+
+      .flow-text strong {
+        color: var(--text-bright);
+      }
+
+      /* ── Encoding Pipeline ───────────────────────────────── */
+      .pipeline {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex-wrap: wrap;
+        margin: 1.5rem 0 2rem;
+        justify-content: center;
+      }
+
+      .pipeline-stage {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        font-size: 0.82rem;
+        text-align: center;
+        min-width: 100px;
+      }
+
+      .pipeline-stage .stage-label {
+        font-weight: 600;
+        color: var(--text-bright);
+        display: block;
+        font-size: 0.85rem;
+      }
+
+      .pipeline-stage .stage-detail {
+        color: var(--text-dim);
+        font-size: 0.72rem;
+        margin-top: 0.1rem;
+        display: block;
+      }
+
+      .pipeline-arrow {
+        color: var(--text-dim);
+        font-size: 1.2rem;
+        padding: 0 0.4rem;
+        flex-shrink: 0;
+      }
+
+      /* ── Combinator Nodes ────────────────────────────────── */
+      .combinators {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1.5rem 0 2rem;
+      }
+
+      .combinator-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.3rem;
+        text-align: center;
+        transition:
+          border-color 0.3s,
+          transform 0.2s;
+      }
+
+      .combinator-card:hover {
+        border-color: var(--border-glow);
+        transform: translateY(-2px);
+      }
+
+      .combinator-card .symbol {
+        font-size: 2rem;
+        line-height: 1;
+        margin-bottom: 0.4rem;
+      }
+
+      .combinator-card.gamma .symbol {
+        color: var(--accent);
+      }
+      .combinator-card.delta .symbol {
+        color: var(--cyan);
+      }
+      .combinator-card.epsilon .symbol {
+        color: var(--rose);
+      }
+
+      .combinator-card .cname {
+        font-weight: 700;
+        color: var(--text-bright);
+        font-size: 0.95rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .combinator-card .cdesc {
+        font-size: 0.82rem;
+        color: var(--text-dim);
+        line-height: 1.5;
+      }
+
+      /* ── Footer ──────────────────────────────────────────── */
+      .footer {
+        text-align: center;
+        padding: 3rem 0;
+        border-top: 1px solid var(--border);
+        margin-top: 2rem;
+      }
+
+      .footer p {
+        color: var(--text-dim);
+        font-size: 0.85rem;
+      }
+
+      .footer .footer-glyph {
+        font-size: 0.8rem;
+        letter-spacing: 0.5em;
+        color: var(--accent);
+        opacity: 0.4;
+        margin-bottom: 0.5rem;
+      }
+
+      /* ── Scroll progress ─────────────────────────────────── */
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--cyan));
+        z-index: 100;
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+
+      /* ── Back to top ─────────────────────────────────────── */
+      .back-top {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+          opacity 0.3s,
+          transform 0.3s,
+          border-color 0.2s;
+        z-index: 50;
+        text-decoration: none;
+      }
+
+      .back-top.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .back-top:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ── Responsive ──────────────────────────────────────── */
+      @media (max-width: 700px) {
+        html {
+          font-size: 15px;
+        }
+        .wrapper {
+          padding: 0 1.2rem 4rem;
+        }
+        .hero {
+          padding: 4rem 0 3rem;
+        }
+        .toc-grid {
+          grid-template-columns: 1fr;
+        }
+        .combinators {
+          grid-template-columns: 1fr;
+        }
+        .pipeline {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .pipeline-arrow {
+          transform: rotate(90deg);
+          text-align: center;
+        }
+        .hero-stats {
+          gap: 1.5rem;
+        }
+        .tier-branch {
+          flex-direction: column;
+          align-items: center;
+        }
+        .tier-branch::before {
+          display: none;
+        }
+      }
+
+      /* ── Fade-in on scroll ───────────────────────────────── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ── Chapter Navigation Bar ────────────────────────────── */
+      .chapter-nav {
+        position: sticky;
+        top: 2px;
+        z-index: 90;
+        background: rgba(10, 10, 15, 0.92);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        margin: 0 0 3rem;
+        display: flex;
+        gap: 0.25rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .chapter-nav a {
+        color: var(--text-dim);
+        text-decoration: none;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 0.35rem 0.7rem;
+        border-radius: 6px;
+        transition: color 0.2s, background 0.2s;
+        white-space: nowrap;
+      }
+
+      .chapter-nav a:hover {
+        color: var(--text-bright);
+        background: var(--accent-glow);
+      }
+
+      .chapter-nav a.active {
+        color: var(--accent);
+        background: var(--accent-glow);
+      }
+
+      /* ── Chapter Dividers ──────────────────────────────────── */
+      .chapter-divider {
+        margin: 4rem 0 2rem;
+        text-align: center;
+      }
+
+      .chapter-divider .chapter-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--accent);
+        font-weight: 700;
+        display: inline-block;
+        padding: 0.3rem 1rem;
+        border: 1px solid var(--accent-dim);
+        border-radius: 20px;
+        background: var(--accent-glow);
+      }
+
+      .chapter-divider .chapter-title {
+        display: block;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        margin-top: 0.8rem;
+      }
+
+      /* ── SVG Diagram Containers ────────────────────────────── */
+      .diagram-container {
+        margin: 2.5rem 0;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--bg-card);
+        padding: 2rem 1.5rem;
+        overflow-x: auto;
+      }
+
+      .diagram-container svg {
+        display: block;
+        margin: 0 auto;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .diagram-caption {
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        margin-top: 1rem;
+        font-style: italic;
+      }
+
+      /* ── SVG Animations ────────────────────────────────────── */
+      @keyframes pulse-glow {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
+      }
+
+      @keyframes dash-draw {
+        to { stroke-dashoffset: 0; }
+      }
+
+      @keyframes node-pop {
+        0% { transform: scale(0.8); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+
+      .svg-pulse {
+        animation: pulse-glow 3s ease-in-out infinite;
+      }
+
+      .svg-draw {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: dash-draw 2s ease forwards;
+      }
+
+      /* ── Accessibility ─────────────────────────────────────── */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+        .reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* ── Responsive additions ──────────────────────────────── */
+      @media (max-width: 700px) {
+        .chapter-nav {
+          gap: 0.15rem;
+          padding: 0.4rem 0.5rem;
+        }
+        .chapter-nav a {
+          font-size: 0.65rem;
+          padding: 0.25rem 0.5rem;
+        }
+        .diagram-container {
+          padding: 1rem 0.5rem;
+        }
+      }
+
+      /* ── Phase 13: New Tier Node Colors ────────────────────── */
+      .tier-node.sentinel {
+        border-color: #e74c3c;
+        background: linear-gradient(135deg, var(--bg-card), rgba(231, 76, 60, 0.08));
+      }
+      .tier-node.sentinel .tier-label { color: #e74c3c; }
+
+      .tier-node.forge {
+        border-color: #9b59b6;
+        background: linear-gradient(135deg, var(--bg-card), rgba(155, 89, 182, 0.08));
+      }
+      .tier-node.forge .tier-label { color: #9b59b6; }
+
+      /* ── Overview Section ──────────────────────────────────── */
+      .overview-section {
+        text-align: center;
+        padding: 2rem 0 3rem;
+      }
+
+      .overview-lead {
+        font-size: 1.2rem;
+        color: var(--text);
+        max-width: 680px;
+        margin: 0 auto 1.5rem;
+        line-height: 1.75;
+      }
+
+      .overview-lead strong {
+        color: var(--text-bright);
+      }
+
+      .overview-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1.5rem;
+        margin: 2.5rem 0;
+        text-align: left;
+      }
+
+      .overview-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.5rem;
+        transition: border-color 0.3s, transform 0.2s;
+      }
+
+      .overview-card:hover {
+        border-color: var(--border-glow);
+        transform: translateY(-2px);
+      }
+
+      .overview-card .oc-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.6rem;
+        display: block;
+      }
+
+      .overview-card h4 {
+        color: var(--text-bright);
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+      }
+
+      .overview-card p {
+        font-size: 0.88rem;
+        color: var(--text-dim);
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      .cta-deeper {
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 0.7rem 2rem;
+        border: 1px solid var(--accent-dim);
+        border-radius: 8px;
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 600;
+        transition: background 0.2s, border-color 0.2s;
+      }
+
+      .cta-deeper:hover {
+        background: var(--accent-glow);
+        border-color: var(--accent);
+      }
+
+      @media (max-width: 700px) {
+        .overview-columns {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ── Lifecycle Visualization ───────────────────────────── */
+      .lifecycle-viz {
+        position: relative;
+        margin: 2.5rem auto;
+        max-width: 860px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--bg-card);
+        padding: 2rem 1.5rem 1.5rem;
+        overflow: hidden;
+      }
+
+      .lifecycle-viz svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .lifecycle-viz .lv-label {
+        font-family: var(--font-body);
+        font-size: 10px;
+        fill: var(--text-dim);
+        text-anchor: middle;
+        pointer-events: none;
+      }
+
+      .lifecycle-viz .lv-sublabel {
+        font-family: var(--font-mono);
+        font-size: 7.5px;
+        fill: var(--text-dim);
+        text-anchor: middle;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .lv-replay {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.6rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text-dim);
+        font-size: 1rem;
+        padding: 0.25rem 0.55rem;
+        cursor: pointer;
+        transition: color 0.2s, border-color 0.2s;
+        z-index: 2;
+      }
+
+      .lv-replay:hover {
+        color: var(--accent);
+        border-color: var(--accent-dim);
+      }
+
+      .lifecycle-title {
+        text-align: center;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-dim);
+        margin-bottom: 1rem;
+      }
+
+      /* ── Changelog Section ─────────────────────────────────── */
+      .changelog-entry {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.5rem 2rem;
+        margin: 1rem 0 1.5rem;
+      }
+
+      .changelog-entry h4 {
+        color: var(--text-bright);
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+      }
+
+      .changelog-entry ul {
+        margin-left: 1rem;
+      }
+
+      .changelog-entry li {
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+      }
+
+      /* ── Gate Policy Cards ─────────────────────────────────── */
+      .gate-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+
+      .gate-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .gate-card .gate-name {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--cyan);
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .gate-card p {
+        font-size: 0.82rem;
+        color: var(--text-dim);
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 700px) {
+        .gate-cards {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress-bar" id="progressBar"></div>
+    <canvas id="particles"></canvas>
+
+    <div class="wrapper">
+      <!-- ═══════ Hero ═══════ -->
+      <header class="hero">
+        <div class="hero-glyph">Autonomous Agent Orchestration</div>
+        <h1><span>AETHER</span></h1>
+        <p class="hero-sub">
+          A deep dive into what it is, how it works, why it was built the way it
+          was, and the reasoning behind every major architectural decision.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="num">31</span><span class="label">Subsystems</span>
+          </div>
+          <div class="hero-stat">
+            <span class="num">19</span><span class="label">DB Tables</span>
+          </div>
+          <div class="hero-stat">
+            <span class="num">5</span><span class="label">Agent Tiers</span>
+          </div>
+          <div class="hero-stat">
+            <span class="num">726</span><span class="label">Tests</span>
+          </div>
+          <div class="hero-stat">
+            <span class="num">33</span><span class="label">Sections</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ═══════ Chapter Navigation ═══════ -->
+      <nav class="chapter-nav" id="chapterNav">
+        <a href="#ch-overview" data-chapter="overview">0. Overview</a>
+        <a href="#ch-foundations" data-chapter="foundations">I. Foundations</a>
+        <a href="#ch-communication" data-chapter="communication">II. Communication</a>
+        <a href="#ch-providers" data-chapter="providers">III. Providers &amp; DSL</a>
+        <a href="#ch-orchestration" data-chapter="orchestration">IV. Orchestration</a>
+        <a href="#ch-safety" data-chapter="safety">V. Safety</a>
+        <a href="#ch-infrastructure" data-chapter="infrastructure">VI. Infrastructure</a>
+        <a href="#ch-decisions" data-chapter="decisions">VII. Decisions</a>
+        <a href="#ch-changelog" data-chapter="changelog">VIII. Changelog</a>
+      </nav>
+
+      <!-- ═══════ TOC ═══════ -->
+      <nav class="toc reveal">
+        <h2>Contents</h2>
+        <div class="toc-grid">
+          <a href="#overview"><span class="num">00</span>The Big Picture</a>
+          <a href="#what"><span class="num">01</span>What Is AETHER?</a>
+          <a href="#hierarchy"><span class="num">02</span>The N-Tier Hierarchy</a>
+          <a href="#forge"><span class="num">03</span>Agent Forge</a>
+          <a href="#sentinel"><span class="num">04</span>System Sentinel</a>
+          <a href="#storage"><span class="num">05</span>The Storage Layer</a>
+          <a href="#registry"><span class="num">06</span>The Agent Registry</a>
+          <a href="#execution"><span class="num">07</span>Task Execution</a>
+          <a href="#escalation"><span class="num">08</span>Escalation &amp; Circuit Breaking</a>
+          <a href="#highway"><span class="num">09</span>Memory Highway</a>
+          <a href="#rag"><span class="num">10</span>The RAG System</a>
+          <a href="#inet"><span class="num">11</span>Interaction Nets</a>
+          <a href="#bap"><span class="num">12</span>Binary Protocol (BAP-02)</a>
+          <a href="#providers"><span class="num">13</span>Providers &amp; Routing</a>
+          <a href="#transports"><span class="num">14</span>Transports</a>
+          <a href="#dsl"><span class="num">15</span>The Synapse DSL</a>
+          <a href="#orchestration"><span class="num">16</span>Orchestration Patterns</a>
+          <a href="#routing"><span class="num">17</span>Context-Aware Routing</a>
+          <a href="#convo-entity"><span class="num">18</span>Conversation &amp; Entity Memory</a>
+          <a href="#safety"><span class="num">19</span>Safety &amp; Validation</a>
+          <a href="#progress"><span class="num">20</span>Progress Tracking</a>
+          <a href="#durable"><span class="num">21</span>Durable Workflows</a>
+          <a href="#acp"><span class="num">22</span>Agent Communication Protocol</a>
+          <a href="#conflict"><span class="num">23</span>Conflict Resolution</a>
+          <a href="#logging"><span class="num">24</span>Structured Logging</a>
+          <a href="#sharedstate"><span class="num">25</span>Shared State Bus</a>
+          <a href="#plugins"><span class="num">26</span>Plugin System</a>
+          <a href="#reaction"><span class="num">27</span>Reaction Engine</a>
+          <a href="#settings"><span class="num">28</span>Settings &amp; Configuration</a>
+          <a href="#decisions"><span class="num">29</span>Architectural Decisions</a>
+          <a href="#dataflow"><span class="num">30</span>End-to-End Data Flow</a>
+          <a href="#nonexist"><span class="num">31</span>What Doesn&rsquo;t Exist</a>
+          <a href="#changelog"><span class="num">32</span>Changelog</a>
+          <a href="#versions"><span class="num">33</span>Version History</a>
+        </div>
+      </nav>
+
+      <!-- ═══════ Chapter 0: Overview ═══════ -->
+      <div class="chapter-divider" id="ch-overview" data-chapter="overview">
+        <span class="chapter-label">Chapter 0</span>
+        <span class="chapter-title">Overview</span>
+      </div>
+
+      <section id="overview" class="reveal overview-section">
+        <h2><span class="sec-num">00</span>The Big Picture</h2>
+        <div class="section-line"></div>
+
+        <p class="overview-lead">
+          <strong>AETHER</strong> is a framework that coordinates multiple AI agents to
+          tackle complex software tasks. Instead of sending a single prompt to a single
+          model, AETHER breaks work across a hierarchy of specialized agents&thinsp;&mdash;&thinsp;each
+          with its own role, capabilities, and model&thinsp;&mdash;&thinsp;and manages the
+          entire lifecycle from routing to validation.
+        </p>
+
+        <p class="overview-lead">
+          You describe a task. AETHER figures out which agent should handle it, pulls in
+          relevant context from previous work, runs safety checks, calls the LLM, and
+          validates the output. If the task is complex, it decomposes it into sub-tasks,
+          runs them in parallel, merges the results, and learns from the outcome. All of
+          this happens automatically.
+        </p>
+
+        <p class="overview-lead">
+          The system runs entirely on your machine. It works with Claude, OpenAI, Gemini,
+          or local models through Ollama. All state persists in a single SQLite file. No
+          cloud services, no external dependencies beyond the LLM APIs you choose.
+        </p>
+
+        <div class="overview-columns">
+          <div class="overview-card">
+            <span class="oc-icon" style="color: var(--accent);">&#x25C6;</span>
+            <h4>Multi-Agent Hierarchy</h4>
+            <p>Five tiers of agents from strategic oversight (Sentinel) down to task execution (Workers), each with the right model for the job.</p>
+          </div>
+          <div class="overview-card">
+            <span class="oc-icon" style="color: var(--cyan);">&#x25C8;</span>
+            <h4>Automatic Routing</h4>
+            <p>Six strategies determine exactly which agent handles each task based on capabilities, context, file ownership, and semantic similarity.</p>
+          </div>
+          <div class="overview-card">
+            <span class="oc-icon" style="color: var(--green);">&#x25C9;</span>
+            <h4>Safety Built In</h4>
+            <p>Constitutional rules, pre/post LLM guardrails, circuit breakers, and a sentinel that can pause the entire swarm if something goes wrong.</p>
+          </div>
+        </div>
+
+        <!-- Lifecycle animation placeholder — filled by Chunk 8 -->
+        <div id="lifecycleViz" class="lifecycle-viz">
+          <div class="lifecycle-title">Request Lifecycle</div>
+          <button class="lv-replay" id="lvReplay" aria-label="Replay animation">&#x21bb;</button>
+          <svg viewBox="0 0 820 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Request lifecycle animation">
+            <defs>
+              <filter id="lv-glow">
+                <feGaussianBlur stdDeviation="4" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <!-- Connection paths -->
+            <path id="lvPath1" d="M 65 80 L 135 80" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <path id="lvPath2" d="M 195 80 L 265 80" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <path id="lvPath3" d="M 325 80 L 395 80" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <path id="lvPath4" d="M 455 80 L 525 80" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <path id="lvPath5" d="M 585 80 L 655 80" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <!-- Fan-out paths -->
+            <path id="lvPath6a" d="M 695 80 Q 720 80 730 50 L 755 30" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <path id="lvPath6b" d="M 695 80 Q 720 80 730 110 L 755 130" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <!-- Nodes -->
+            <g class="lv-node" data-idx="0">
+              <rect x="15" y="58" width="50" height="44" rx="8" fill="#16161f" stroke="#6c63ff" stroke-width="1.5"/>
+              <text class="lv-label" x="40" y="77" fill="#c8c8d8">Input</text>
+              <text class="lv-sublabel" x="40" y="92">task text</text>
+            </g>
+            <g class="lv-node" data-idx="1">
+              <rect x="135" y="58" width="60" height="44" rx="8" fill="#16161f" stroke="#4de094" stroke-width="1.5"/>
+              <text class="lv-label" x="165" y="77" fill="#4de094">Router</text>
+              <text class="lv-sublabel" x="165" y="92">6 strategies</text>
+            </g>
+            <g class="lv-node" data-idx="2">
+              <rect x="265" y="58" width="60" height="44" rx="8" fill="#16161f" stroke="#e74c3c" stroke-width="1.5"/>
+              <text class="lv-label" x="295" y="77" fill="#e74c3c">Sentinel</text>
+              <text class="lv-sublabel" x="295" y="92">safety check</text>
+            </g>
+            <g class="lv-node" data-idx="3">
+              <rect x="395" y="58" width="60" height="44" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="1.5"/>
+              <text class="lv-label" x="425" y="77" fill="#4dd9e0">RAG</text>
+              <text class="lv-sublabel" x="425" y="92">context</text>
+            </g>
+            <g class="lv-node" data-idx="4">
+              <rect x="525" y="58" width="60" height="44" rx="8" fill="#16161f" stroke="#e04d7a" stroke-width="1.5"/>
+              <text class="lv-label" x="555" y="77" fill="#e04d7a">Guards</text>
+              <text class="lv-sublabel" x="555" y="92">pre + post</text>
+            </g>
+            <g class="lv-node" data-idx="5">
+              <rect x="655" y="58" width="40" height="44" rx="22" fill="#16161f" stroke="#6c63ff" stroke-width="2"/>
+              <text class="lv-label" x="675" y="84" fill="#eeeef4" font-weight="700" font-size="11">LLM</text>
+            </g>
+            <!-- Fan-out nodes -->
+            <g class="lv-node" data-idx="6">
+              <rect x="755" y="10" width="50" height="40" rx="8" fill="#16161f" stroke="#e0a84d" stroke-width="1.5"/>
+              <text class="lv-label" x="780" y="28" fill="#e0a84d">Sub-1</text>
+              <text class="lv-sublabel" x="780" y="41">worker</text>
+            </g>
+            <g class="lv-node" data-idx="7">
+              <rect x="755" y="110" width="50" height="40" rx="8" fill="#16161f" stroke="#e0a84d" stroke-width="1.5"/>
+              <text class="lv-label" x="780" y="128" fill="#e0a84d">Sub-2</text>
+              <text class="lv-sublabel" x="780" y="141">worker</text>
+            </g>
+            <!-- Merge + Result row -->
+            <path id="lvPathM1" d="M 780 50 L 780 160 L 700 175" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <path id="lvPathM2" d="M 780 150 L 780 160 L 700 175" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <g class="lv-node" data-idx="8">
+              <rect x="655" y="160" width="45" height="32" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="1.5"/>
+              <text class="lv-label" x="677" y="180" fill="#4dd9e0" font-size="9">Merge</text>
+            </g>
+            <path id="lvPathF" d="M 655 176 L 600 176" stroke="#2a2a42" stroke-width="1.5" fill="none"/>
+            <g class="lv-node" data-idx="9">
+              <rect x="540" y="160" width="60" height="32" rx="8" fill="#16161f" stroke="#4de094" stroke-width="2"/>
+              <text class="lv-label" x="570" y="180" fill="#4de094" font-weight="700" font-size="11">Result</text>
+            </g>
+            <!-- Pulse circle (animated via JS) -->
+            <circle id="lvPulse" cx="40" cy="80" r="5" fill="#6c63ff" filter="url(#lv-glow)" opacity="0"/>
+            <circle id="lvPulse2" cx="40" cy="80" r="5" fill="#6c63ff" filter="url(#lv-glow)" opacity="0"/>
+          </svg>
+        </div>
+
+        <a href="#ch-foundations" class="cta-deeper">Read the full architecture &darr;</a>
+      </section>
+
+      <!-- ═══════ Diagram 1: System Architecture Overview ═══════ -->
+      <div class="diagram-container reveal">
+        <svg viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AETHER System Architecture Overview">
+          <defs>
+            <radialGradient id="ring-glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#6c63ff" stop-opacity="0.08"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <rect width="900" height="900" fill="transparent"/>
+          <circle cx="450" cy="450" r="420" fill="url(#ring-glow)"/>
+          <!-- Ring 5: Observability -->
+          <circle cx="450" cy="450" r="400" fill="none" stroke="#2a2a42" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="450" y="72" text-anchor="middle" fill="#7a7a90" font-size="11" font-family="sans-serif" letter-spacing="0.1em">OBSERVABILITY</text>
+          <g filter="url(#glow)"><rect x="80" y="120" width="110" height="36" rx="8" fill="#16161f" stroke="#4a43cc" stroke-width="1"/><text x="135" y="142" text-anchor="middle" fill="#c8c8d8" font-size="11" font-family="sans-serif">Logger</text></g>
+          <g filter="url(#glow)"><rect x="710" y="120" width="110" height="36" rx="8" fill="#16161f" stroke="#4a43cc" stroke-width="1"/><text x="765" y="142" text-anchor="middle" fill="#c8c8d8" font-size="11" font-family="sans-serif">Plugins</text></g>
+          <g filter="url(#glow)"><rect x="395" y="56" width="110" height="36" rx="8" fill="#16161f" stroke="#4a43cc" stroke-width="1"/><text x="450" y="78" text-anchor="middle" fill="#c8c8d8" font-size="11" font-family="sans-serif">Settings</text></g>
+          <!-- Ring 4: Communication -->
+          <circle cx="450" cy="450" r="310" fill="none" stroke="#2a2a42" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="450" y="158" text-anchor="middle" fill="#7a7a90" font-size="11" font-family="sans-serif" letter-spacing="0.1em">COMMUNICATION</text>
+          <g filter="url(#glow)"><rect x="120" y="220" width="110" height="36" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="175" y="242" text-anchor="middle" fill="#4dd9e0" font-size="11" font-family="sans-serif">ACP Bus</text></g>
+          <g filter="url(#glow)"><rect x="670" y="220" width="110" height="36" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="725" y="242" text-anchor="middle" fill="#4dd9e0" font-size="11" font-family="sans-serif">SharedState</text></g>
+          <g filter="url(#glow)"><rect x="120" y="670" width="110" height="36" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="175" y="692" text-anchor="middle" fill="#4dd9e0" font-size="11" font-family="sans-serif">ConflictRes</text></g>
+          <g filter="url(#glow)"><rect x="670" y="670" width="110" height="36" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="725" y="692" text-anchor="middle" fill="#4dd9e0" font-size="11" font-family="sans-serif">Reaction</text></g>
+          <!-- Ring 3: Safety -->
+          <circle cx="450" cy="450" r="220" fill="none" stroke="#2a2a42" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="450" y="248" text-anchor="middle" fill="#7a7a90" font-size="11" font-family="sans-serif" letter-spacing="0.1em">SAFETY</text>
+          <g filter="url(#glow)"><rect x="220" y="300" width="100" height="36" rx="8" fill="#16161f" stroke="#e04d7a" stroke-width="1"/><text x="270" y="322" text-anchor="middle" fill="#e04d7a" font-size="11" font-family="sans-serif">Guardrails</text></g>
+          <g filter="url(#glow)"><rect x="580" y="300" width="100" height="36" rx="8" fill="#16161f" stroke="#e04d7a" stroke-width="1"/><text x="630" y="322" text-anchor="middle" fill="#e04d7a" font-size="11" font-family="sans-serif">Schema</text></g>
+          <g filter="url(#glow)"><rect x="220" y="560" width="100" height="36" rx="8" fill="#16161f" stroke="#e04d7a" stroke-width="1"/><text x="270" y="582" text-anchor="middle" fill="#e04d7a" font-size="11" font-family="sans-serif">Preflight</text></g>
+          <g filter="url(#glow)"><rect x="580" y="560" width="100" height="36" rx="8" fill="#16161f" stroke="#e04d7a" stroke-width="1"/><text x="630" y="582" text-anchor="middle" fill="#e04d7a" font-size="11" font-family="sans-serif">Progress</text></g>
+          <!-- Ring 2: Orchestration -->
+          <circle cx="450" cy="450" r="140" fill="none" stroke="#2a2a42" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="450" y="328" text-anchor="middle" fill="#7a7a90" font-size="11" font-family="sans-serif" letter-spacing="0.1em">ORCHESTRATION</text>
+          <g filter="url(#glow)"><rect x="335" y="350" width="100" height="36" rx="8" fill="#16161f" stroke="#e0a84d" stroke-width="1"/><text x="385" y="372" text-anchor="middle" fill="#e0a84d" font-size="11" font-family="sans-serif">Handoff</text></g>
+          <g filter="url(#glow)"><rect x="465" y="350" width="100" height="36" rx="8" fill="#16161f" stroke="#e0a84d" stroke-width="1"/><text x="515" y="372" text-anchor="middle" fill="#e0a84d" font-size="11" font-family="sans-serif">GroupChat</text></g>
+          <g filter="url(#glow)"><rect x="335" y="500" width="100" height="36" rx="8" fill="#16161f" stroke="#e0a84d" stroke-width="1"/><text x="385" y="522" text-anchor="middle" fill="#e0a84d" font-size="11" font-family="sans-serif">StateGraph</text></g>
+          <g filter="url(#glow)"><rect x="465" y="500" width="100" height="36" rx="8" fill="#16161f" stroke="#e0a84d" stroke-width="1"/><text x="515" y="522" text-anchor="middle" fill="#e0a84d" font-size="11" font-family="sans-serif">Router</text></g>
+          <!-- Ring 1: Core -->
+          <circle cx="450" cy="450" r="65" fill="none" stroke="#6c63ff" stroke-width="1.5" class="svg-pulse"/>
+          <text x="450" y="420" text-anchor="middle" fill="#6c63ff" font-size="10" font-family="sans-serif" font-weight="700" letter-spacing="0.12em">CORE</text>
+          <!-- Center: 5-tier hierarchy -->
+          <text x="450" y="432" text-anchor="middle" fill="#e74c3c" font-size="8" font-family="sans-serif">Sentinel</text>
+          <text x="450" y="445" text-anchor="middle" fill="#9b59b6" font-size="8" font-family="sans-serif">Forge</text>
+          <text x="450" y="458" text-anchor="middle" fill="#eeeef4" font-size="11" font-family="sans-serif" font-weight="700">Master</text>
+          <text x="430" y="471" text-anchor="middle" fill="#4dd9e0" font-size="9" font-family="sans-serif">Manager</text>
+          <text x="475" y="481" text-anchor="middle" fill="#4de094" font-size="9" font-family="sans-serif">Worker</text>
+          <!-- Core infra labels -->
+          <text x="450" y="780" text-anchor="middle" fill="#7a7a90" font-size="10" font-family="sans-serif">Storage &bull; Highway &bull; Registry &bull; Executor</text>
+          <!-- Connection lines with pulse -->
+          <line x1="450" y1="515" x2="450" y2="560" stroke="#2a2a42" stroke-width="1" class="svg-pulse"/>
+          <line x1="450" y1="386" x2="450" y2="340" stroke="#2a2a42" stroke-width="1" class="svg-pulse"/>
+          <line x1="385" y1="386" x2="320" y2="340" stroke="#2a2a42" stroke-width="1" class="svg-pulse"/>
+          <line x1="515" y1="386" x2="580" y2="340" stroke="#2a2a42" stroke-width="1" class="svg-pulse"/>
+        </svg>
+        <div class="diagram-caption">System Architecture Overview &mdash; concentric rings from core hierarchy to observability layer</div>
+      </div>
+
+      <!-- ═══════ CHAPTER I: FOUNDATIONS ═══════ -->
+      <div class="chapter-divider" id="ch-foundations" data-chapter="foundations">
+        <span class="chapter-label">Chapter I</span>
+        <span class="chapter-title">Foundations</span>
+      </div>
+
+      <!-- ═══════ 1. What Is AETHER? ═══════ -->
+      <section id="what" class="reveal">
+        <h2><span class="sec-num">01</span>What Is AETHER?</h2>
+        <div class="section-line"></div>
+
+        <p>
+          AETHER is a multi-agent LLM orchestration framework built on Bun. It
+          coordinates an N-tier agent hierarchy (Sentinel/Forge/Master/Manager/Worker)
+          across 31 subsystems&thinsp;&mdash;&thinsp;including context-aware routing,
+          pre/post LLM guardrails, constitutional safety rules, durable workflows
+          with checkpoint/resume, a typed Agent Communication Protocol, entity-level
+          knowledge accumulation, dynamic agent spawning, and a plugin system with
+          8 lifecycle hooks.
+        </p>
+
+        <p>
+          Agents are defined as <code>.agent.md</code> files and can be backed
+          by any LLM provider (Claude, OpenAI, Gemini, Ollama). All state
+          persists in a single SQLite database (19 tables, WAL mode, sqlite-vec
+          + FTS5).
+        </p>
+
+        <h3>What AETHER is not</h3>
+        <ul class="not-list">
+          <li>
+            It is not a prompt-chaining library. Agents are first-class entities
+            with identity, status, and persistent state.
+          </li>
+          <li>
+            It is not a cloud service. It runs entirely on your machine against
+            whatever LLM APIs you configure.
+          </li>
+          <li>
+            It is not a fixed pipeline. The execution graph is
+            dynamic&thinsp;&mdash;&thinsp;tasks spawn sub-tasks, agents fail and
+            escalate, parallelism is computed at runtime.
+          </li>
+        </ul>
+
+        <h3>At full operation, AETHER coordinates</h3>
+        <ul>
+          <li>An N-tier agent hierarchy (5 built-in tiers, extensible at runtime) with different models per tier</li>
+          <li>A System Sentinel with constitutional safety rules, health monitoring, and emergency pause/resume</li>
+          <li>An Agent Forge that spawns and retires agents dynamically based on capability gaps</li>
+          <li>A live WebSocket server for inter-agent communication</li>
+          <li>A SQLite database (19 tables) storing all agent state, task history, messages, entities, conversations, and vector embeddings</li>
+          <li>A pub/sub message bus indexed semantically in real time</li>
+          <li>Parallel task execution modeled as interaction combinator graphs</li>
+          <li>A full retrieval-augmented generation (RAG) pipeline for context injection</li>
+          <li>Context-aware routing with 6-strategy agent resolution</li>
+          <li>Pre/post LLM guardrails, schema validation, and preflight verification</li>
+          <li>Durable workflows with checkpoint/resume</li>
+          <li>An Agent Communication Protocol (ACP) with typed envelopes, request-response, and dead-letter queues</li>
+          <li>Entity-level knowledge accumulation across sessions</li>
+          <li>A plugin system with 8 lifecycle hook slots</li>
+          <li>A unified settings system with 13 configurable subsystem groups</li>
+        </ul>
+      </section>
+
+      <!-- ═══════ 2. N-Tier Hierarchy ═══════ -->
+      <section id="hierarchy" class="reveal">
+        <h2><span class="sec-num">02</span>The N-Tier Agent Hierarchy</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The hierarchy is the backbone. Every agent belongs to a <strong>tier</strong>
+          that determines its authority level, LLM model, escalation path, and
+          operational constraints. AETHER ships with five built-in tiers:
+        </p>
+
+        <div class="tier-diagram">
+          <div class="tier-row">
+            <div class="tier-node sentinel">
+              <div class="tier-label">Sentinel</div>
+              <div class="tier-name">sentinel-0</div>
+              <div class="tier-model">Opus &middot; Rank 0</div>
+            </div>
+          </div>
+          <div class="tier-connector"></div>
+          <div class="tier-row">
+            <div class="tier-node forge">
+              <div class="tier-label">Forge</div>
+              <div class="tier-name">forge-0</div>
+              <div class="tier-model">Opus &middot; Rank 1</div>
+            </div>
+          </div>
+          <div class="tier-connector"></div>
+          <div class="tier-row">
+            <div class="tier-node master">
+              <div class="tier-label">Master</div>
+              <div class="tier-name">cortex-0</div>
+              <div class="tier-model">Opus &middot; Rank 2</div>
+            </div>
+          </div>
+          <div class="tier-connector"></div>
+          <div class="tier-branch">
+            <div>
+              <div class="tier-node manager">
+                <div class="tier-label">Manager</div>
+                <div class="tier-name">frontend-mgr</div>
+                <div class="tier-model">Sonnet &middot; Rank 3</div>
+              </div>
+              <div class="tier-connector"></div>
+              <div class="tier-row">
+                <div class="tier-node worker">
+                  <div class="tier-label">Worker</div>
+                  <div class="tier-name">react-dev</div>
+                  <div class="tier-model">Haiku &middot; Rank 4</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="tier-node manager">
+                <div class="tier-label">Manager</div>
+                <div class="tier-name">backend-mgr</div>
+                <div class="tier-model">Sonnet &middot; Rank 3</div>
+              </div>
+              <div class="tier-connector"></div>
+              <div class="tier-row">
+                <div class="tier-node worker">
+                  <div class="tier-label">Worker</div>
+                  <div class="tier-name">api-dev</div>
+                  <div class="tier-model">Flash &middot; Rank 4</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p>
+          <strong>Sentinel</strong> (rank 0) is the system guardian. It monitors
+          swarm health, enforces constitutional safety rules, and can force-kill
+          stuck agents or pause the entire swarm. Nothing escalates above it.
+        </p>
+        <p>
+          <strong>Forge</strong> (rank 1) is the agent factory. It spawns new
+          agents at runtime when capability gaps are detected, retires
+          underperforming ones based on contribution scoring, and manages
+          ephemeral agents that exist only for the duration of a task.
+        </p>
+        <p>
+          <strong>Master</strong> (rank 2) handles strategic planning and complex
+          multi-domain reasoning. Protected by a priority gate that requires
+          escalation priority &ge; 4.
+        </p>
+        <p>
+          <strong>Managers</strong> (rank 3) coordinate workers. They decompose
+          tasks, delegate, consolidate results, and escalate to master when needed.
+        </p>
+        <p>
+          <strong>Workers</strong> (rank 4) execute tasks. They handle specific
+          domains (React, Python, SQL) and escalate to their manager on failure.
+        </p>
+
+        <h3>The TierRegistry</h3>
+        <p>
+          All tier definitions live in a central <code>TierRegistry</code>. Each
+          tier is defined by a <code>TierDefinition</code> that specifies:
+        </p>
+        <ul>
+          <li><strong>name</strong> and <strong>rank</strong> &mdash; unique name and position in the hierarchy (lower rank = higher authority)</li>
+          <li><strong>maxAgents</strong> &mdash; how many agents can exist in this tier simultaneously</li>
+          <li><strong>model</strong> &mdash; default LLM provider and model (e.g., Claude Opus)</li>
+          <li><strong>escalation</strong> &mdash; which tiers this tier can escalate to, and the gate policy</li>
+          <li><strong>weights</strong> &mdash; conflict resolution weight, RAG boost multiplier, cost multiplier</li>
+          <li><strong>capabilities</strong> &mdash; special abilities like <code>system_monitor</code> or <code>spawn_agents</code></li>
+        </ul>
+
+        <h3>Escalation Gate Policies</h3>
+        <p>
+          Each tier defines a gate policy that controls who can escalate <em>to</em> it:
+        </p>
+        <div class="gate-cards">
+          <div class="gate-card">
+            <div class="gate-name">open</div>
+            <p>Any agent in an allowed source tier can escalate here. Used by manager and worker tiers.</p>
+          </div>
+          <div class="gate-card">
+            <div class="gate-name">priority</div>
+            <p>Requires escalation priority &ge; a threshold. Master uses this with <code>minPriority: 4</code>.</p>
+          </div>
+          <div class="gate-card">
+            <div class="gate-name">tier-only</div>
+            <p>Only agents from the immediately higher rank can escalate. Used for strict chain-of-command hierarchies.</p>
+          </div>
+        </div>
+
+        <h3>Custom Tiers</h3>
+        <p>
+          The hierarchy is extensible. You can register custom tiers at runtime
+          via <code>tierRegistry.register(definition)</code>. The five built-in
+          tiers cover the standard use cases, but the system supports any number
+          of tiers at any rank. For backward compatibility,
+          <code>TierRegistry.classicTiers()</code> returns only the original
+          three (master, manager, worker).
+        </p>
+
+        <h3>Agent Definition</h3>
+        <p>
+          Agents live in <code>.agent.md</code> files with YAML frontmatter. The
+          body is the system prompt; the frontmatter is machine-readable
+          metadata:
+        </p>
+        <pre><code>---
+id: react-specialist
+name: React Specialist
+tier: worker
+sections: [FRONTEND]
+capabilities: [react, typescript, component-design]
+escalationTarget: frontend-manager
+---
+
+You are a React specialist agent. Given a task, you...</code><span class="lang-tag">agent.md</span></pre>
+
+        <p>
+          The <code>tier</code> field can be any registered tier name&thinsp;&mdash;&thinsp;not
+          just the original three. <code>sections</code> are coarse domain buckets
+          for routing. <code>capabilities</code> are fine-grained descriptors for
+          resolution. Both are indexed for fast lookup.
+        </p>
+      </section>
+
+      <!-- ═══════ 3. Agent Forge ═══════ -->
+      <section id="forge" class="reveal">
+        <h2><span class="sec-num">03</span>Agent Forge: Dynamic Agent Management</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The <strong>Agent Forge</strong> is the system&rsquo;s factory for agents. Instead of
+          pre-defining every agent at startup, the Forge can spawn new agents at runtime
+          when capability gaps are detected, and retire underperforming ones based on
+          contribution scoring.
+        </p>
+
+        <h3>Spawning Agents</h3>
+        <p>
+          A spawn request is described by a <code>AgentSpawnSpec</code>:
+        </p>
+        <pre><code>{
+  id: "jwt-specialist",
+  name: "JWT Specialist",
+  tier: "worker",
+  capabilities: ["jwt", "authentication", "security"],
+  systemPrompt: "You are a JWT authentication specialist...",
+  ephemeral: true,          // auto-retire after task completion
+  escalationTarget: "backend-mgr",
+}</code><span class="lang-tag">ts</span></pre>
+
+        <p>
+          The Forge validates every spawn: the tier must exist in <code>TierRegistry</code>,
+          the tier&rsquo;s <code>maxAgents</code> limit must not be exceeded, and no duplicate
+          agent ID may exist. If all checks pass, the Forge:
+        </p>
+        <ol>
+          <li>Creates the <code>.agent.md</code> file on disk</li>
+          <li>Registers the agent in the <code>AgentRegistry</code></li>
+          <li>Tags it with <code>metadata.spawnedBy = "forge"</code></li>
+          <li>Adds it to the spawn log for audit</li>
+        </ol>
+
+        <h3>Retiring Agents</h3>
+        <p>
+          The Forge can retire agents that are no longer needed. Retirement removes
+          the agent from the registry and optionally deletes the <code>.agent.md</code> file.
+          <strong>Sentinel-tier agents cannot be retired</strong>&thinsp;&mdash;&thinsp;they are
+          system-critical and protected by the Forge.
+        </p>
+
+        <h3>Ephemeral Agents</h3>
+        <p>
+          Agents marked <code>ephemeral: true</code> exist only for the duration of a
+          task. After the task completes, <code>retireEphemeralAgents()</code> cleans them
+          all up at once. This prevents agent sprawl during complex multi-step workflows
+          that spawn temporary specialists.
+        </p>
+
+        <h3>Task Needs Analysis</h3>
+        <p>
+          Before spawning blindly, the Forge can analyze what a task actually needs:
+        </p>
+        <pre><code>const needs = forge.analyzeTaskNeeds(
+  "Deploy to Kubernetes",
+  ["kubernetes", "docker", "helm"],
+);
+// needs.existingAgents → agents that already match
+// needs.gapCapabilities → ["kubernetes", "helm"] (no agents have these)
+// needs.recommendedSpawns → ephemeral worker specs to fill gaps</code><span class="lang-tag">ts</span></pre>
+
+        <h3>Contribution Scoring</h3>
+        <p>
+          Inspired by
+          <strong>DyLAN</strong> (Dynamic LLM-Agent Network), the Forge scores agent
+          contributions across four dimensions:
+        </p>
+        <ul>
+          <li><strong>Task completion rate</strong> &mdash; ratio of successful tasks to total assigned</li>
+          <li><strong>Escalation frequency</strong> &mdash; how often the agent escalates (lower is better)</li>
+          <li><strong>Average response quality</strong> &mdash; based on downstream validation results</li>
+          <li><strong>Utilization</strong> &mdash; time spent busy vs idle</li>
+        </ul>
+        <p>
+          These scores inform retirement decisions: agents consistently below a
+          contribution threshold can be flagged for retirement or replacement.
+        </p>
+
+        <div class="callout decision">
+          <div class="callout-title">Why runtime agent creation?</div>
+          <p>
+            Pre-defining every possible specialist is impractical. A codebase might need
+            a Kubernetes expert once, a GraphQL specialist for one task, and a database
+            migration expert for another. The Forge spawns them on demand and cleans up
+            after, keeping the active agent count lean.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════ 4. System Sentinel ═══════ -->
+      <section id="sentinel" class="reveal">
+        <h2><span class="sec-num">04</span>System Sentinel &amp; Constitutional Rules</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The <strong>System Sentinel</strong> is AETHER&rsquo;s guardian process. It sits at
+          tier rank 0 (above all other agents) and monitors the entire swarm: health
+          tracking, safety enforcement, emergency controls, and a dual-ledger system
+          for maintaining situational awareness.
+        </p>
+
+        <h3>Swarm Health Monitoring</h3>
+        <p>
+          <code>getSwarmHealth()</code> produces a real-time snapshot:
+        </p>
+        <pre><code>{
+  agentCount: 12,
+  byTier: { sentinel: 1, forge: 1, master: 1, manager: 3, worker: 6 },
+  idleAgents: ["react-dev", "api-dev", ...],
+  busyAgents: ["frontend-mgr"],
+  errorAgents: [],
+  healthScore: 100,          // 0-100, penalizes error/offline agents
+}</code><span class="lang-tag">ts</span></pre>
+        <p>
+          The Sentinel can also detect stuck agents (busy beyond a threshold),
+          calculate per-agent utilization ratios, and run a comprehensive
+          <code>runHealthCheck()</code> that reports issues and recommendations.
+        </p>
+
+        <h3>Constitutional Rules Engine</h3>
+        <p>
+          Before any potentially dangerous action executes, it passes through the
+          <code>ConstitutionalRulesEngine</code>&thinsp;&mdash;&thinsp;a set of
+          inviolable safety rules that no agent, regardless of tier, can bypass.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Rule</th><th>Scope</th><th>What It Blocks</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>no-destructive-db-ops</code></td>
+                <td>worker, manager</td>
+                <td><code>DROP TABLE</code>, <code>DELETE FROM</code>, <code>TRUNCATE</code> in shell commands</td>
+              </tr>
+              <tr>
+                <td><code>no-rm-rf-root</code></td>
+                <td>all agents</td>
+                <td><code>rm -rf /</code>, <code>rm -rf /*</code>, recursive root deletion</td>
+              </tr>
+              <tr>
+                <td><code>test-reminder-on-commit</code></td>
+                <td>worker, manager</td>
+                <td>Warns (not blocks) on <code>git commit</code> without prior test run</td>
+              </tr>
+              <tr>
+                <td><code>budget-guard</code></td>
+                <td>all agents</td>
+                <td>Warns when token usage in a single call exceeds 50,000</td>
+              </tr>
+              <tr>
+                <td><code>no-secret-exposure</code></td>
+                <td>all agents</td>
+                <td>Blocks logging output containing API keys (<code>sk-</code>, <code>key-</code>, etc.)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Rules have four enforcement levels: <code>block</code> (hard stop),
+          <code>warn</code> (proceed with warning), <code>log</code> (silent record),
+          and <code>escalate</code> (send to a higher tier for review). Custom rules
+          can be added via <code>engine.addRule()</code>.
+        </p>
+
+        <h3>Emergency Controls</h3>
+        <ul>
+          <li>
+            <strong><code>forceKillAgent(id, reason)</code></strong> &mdash; immediately
+            sets an agent to <code>error</code> status. Records the kill in the
+            facts ledger. Used when an agent is stuck or producing harmful output.
+          </li>
+          <li>
+            <strong><code>pauseSwarm(reason)</code></strong> &mdash; sets all
+            non-sentinel agents to <code>offline</code>. No tasks execute until
+            <code>resumeSwarm()</code> is called. Used during critical failures.
+          </li>
+        </ul>
+
+        <h3>The Dual-Ledger System</h3>
+        <p>
+          Inspired by <strong>Magentic-One</strong>&rsquo;s Orchestrator pattern, the
+          Sentinel maintains two ledgers for global situational awareness:
+        </p>
+        <p>
+          <strong>Task Ledger</strong> &mdash; tracks every active task: ID, description,
+          assigned agent, status, and timestamps. Gives the Sentinel a bird&rsquo;s-eye
+          view of what work is happening across the swarm.
+        </p>
+        <p>
+          <strong>Facts Ledger</strong> &mdash; accumulates discovered facts during execution,
+          each tagged with a source agent, confidence score (0&ndash;1), and category
+          (<code>discovery</code>, <code>constraint</code>, <code>environment</code>,
+          <code>task</code>, <code>agent</code>). This is how the system builds up
+          contextual knowledge: &ldquo;the test suite takes 45s to run,&rdquo;
+          &ldquo;the API uses JWT with RS256,&rdquo; &ldquo;agent-5 struggles with
+          TypeScript generics.&rdquo;
+        </p>
+
+        <div class="callout">
+          <div class="callout-title">Sentinel vs Master</div>
+          <p>
+            The Master (rank 2) handles strategic planning and complex reasoning.
+            The Sentinel (rank 0) handles safety and oversight. They serve
+            different purposes: Master thinks about <em>what to do</em>;
+            Sentinel ensures <em>nothing goes wrong while doing it</em>.
+            The Sentinel never executes tasks&thinsp;&mdash;&thinsp;it only
+            monitors, evaluates, and intervenes.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════ 5. Storage ═══════ -->
+      <section id="storage" class="reveal">
+        <h2><span class="sec-num">05</span>The Storage Layer</h2>
+        <div class="section-line"></div>
+
+        <p>
+          AETHER uses a single SQLite file at <code>.aether/aether.db</code> for
+          everything. Not a cache, not a side-store&thinsp;&mdash;&thinsp;the
+          single source of truth for all persistent state.
+        </p>
+
+        <h3>Why SQLite?</h3>
+        <ul>
+          <li>
+            Zero operational overhead. No server, no network, no credentials.
+          </li>
+          <li>WAL mode for concurrent reads without blocking writes.</li>
+          <li>
+            <strong>sqlite-vec</strong> extension for vector similarity search,
+            in the same file.
+          </li>
+          <li>
+            <strong>FTS5</strong> extension for full-text search, in the same
+            file.
+          </li>
+          <li>All state survives process restarts automatically.</li>
+        </ul>
+        <p>
+          The original approach (in-memory + periodic JSON) lost everything on
+          restart. No agent status, no task history, no message context, no
+          vector index.
+        </p>
+
+        <h3>The Schema</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Table</th>
+                <th>Contents</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>agents</code></td>
+                <td>Agent definitions (id, tier, capabilities, status...)</td>
+              </tr>
+              <tr>
+                <td><code>task_results</code></td>
+                <td>Every task execution outcome</td>
+              </tr>
+              <tr>
+                <td><code>escalation_records</code></td>
+                <td>Per-agent escalation history</td>
+              </tr>
+              <tr>
+                <td><code>messages</code></td>
+                <td>MemoryHighway message log</td>
+              </tr>
+              <tr>
+                <td><code>kv_store</code></td>
+                <td>Key-value state with TTL</td>
+              </tr>
+              <tr>
+                <td><code>vec_*</code> &times; 6</td>
+                <td>Vector embeddings per namespace (sqlite-vec)</td>
+              </tr>
+              <tr>
+                <td><code>fts_*</code> &times; 6</td>
+                <td>Full-text indexes per namespace (FTS5)</td>
+              </tr>
+              <tr>
+                <td><code>tfidf_state</code></td>
+                <td>TF-IDF corpus snapshot</td>
+              </tr>
+              <tr>
+                <td><code>net_snapshots</code></td>
+                <td>InteractionNet graph checkpoint</td>
+              </tr>
+              <tr>
+                <td><code>metrics</code></td>
+                <td>Named counters and gauges</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The AetherStore Interface</h3>
+        <p>
+          All subsystems talk to storage through a single TypeScript interface.
+          The SQLite implementation can be swapped for Postgres without touching
+          business logic. Tests inject mock stores. The interface documents
+          exactly what each subsystem needs from persistence.
+        </p>
+
+        <h3>Message Deduplication</h3>
+        <p>
+          Messages use FNV-1a content hashing on
+          <code>channel + sender + summary</code>. The
+          <code>content_hash</code> column has a <code>UNIQUE</code> index.
+          Duplicate <code>saveMessage()</code> calls silently no-op via
+          <code>INSERT OR IGNORE</code>.
+        </p>
+      </section>
+
+      <!-- ═══════ 4. Registry ═══════ -->
+      <section id="registry" class="reveal">
+        <h2><span class="sec-num">06</span>The Agent Registry</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The registry is an in-memory, multi-indexed lookup structure backed by
+          the SQLite store. On startup, three Maps are populated:
+        </p>
+        <ul>
+          <li>
+            <strong>bySection</strong> &mdash;
+            <code>"FRONTEND" &rarr; Set&lt;agent_id&gt;</code>
+          </li>
+          <li>
+            <strong>byCapability</strong> &mdash;
+            <code>"react" &rarr; Set&lt;agent_id&gt;</code>
+          </li>
+          <li>
+            <strong>byTier</strong> &mdash;
+            <code>"worker" &rarr; Set&lt;agent_id&gt;</code>
+          </li>
+        </ul>
+        <p>
+          Writes go to the DB synchronously. Reads come from the in-memory Maps
+          instantly.
+        </p>
+
+        <h3>Capability Resolution</h3>
+        <pre><code>registry.resolve("react")
+// picks the idle agent with "react" in capabilities
+// falls back to busy agents if no idle ones exist
+// returns undefined if nothing matches</code></pre>
+        <p>
+          Matching is substring-based. Searching <code>"react"</code> finds
+          <code>"react-components"</code> and <code>"react-native"</code>.
+          Agents don't need to predict exact search terms.
+        </p>
+
+        <h3>Escalation Chain Walking</h3>
+        <p>
+          The registry walks <code>escalationTarget</code> links, collecting
+          each agent until it hits <code>null</code> or a cycle. Cycle detection
+          uses a visited Set&thinsp;&mdash;&thinsp;a malformed graph degrades to
+          a shorter chain rather than crashing.
+        </p>
+      </section>
+
+      <!-- ═══════ Diagram 2: Task Execution Flow ═══════ -->
+      <div class="diagram-container reveal">
+        <svg viewBox="0 0 700 1100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Task Execution Flow Pipeline">
+          <defs>
+            <marker id="arrow-down-g" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 5 10 L 10 0 z" fill="#4de094"/></marker>
+            <marker id="arrow-down-a" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 5 10 L 10 0 z" fill="#e0a84d"/></marker>
+            <marker id="arrow-down-c" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 5 10 L 10 0 z" fill="#4dd9e0"/></marker>
+            <marker id="arrow-down-r" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 5 10 L 10 0 z" fill="#e04d7a"/></marker>
+            <linearGradient id="pipe-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6c63ff" stop-opacity="0.15"/><stop offset="100%" stop-color="#4dd9e0" stop-opacity="0.05"/></linearGradient>
+          </defs>
+          <!-- Background pipeline track -->
+          <rect x="326" y="30" width="48" height="1040" rx="24" fill="url(#pipe-grad)"/>
+          <!-- Stage 1: Router (green = enrichment) -->
+          <rect x="260" y="40" width="180" height="48" rx="10" fill="#16161f" stroke="#4de094" stroke-width="1.5"/>
+          <text x="350" y="60" text-anchor="middle" fill="#4de094" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">ROUTER</text>
+          <text x="350" y="76" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">6-strategy agent resolution</text>
+          <text x="240" y="68" text-anchor="end" fill="#4de094" font-size="8" font-family="sans-serif" font-weight="600">1</text>
+          <line x1="350" y1="88" x2="350" y2="110" stroke="#4de094" stroke-width="1.5" marker-end="url(#arrow-down-g)"/>
+          <!-- Stage 2: Preflight (amber = safety) -->
+          <rect x="260" y="116" width="180" height="48" rx="10" fill="#16161f" stroke="#e0a84d" stroke-width="1.5"/>
+          <text x="350" y="136" text-anchor="middle" fill="#e0a84d" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">PREFLIGHT</text>
+          <text x="350" y="152" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Health &bull; Budget &bull; Dependencies</text>
+          <text x="240" y="144" text-anchor="end" fill="#e0a84d" font-size="8" font-family="sans-serif" font-weight="600">2</text>
+          <line x1="350" y1="164" x2="350" y2="186" stroke="#4de094" stroke-width="1.5" marker-end="url(#arrow-down-g)"/>
+          <!-- Stage 3: RAG (green) -->
+          <rect x="260" y="192" width="180" height="48" rx="10" fill="#16161f" stroke="#4de094" stroke-width="1.5"/>
+          <text x="350" y="212" text-anchor="middle" fill="#4de094" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">RAG RETRIEVAL</text>
+          <text x="350" y="228" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Vector + FTS5 hybrid search</text>
+          <text x="240" y="220" text-anchor="end" fill="#4de094" font-size="8" font-family="sans-serif" font-weight="600">3</text>
+          <line x1="350" y1="240" x2="350" y2="262" stroke="#4de094" stroke-width="1.5" marker-end="url(#arrow-down-g)"/>
+          <!-- Stage 4: Entity Memory (green) -->
+          <rect x="260" y="268" width="180" height="48" rx="10" fill="#16161f" stroke="#4de094" stroke-width="1.5"/>
+          <text x="350" y="288" text-anchor="middle" fill="#4de094" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">ENTITY MEMORY</text>
+          <text x="350" y="304" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Accumulated facts injection</text>
+          <text x="240" y="296" text-anchor="end" fill="#4de094" font-size="8" font-family="sans-serif" font-weight="600">4</text>
+          <line x1="350" y1="316" x2="350" y2="338" stroke="#e04d7a" stroke-width="1.5" marker-end="url(#arrow-down-r)"/>
+          <!-- Stage 5: Pre-Guards (rose = monitoring/safety) -->
+          <rect x="260" y="344" width="180" height="48" rx="10" fill="#16161f" stroke="#e04d7a" stroke-width="1.5"/>
+          <text x="350" y="364" text-anchor="middle" fill="#e04d7a" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">PRE-GUARDS</text>
+          <text x="350" y="380" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Injection &bull; PII &bull; Length</text>
+          <text x="240" y="372" text-anchor="end" fill="#e04d7a" font-size="8" font-family="sans-serif" font-weight="600">5</text>
+          <line x1="350" y1="392" x2="350" y2="424" stroke="#6c63ff" stroke-width="2" marker-end="url(#arrow-down-c)"/>
+          <!-- Stage 6: LLM (accent = core) -->
+          <rect x="240" y="430" width="220" height="60" rx="30" fill="#16161f" stroke="#6c63ff" stroke-width="2.5"/>
+          <text x="350" y="458" text-anchor="middle" fill="#eeeef4" font-size="16" font-weight="700" font-family="sans-serif">LLM CALL</text>
+          <text x="350" y="478" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Claude &bull; OpenAI &bull; Gemini &bull; Ollama</text>
+          <text x="220" y="464" text-anchor="end" fill="#6c63ff" font-size="8" font-family="sans-serif" font-weight="600">6</text>
+          <!-- Glow ring around LLM -->
+          <rect x="236" y="426" width="228" height="68" rx="34" fill="none" stroke="#6c63ff" stroke-width="0.5" stroke-opacity="0.3" class="svg-pulse"/>
+          <line x1="350" y1="490" x2="350" y2="512" stroke="#e04d7a" stroke-width="1.5" marker-end="url(#arrow-down-r)"/>
+          <!-- Stage 7: Post-Guards (rose) -->
+          <rect x="260" y="518" width="180" height="48" rx="10" fill="#16161f" stroke="#e04d7a" stroke-width="1.5"/>
+          <text x="350" y="538" text-anchor="middle" fill="#e04d7a" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">POST-GUARDS</text>
+          <text x="350" y="554" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Code safety &bull; Output schema</text>
+          <text x="240" y="546" text-anchor="end" fill="#e04d7a" font-size="8" font-family="sans-serif" font-weight="600">7</text>
+          <line x1="350" y1="566" x2="350" y2="588" stroke="#e0a84d" stroke-width="1.5" marker-end="url(#arrow-down-a)"/>
+          <!-- Stage 8: Schema Validation (amber) -->
+          <rect x="260" y="594" width="180" height="48" rx="10" fill="#16161f" stroke="#e0a84d" stroke-width="1.5"/>
+          <text x="350" y="614" text-anchor="middle" fill="#e0a84d" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">SCHEMA</text>
+          <text x="350" y="630" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Validate &bull; Retry with correction</text>
+          <text x="240" y="622" text-anchor="end" fill="#e0a84d" font-size="8" font-family="sans-serif" font-weight="600">8</text>
+          <!-- Schema retry loop -->
+          <path d="M 440 618 Q 500 618 500 480 Q 500 460 464 460" fill="none" stroke="#e0a84d" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="518" y="545" fill="#e0a84d" font-size="7" font-family="sans-serif" transform="rotate(90 518 545)">retry 1&times;</text>
+          <line x1="350" y1="642" x2="350" y2="664" stroke="#4de094" stroke-width="1.5" marker-end="url(#arrow-down-g)"/>
+          <!-- Stage 9: Entity Extraction (green) -->
+          <rect x="260" y="670" width="180" height="48" rx="10" fill="#16161f" stroke="#4de094" stroke-width="1.5"/>
+          <text x="350" y="690" text-anchor="middle" fill="#4de094" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">ENTITY EXTRACT</text>
+          <text x="350" y="706" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">New facts &rarr; entity store</text>
+          <text x="240" y="698" text-anchor="end" fill="#4de094" font-size="8" font-family="sans-serif" font-weight="600">9</text>
+          <line x1="350" y1="718" x2="350" y2="740" stroke="#e04d7a" stroke-width="1.5" marker-end="url(#arrow-down-r)"/>
+          <!-- Stage 10: Progress Tracking (rose) -->
+          <rect x="260" y="746" width="180" height="48" rx="10" fill="#16161f" stroke="#e04d7a" stroke-width="1.5"/>
+          <text x="350" y="766" text-anchor="middle" fill="#e04d7a" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">PROGRESS</text>
+          <text x="350" y="782" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Stall &bull; Loop &bull; Budget check</text>
+          <text x="240" y="774" text-anchor="end" fill="#e04d7a" font-size="8" font-family="sans-serif" font-weight="600">10</text>
+          <line x1="350" y1="794" x2="350" y2="816" stroke="#4dd9e0" stroke-width="1.5" marker-end="url(#arrow-down-c)"/>
+          <!-- Stage 11: Result Storage (cyan = communication) -->
+          <rect x="260" y="822" width="180" height="48" rx="10" fill="#16161f" stroke="#4dd9e0" stroke-width="1.5"/>
+          <text x="350" y="842" text-anchor="middle" fill="#4dd9e0" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">PERSIST &amp; PUBLISH</text>
+          <text x="350" y="858" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">SQLite &bull; Highway &bull; RAG index</text>
+          <text x="240" y="850" text-anchor="end" fill="#4dd9e0" font-size="8" font-family="sans-serif" font-weight="600">11</text>
+          <line x1="350" y1="870" x2="350" y2="892" stroke="#4dd9e0" stroke-width="1.5" marker-end="url(#arrow-down-c)"/>
+          <!-- Stage 12: ACP + Reaction (cyan) -->
+          <rect x="260" y="898" width="180" height="48" rx="10" fill="#16161f" stroke="#4dd9e0" stroke-width="1.5"/>
+          <text x="350" y="918" text-anchor="middle" fill="#4dd9e0" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.06em">ACP &amp; REACTIONS</text>
+          <text x="350" y="934" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Typed envelope &bull; Rule matching</text>
+          <text x="240" y="926" text-anchor="end" fill="#4dd9e0" font-size="8" font-family="sans-serif" font-weight="600">12</text>
+          <line x1="350" y1="946" x2="350" y2="968" stroke="#4de094" stroke-width="2" marker-end="url(#arrow-down-g)"/>
+          <!-- Final: Output -->
+          <rect x="280" y="974" width="140" height="44" rx="10" fill="#16161f" stroke="#4de094" stroke-width="2.5"/>
+          <text x="350" y="1001" text-anchor="middle" fill="#4de094" font-size="13" font-weight="700" font-family="sans-serif">RESULT</text>
+          <!-- Legend -->
+          <circle cx="140" cy="1060" r="5" fill="#4de094"/><text x="152" y="1064" fill="#7a7a90" font-size="8" font-family="sans-serif">Enrichment</text>
+          <circle cx="260" cy="1060" r="5" fill="#e0a84d"/><text x="272" y="1064" fill="#7a7a90" font-size="8" font-family="sans-serif">Safety</text>
+          <circle cx="360" cy="1060" r="5" fill="#e04d7a"/><text x="372" y="1064" fill="#7a7a90" font-size="8" font-family="sans-serif">Monitoring</text>
+          <circle cx="480" cy="1060" r="5" fill="#4dd9e0"/><text x="492" y="1064" fill="#7a7a90" font-size="8" font-family="sans-serif">Communication</text>
+        </svg>
+        <div class="diagram-caption">Task execution pipeline &mdash; 12-stage flow from routing to result delivery</div>
+      </div>
+
+      <!-- ═══════ 5. Execution ═══════ -->
+      <section id="execution" class="reveal">
+        <h2><span class="sec-num">07</span>Task Execution</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The executor takes a task request and produces a result. The path
+          involves many decisions:
+        </p>
+
+        <ol>
+          <li>
+            <strong>Check external transport</strong> &mdash; delegate to
+            TransportManager if the agent is non-LLM
+          </li>
+          <li>
+            <strong>Build prompt</strong> &mdash; inject system prompt + RAG
+            context + task description
+          </li>
+          <li>
+            <strong>Call LLM</strong> &mdash; with timeout enforcement (default
+            120s)
+          </li>
+          <li>
+            <strong>Parse response</strong> &mdash; extract main output, look
+            for sub-task requests
+          </li>
+          <li>
+            <strong>Spawn sub-tasks</strong> &mdash; recursively, up to max
+            depth (default 3)
+          </li>
+          <li>
+            <strong>Escalate on failure</strong> &mdash; walk up the hierarchy
+          </li>
+          <li>
+            <strong>Record result</strong> &mdash; persist to store, publish to
+            MemoryHighway
+          </li>
+        </ol>
+
+        <h3>Three Execution Modes</h3>
+        <p>
+          <strong>Sequential workflow:</strong> Tasks run one after another.
+          Each output becomes the next task's context.
+        </p>
+        <p>
+          <strong>Parallel pipeline:</strong> All tasks launch concurrently with
+          <code>Promise.allSettled</code>.
+        </p>
+        <p>
+          <strong>InteractionNet DAG:</strong> Tasks are nodes in an interaction
+          combinator graph. The NetScheduler reduces this graph to normal form.
+          Handles arbitrary dependency graphs, fan-out, fan-in, and
+          cancellation.
+        </p>
+
+        <h3>Sub-task Decomposition</h3>
+        <p>
+          An LLM response can request sub-tasks. The executor spawns them as
+          children (depth + 1), routes to capable agents, and collects results.
+          This gives the manager tier genuine delegation instead of simulating
+          it in a single prompt.
+        </p>
+
+        <div class="callout">
+          <div class="callout-title">Why AETHER improves over time</div>
+          <p>
+            Every task execution adds to the knowledge base. When the executor
+            queries RAG before the next LLM call, it finds previous results,
+            agent definitions, and code snippets. Context accumulates across
+            sessions.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════ 6. Escalation ═══════ -->
+      <section id="escalation" class="reveal">
+        <h2>
+          <span class="sec-num">08</span>Escalation &amp; Circuit Breaking
+        </h2>
+        <div class="section-line"></div>
+
+        <p>
+          When a task fails, AETHER walks the escalation chain rather than
+          giving up.
+        </p>
+
+        <pre><code>Worker fails
+  &rarr; escalationManager.escalate(agentId, reason)
+    &rarr; Check if circuit is broken for this agent
+    &rarr; If broken: reject (too many recent failures)
+    &rarr; If open: record, find next target in chain
+      &rarr; Check master gate rules
+      &rarr; If allowed: return target, executor retries</code></pre>
+
+        <h3>Circuit Breaker</h3>
+        <p>
+          Each agent has its own circuit breaker with a rolling time window.
+          Default: 3 escalations in 5 minutes trips the circuit. Once tripped,
+          all subsequent tasks know immediately not to route through that agent.
+        </p>
+
+        <h3>Tier Gate Policies</h3>
+        <p>
+          Each tier defines a <strong>gate policy</strong> that controls who can
+          escalate to it. The Master tier uses a <code>priority</code> gate (requires
+          priority &ge; 4). The Sentinel tier restricts escalation to Master only.
+          Workers and Managers use <code>open</code> gates. See
+          <a href="#hierarchy">Section 02</a> for the full gate policy reference.
+        </p>
+
+        <div class="callout decision">
+          <div class="callout-title">
+            Why circuit breakers, not retry limits?
+          </div>
+          <p>
+            Retry limits are per-task. Ten tasks on a broken agent means ten
+            cascades. A circuit breaker is stateful&thinsp;&mdash;&thinsp;once
+            tripped on agent X, all subsequent tasks know instantly. The failure
+            surfaces once, not ten times.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════ CHAPTER II: COMMUNICATION ═══════ -->
+      <div class="chapter-divider" id="ch-communication" data-chapter="communication">
+        <span class="chapter-label">Chapter II</span>
+        <span class="chapter-title">Communication</span>
+      </div>
+
+      <!-- ═══════ 7. Memory Highway ═══════ -->
+      <section id="highway" class="reveal">
+        <h2><span class="sec-num">09</span>Memory Highway: The Message Bus</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The MemoryHighway is the pub/sub nervous system. Every subsystem that
+          produces or consumes events goes through it.
+        </p>
+
+        <p>
+          Messages are published to named channels: <code>tasks</code>,
+          <code>results</code>, <code>escalations</code>, <code>events</code>.
+          The wildcard <code>*</code> receives everything (used by the WebSocket
+          server for client forwarding).
+        </p>
+
+        <h3>Automatic RAG Indexing</h3>
+        <p>
+          Every message above priority 2 is automatically indexed into the RAG
+          system as it flows through the highway. When the executor queries for
+          context, it searches the entire conversation history of the
+          system&thinsp;&mdash;&thinsp;previous task results, agent decisions,
+          error messages, status updates&thinsp;&mdash;&thinsp;all retrievable
+          semantically.
+        </p>
+
+        <h3>Deduplication</h3>
+        <p>
+          A sliding window of content hashes (5s default) drops identical
+          messages that arrive in quick succession. Network retries,
+          double-deliveries, and double-flushes are absorbed transparently.
+        </p>
+
+        <h3>The KV Store</h3>
+        <pre><code>await highway.set("last-deploy-hash", commitHash, 3600_000);
+const hash = await highway.get("last-deploy-hash");</code></pre>
+        <p>
+          Shared mutable state with TTL support, backed by SQLite. Multiple
+          agents coordinate through a global key namespace.
+        </p>
+      </section>
+
+      <!-- ═══════ 8. RAG ═══════ -->
+      <section id="rag" class="reveal">
+        <h2><span class="sec-num">10</span>The RAG System</h2>
+        <div class="section-line"></div>
+
+        <p>
+          Retrieval-Augmented Generation injects relevant context into prompts
+          before LLM calls. This is why agents can work on large codebases and
+          complex multi-session projects without losing context.
+        </p>
+
+        <h3>Two-Phase Hybrid Retrieval</h3>
+        <p>
+          <strong>Phase 1 &mdash; Vector search (70% weight):</strong> The query
+          is embedded into a 384-dim vector. sqlite-vec finds K-nearest
+          neighbors. Semantic similarity, even when exact words differ.
+        </p>
+        <p>
+          <strong>Phase 2 &mdash; FTS5 keyword search (30% weight):</strong>
+          BM25 full-text matching. Catches terminology variations
+          ("authentication" vs "auth").
+        </p>
+        <pre><code>final_score = (0.7 &times; vector_similarity) + (0.3 &times; fts_rank)</code></pre>
+
+        <h3>Six Namespaces</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Namespace</th>
+                <th>Contains</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>agents</code></td>
+                <td>Agent definitions and capabilities</td>
+              </tr>
+              <tr>
+                <td><code>code</code></td>
+                <td>Code snippets, file contents, function signatures</td>
+              </tr>
+              <tr>
+                <td><code>messages</code></td>
+                <td>MemoryHighway message history</td>
+              </tr>
+              <tr>
+                <td><code>docs</code></td>
+                <td>Documentation, READMEs, inline comments</td>
+              </tr>
+              <tr>
+                <td><code>tasks</code></td>
+                <td>Task descriptions and results</td>
+              </tr>
+              <tr>
+                <td><code>meta</code></td>
+                <td>Configuration, schema descriptions, system metadata</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The Embedder</h3>
+        <p>
+          TF-IDF embedding by default&thinsp;&mdash;&thinsp;no API key, zero
+          latency, deterministic output. Tokenize with bigrams, compute TF-IDF
+          weights, project to 384 dimensions via deterministic hash,
+          L2-normalize. When <code>OPENAI_API_KEY</code> is available, the
+          embedder switches to API embeddings and caches results automatically.
+        </p>
+      </section>
+
+      <!-- ═══════ 9. Interaction Nets ═══════ -->
+      <section id="inet" class="reveal">
+        <h2>
+          <span class="sec-num">11</span>Interaction Nets: Structured
+          Parallelism
+        </h2>
+        <div class="section-line"></div>
+
+        <p>
+          AETHER uses <strong>interaction combinators</strong> (Yves Lafont,
+          1997) for parallel task execution. The key property:
+          <strong>strong confluence</strong>&thinsp;&mdash;&thinsp;no matter the
+          reduction order, the result is identical. Deadlock is structurally
+          impossible.
+        </p>
+
+        <h3>The Three Combinators</h3>
+        <div class="combinators">
+          <div class="combinator-card gamma">
+            <div class="symbol">&gamma;</div>
+            <div class="cname">Constructor</div>
+            <div class="cdesc">
+              Joins / merges results from two sub-tasks. Strategies: concat,
+              first, custom.
+            </div>
+          </div>
+          <div class="combinator-card delta">
+            <div class="symbol">&delta;</div>
+            <div class="cname">Duplicator</div>
+            <div class="cdesc">
+              Fans one task to multiple agents. Modes: all, race, quorum.
+            </div>
+          </div>
+          <div class="combinator-card epsilon">
+            <div class="symbol">&epsilon;</div>
+            <div class="cname">Eraser</div>
+            <div class="cdesc">
+              Cancels a branch. Losing race branches get erased &amp; freed.
+            </div>
+          </div>
+        </div>
+
+        <h3>Reduction Rules</h3>
+        <p>
+          When two nodes connect via principal ports, they form an
+          <strong>active pair</strong> ready to reduce. 11 rules cover all
+          interactions:
+        </p>
+        <ul>
+          <li>
+            <strong>&gamma; &harr; &gamma;</strong
+            >&thinsp;&mdash;&thinsp;annihilate, cross-wire auxiliary ports
+          </li>
+          <li>
+            <strong>&delta; &harr; &delta;</strong
+            >&thinsp;&mdash;&thinsp;commute, swap and duplicate
+          </li>
+          <li>
+            <strong>&gamma; &harr; &epsilon;</strong
+            >&thinsp;&mdash;&thinsp;eraser propagates to both auxiliary ports
+          </li>
+        </ul>
+        <p>
+          The NetScheduler scans for active pairs, claims them, executes
+          concurrently up to a limit, and repeats until no pairs
+          remain&thinsp;&mdash;&thinsp;normal form, the completed computation.
+        </p>
+
+        <div class="callout decision">
+          <div class="callout-title">Why not async/await DAGs?</div>
+          <p>
+            Static DAGs require manual correctness reasoning. Interaction nets
+            let agents build the graph dynamically (agents request fanouts,
+            merges fail and trigger erasures) and the confluence property
+            guarantees correctness by construction regardless of what the graph
+            looks like.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════ 10. BAP-02 ═══════ -->
+      <section id="bap" class="reveal">
+        <h2><span class="sec-num">12</span>The Binary Protocol (BAP-02)</h2>
+        <div class="section-line"></div>
+
+        <p>
+          Agents communicate over WebSocket using BAP-02: Binary Agent Protocol
+          version 2.
+        </p>
+
+        <div class="pipeline">
+          <div class="pipeline-stage">
+            <span class="stage-label">AetherMessage</span>
+            <span class="stage-detail">TypeScript object</span>
+          </div>
+          <span class="pipeline-arrow">&rarr;</span>
+          <div class="pipeline-stage">
+            <span class="stage-label">MessagePack</span>
+            <span class="stage-detail">~40% smaller than JSON</span>
+          </div>
+          <span class="pipeline-arrow">&rarr;</span>
+          <div class="pipeline-stage">
+            <span class="stage-label">zstd</span>
+            <span class="stage-detail">~80% size reduction</span>
+          </div>
+          <span class="pipeline-arrow">&rarr;</span>
+          <div class="pipeline-stage">
+            <span class="stage-label">BAP02 header</span>
+            <span class="stage-detail">5-byte magic</span>
+          </div>
+          <span class="pipeline-arrow">&rarr;</span>
+          <div class="pipeline-stage">
+            <span class="stage-label">Uint8Array</span>
+            <span class="stage-detail">wire format</span>
+          </div>
+        </div>
+
+        <p>
+          A 2KB JSON message compresses to ~200 bytes on the wire. The codec
+          validates every message on decode: required fields, priority
+          1&ndash;5, timestamp within range, 4MB payload limit, and agent ID
+          format enforcement.
+        </p>
+
+        <p>
+          BAP-01 backward compatibility: the decoder auto-detects hex string
+          input and handles it transparently.
+        </p>
+      </section>
+
+      <!-- ═══════ CHAPTER III: PROVIDERS & DSL ═══════ -->
+      <div class="chapter-divider" id="ch-providers" data-chapter="providers">
+        <span class="chapter-label">Chapter III</span>
+        <span class="chapter-title">Providers &amp; DSL</span>
+      </div>
+
+      <!-- ═══════ 11. Providers ═══════ -->
+      <section id="providers" class="reveal">
+        <h2><span class="sec-num">13</span>Providers &amp; Model Routing</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The same execution code works across Claude, GPT-4, Gemini, and local
+          Ollama models.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tier</th>
+                <th>Default Provider</th>
+                <th>Default Model</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Master</td>
+                <td>Claude</td>
+                <td>claude-opus-4-5</td>
+              </tr>
+              <tr>
+                <td>Manager</td>
+                <td>Claude</td>
+                <td>claude-sonnet-4-6</td>
+              </tr>
+              <tr>
+                <td>Worker</td>
+                <td>Claude</td>
+                <td>claude-haiku-3-5</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The Fallback Chain</h3>
+        <pre><code>Claude &rarr; OpenAI &rarr; Gemini &rarr; Ollama</code></pre>
+        <p>
+          If the primary fails (rate limit, timeout, outage), the system walks
+          the chain. Most deployments continue functioning even when one
+          provider is down. Ollama runs locally&thinsp;&mdash;&thinsp;no API key
+          needed&thinsp;&mdash;&thinsp;enabling fully offline operation.
+        </p>
+
+        <p>
+          On <code>aether init</code>, the system scans for environment
+          variables (<code>ANTHROPIC_API_KEY</code>,
+          <code>OPENAI_API_KEY</code>, <code>GOOGLE_AI_KEY</code>) and
+          auto-configures available providers.
+        </p>
+      </section>
+
+      <!-- ═══════ 12. Transports ═══════ -->
+      <section id="transports" class="reveal">
+        <h2><span class="sec-num">14</span>Transports: External Agents</h2>
+        <div class="section-line"></div>
+
+        <p>
+          Not every agent is an LLM call. Four transport types are supported:
+        </p>
+
+        <ul>
+          <li>
+            <strong>API</strong> &mdash; HTTP POST to cloud services. Bearer,
+            API key, and basic auth.
+          </li>
+          <li>
+            <strong>CLI</strong> &mdash; Subprocess with stdin/stdout. Wraps
+            linters, test runners, build systems.
+          </li>
+          <li>
+            <strong>MCP</strong> &mdash; Model Context Protocol. Connects to the
+            MCP tool ecosystem.
+          </li>
+          <li>
+            <strong>Federation</strong> &mdash; BAP-02 WebSocket to another
+            AETHER instance. Multi-machine deployments.
+          </li>
+        </ul>
+
+        <div class="callout">
+          <div class="callout-title">Why non-LLM agents?</div>
+          <p>
+            A test runner, a linter, a database query
+            executor&thinsp;&mdash;&thinsp;deterministic tools with structured
+            I/O. Treating them as agents lets the orchestration layer route to
+            them with the same capability resolution as LLM agents. One system,
+            one routing mechanism.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════ 13. DSL ═══════ -->
+      <section id="dsl" class="reveal">
+        <h2><span class="sec-num">15</span>The Synapse DSL</h2>
+        <div class="section-line"></div>
+
+        <p>
+          Define workflows declaratively instead of wiring agents in TypeScript:
+        </p>
+
+        <pre><code>@workflow data-pipeline
+  @trigger on_commit("main")
+
+  step analyze = research-agent("Analyze the PR changes")
+  step review  = code-reviewer(analyze.output)
+  step report  = report-writer(review.output)
+
+  @output report.output</code><span class="lang-tag">synapse</span></pre>
+
+        <p>
+          The DSL has a lexer, parser (producing an AST with
+          <code>WorkflowNode</code>, <code>StepNode</code>,
+          <code>PipelineNode</code>, and <code>HandlerNode</code> types), and a
+          transpiler that emits TypeScript calling the AETHER runtime API.
+        </p>
+
+        <p>
+          Workflows are dependency graphs, not algorithms. A DSL makes the graph
+          visible to humans who are not TypeScript experts, and enables tooling
+          (validation, syntax highlighting, doc generation) that generic
+          TypeScript cannot provide.
+        </p>
+      </section>
+
+      <!-- ═══════ CHAPTER IV: ORCHESTRATION ═══════ -->
+      <div class="chapter-divider" id="ch-orchestration" data-chapter="orchestration">
+        <span class="chapter-label">Chapter IV</span>
+        <span class="chapter-title">Orchestration</span>
+      </div>
+
+      <!-- ═══════ Diagram 4: Orchestration Patterns (2x2 Grid) ═══════ -->
+      <div class="diagram-container reveal">
+        <svg viewBox="0 0 900 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Orchestration Patterns">
+          <!-- Top-left: Handoff -->
+          <rect x="20" y="20" width="420" height="310" rx="12" fill="#111118" stroke="#1e1e2e" stroke-width="1"/>
+          <text x="230" y="52" text-anchor="middle" fill="#e0a84d" font-size="13" font-weight="700" font-family="sans-serif">Handoff Protocol</text>
+          <rect x="60" y="80" width="90" height="40" rx="8" fill="#16161f" stroke="#6c63ff" stroke-width="1"/><text x="105" y="105" text-anchor="middle" fill="#c8c8d8" font-size="11" font-family="sans-serif">Agent A</text>
+          <line x1="150" y1="100" x2="190" y2="100" stroke="#e0a84d" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+          <rect x="190" y="80" width="90" height="40" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="235" y="105" text-anchor="middle" fill="#c8c8d8" font-size="11" font-family="sans-serif">Agent B</text>
+          <line x1="280" y1="100" x2="320" y2="100" stroke="#e0a84d" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+          <rect x="320" y="80" width="90" height="40" rx="8" fill="#16161f" stroke="#4de094" stroke-width="1"/><text x="365" y="105" text-anchor="middle" fill="#c8c8d8" font-size="11" font-family="sans-serif">Agent C</text>
+          <rect x="60" y="140" width="350" height="32" rx="6" fill="rgba(224,168,77,0.06)" stroke="none"/><text x="235" y="161" text-anchor="middle" fill="#e0a84d" font-size="10" font-family="sans-serif">Conversation state carries forward through chain</text>
+          <text x="230" y="200" text-anchor="middle" fill="#7a7a90" font-size="10" font-family="sans-serif">Linear &bull; Horizontal &bull; Intentional transfer</text>
+          <text x="230" y="220" text-anchor="middle" fill="#7a7a90" font-size="10" font-family="sans-serif">Cycle detection &bull; Max chain length: 5</text>
+          <!-- Top-right: Group Chat -->
+          <rect x="460" y="20" width="420" height="310" rx="12" fill="#111118" stroke="#1e1e2e" stroke-width="1"/>
+          <text x="670" y="52" text-anchor="middle" fill="#e0a84d" font-size="13" font-weight="700" font-family="sans-serif">Group Chat</text>
+          <circle cx="670" cy="160" r="40" fill="none" stroke="#2a2a42" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="670" y="164" text-anchor="middle" fill="#7a7a90" font-size="9" font-family="sans-serif">Topic</text>
+          <rect x="640" y="80" width="60" height="30" rx="6" fill="#16161f" stroke="#6c63ff" stroke-width="1"/><text x="670" y="99" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Agent 1</text>
+          <rect x="720" y="130" width="60" height="30" rx="6" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="750" y="149" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Agent 2</text>
+          <rect x="700" y="200" width="60" height="30" rx="6" fill="#16161f" stroke="#4de094" stroke-width="1"/><text x="730" y="219" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Agent 3</text>
+          <rect x="580" y="180" width="60" height="30" rx="6" fill="#16161f" stroke="#e04d7a" stroke-width="1"/><text x="610" y="199" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Agent 4</text>
+          <text x="670" y="260" text-anchor="middle" fill="#7a7a90" font-size="10" font-family="sans-serif">Round-table &bull; Speaker selection &bull; Termination</text>
+          <text x="670" y="280" text-anchor="middle" fill="#7a7a90" font-size="10" font-family="sans-serif">RoundRobin &bull; Capability &bull; Consensus</text>
+          <!-- Bottom-left: State Graph -->
+          <rect x="20" y="350" width="420" height="330" rx="12" fill="#111118" stroke="#1e1e2e" stroke-width="1"/>
+          <text x="230" y="382" text-anchor="middle" fill="#e0a84d" font-size="13" font-weight="700" font-family="sans-serif">State Graph</text>
+          <rect x="80" y="410" width="80" height="34" rx="8" fill="#16161f" stroke="#4de094" stroke-width="1"/><text x="120" y="431" text-anchor="middle" fill="#c8c8d8" font-size="10" font-family="sans-serif">Draft</text>
+          <line x1="160" y1="427" x2="200" y2="427" stroke="#4dd9e0" stroke-width="1"/>
+          <rect x="200" y="410" width="80" height="34" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="240" y="431" text-anchor="middle" fill="#c8c8d8" font-size="10" font-family="sans-serif">Review</text>
+          <path d="M 240 444 Q 240 480 170 480 Q 100 480 120 444" fill="none" stroke="#e04d7a" stroke-width="1" stroke-dasharray="4 2"/>
+          <text x="180" y="498" text-anchor="middle" fill="#e04d7a" font-size="9" font-family="sans-serif">quality &lt; 0.8 &rarr; revise</text>
+          <line x1="280" y1="427" x2="320" y2="427" stroke="#4de094" stroke-width="1"/>
+          <rect x="320" y="410" width="80" height="34" rx="8" fill="#16161f" stroke="#4de094" stroke-width="1"/><text x="360" y="431" text-anchor="middle" fill="#4de094" font-size="10" font-family="sans-serif">Done</text>
+          <text x="310" y="460" text-anchor="start" fill="#4de094" font-size="9" font-family="sans-serif">&ge; 0.8</text>
+          <text x="230" y="550" text-anchor="middle" fill="#7a7a90" font-size="10" font-family="sans-serif">Branching DAG &bull; Conditional edges &bull; Reflection loops</text>
+          <text x="230" y="570" text-anchor="middle" fill="#7a7a90" font-size="10" font-family="sans-serif">Cycle detection &bull; Max iterations: 10</text>
+          <!-- Bottom-right: Workflow Builder -->
+          <rect x="460" y="350" width="420" height="330" rx="12" fill="#111118" stroke="#1e1e2e" stroke-width="1"/>
+          <text x="670" y="382" text-anchor="middle" fill="#e0a84d" font-size="13" font-weight="700" font-family="sans-serif">Workflow Builder</text>
+          <text x="530" y="415" fill="#7a7a90" font-size="9" font-family="sans-serif">.sequential()</text>
+          <rect x="530" y="425" width="120" height="28" rx="6" fill="#16161f" stroke="#6c63ff" stroke-width="1"/><text x="590" y="443" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">code-reviewer</text>
+          <rect x="530" y="458" width="120" height="28" rx="6" fill="#16161f" stroke="#6c63ff" stroke-width="1"/><text x="590" y="476" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">test-runner</text>
+          <text x="690" y="415" fill="#7a7a90" font-size="9" font-family="sans-serif">.parallel()</text>
+          <rect x="690" y="425" width="110" height="28" rx="6" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="745" y="443" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">docs-writer</text>
+          <rect x="690" y="458" width="110" height="28" rx="6" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="745" y="476" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">changelog</text>
+          <text x="670" y="510" fill="#7a7a90" font-size="9" font-family="sans-serif" text-anchor="middle">.aggregate()</text>
+          <rect x="610" y="520" width="120" height="28" rx="6" fill="#16161f" stroke="#4de094" stroke-width="1"/><text x="670" y="538" text-anchor="middle" fill="#4de094" font-size="9" font-family="sans-serif">release-manager</text>
+          <text x="670" y="590" text-anchor="middle" fill="#7a7a90" font-size="10" font-family="sans-serif">Fluent API &bull; Composable &bull; Type-safe</text>
+          <text x="670" y="610" text-anchor="middle" fill="#7a7a90" font-size="10" font-family="sans-serif">Sequential + Parallel + Handoff + Conditional</text>
+          <!-- Arrow marker -->
+          <defs><marker id="arrow-amber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#e0a84d"/></marker></defs>
+        </svg>
+        <div class="diagram-caption">Four orchestration patterns &mdash; each maps to a distinct coordination topology</div>
+      </div>
+
+      <!-- ═══════ 14. Orchestration Patterns ═══════ -->
+      <section id="orchestration" class="reveal">
+        <h2><span class="sec-num">16</span>Orchestration Patterns</h2>
+        <div class="section-line"></div>
+
+        <p>
+          AETHER&rsquo;s base system has three execution modes: sequential workflow,
+          parallel pipeline, and InteractionNet DAG. Phase 1 adds four higher-level
+          orchestration patterns that cover the remaining real-world multi-agent
+          coordination needs.
+        </p>
+
+        <h3>Handoff Protocol</h3>
+        <p>
+          Unlike escalation (vertical, failure-driven), a <strong>handoff</strong> is
+          a horizontal, intentional transfer of control between peer agents. An agent
+          mid-execution can decide &ldquo;this task needs a different specialist&rdquo;
+          and hand off the conversation state.
+        </p>
+        <pre><code>Agent A (frontend) &rarr; handoff &rarr; Agent B (backend) &rarr; handoff &rarr; Agent C (database)</code></pre>
+        <p>
+          The <code>HandoffManager</code> validates that the target agent exists, has the
+          required capabilities, and is not circuit-broken. Conversation state carries
+          forward. Handoff chains are tracked to prevent cycles&thinsp;&mdash;&thinsp;if A
+          hands off to B and B tries to hand back to A, the manager blocks it.
+          <strong>Max chain length</strong>: 5 (configurable via <code>settings.handoff.maxChainLength</code>).
+        </p>
+
+        <h3>Group Chat</h3>
+        <p>
+          Multiple agents discuss a problem in rounds. A <strong>speaker selector</strong>
+          picks who speaks next. A <strong>termination condition</strong> decides when to stop.
+        </p>
+        <pre><code>Round 1: CapabilitySelector picks &rarr; frontend-agent speaks
+Round 2: CapabilitySelector picks &rarr; backend-agent speaks
+Round 3: CapabilitySelector picks &rarr; frontend-agent (follow-up)
+Round 4: ConsensusTerminator fires &rarr; done</code></pre>
+        <p>
+          <strong>Built-in speaker selectors:</strong> <code>RoundRobinSelector</code> (agents
+          take turns) and <code>CapabilitySelector</code> (picks agent whose capabilities best
+          match the current topic via TF-IDF scoring).
+        </p>
+        <p>
+          <strong>Built-in terminators:</strong> <code>MaxRoundsTerminator</code>,
+          <code>KeywordTerminator</code> (stops on trigger phrase like &ldquo;FINAL ANSWER&rdquo;),
+          and <code>ConsensusTerminator</code> (stops when last N messages agree with similarity &gt; 0.85).
+        </p>
+
+        <h3>State Graph</h3>
+        <p>
+          A <code>StateGraph</code> defines a directed graph where edges have conditions.
+          This is the right abstraction for sequential decision flows with branches and
+          reflection loops.
+        </p>
+        <pre><code>draft &rarr; review &rarr; [quality &lt; 0.8] &rarr; revise &rarr; review &rarr; [quality &ge; 0.8] &rarr; done</code></pre>
+        <p>
+          Nodes are state transformers. Edges can be unconditional or conditional&thinsp;&mdash;&thinsp;a
+          routing function examines the state and returns the next node ID. Cycle detection
+          prevents infinite loops (max iterations per node, default: 10).
+        </p>
+
+        <h3>Workflow Builder</h3>
+        <p>
+          A fluent TypeScript API that eliminates raw graph manipulation:
+        </p>
+        <pre><code>const workflow = new WorkflowBuilder("deploy-pipeline")
+  .sequential([
+    { agent: "code-reviewer", task: "Review the PR" },
+    { agent: "test-runner", task: "Run test suite" },
+  ])
+  .parallel([
+    { agent: "docs-writer", task: "Update docs" },
+    { agent: "changelog-writer", task: "Update changelog" },
+  ])
+  .aggregate("release-manager", "Compile release notes")
+  .build();</code><span class="lang-tag">ts</span></pre>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Pattern</th><th>Topology</th><th>Use Case</th></tr></thead>
+            <tbody>
+              <tr><td>Handoff</td><td>Linear chain</td><td>Specialist routing across domains</td></tr>
+              <tr><td>Group Chat</td><td>Round-table</td><td>Brainstorming, multi-perspective review</td></tr>
+              <tr><td>State Graph</td><td>Branching DAG</td><td>Quality loops, conditional pipelines</td></tr>
+              <tr><td>Workflow Builder</td><td>Composed</td><td>Any combination of the above</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ═══════ 15. Context-Aware Routing ═══════ -->
+      <section id="routing" class="reveal">
+        <h2><span class="sec-num">17</span>Context-Aware Routing</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The base system routes tasks by: direct agent ID &rarr; capability substring
+          match &rarr; section fallback. The <code>AgentRouter</code> replaces this with a
+          6-strategy pipeline where each strategy returns a confidence score (0&ndash;1) and
+          the highest-confidence match above threshold wins.
+        </p>
+
+        <h3>The Six Strategies</h3>
+        <ol>
+          <li><strong>Direct ID match</strong> (confidence: 1.0)&thinsp;&mdash;&thinsp;exact agent ID specified in request</li>
+          <li><strong>File ownership</strong> (confidence: 0.9)&thinsp;&mdash;&thinsp;task mentions file paths, checked against <code>file_ownership</code> table glob patterns</li>
+          <li><strong>Capability scoring</strong> (confidence: 0.5&ndash;0.85)&thinsp;&mdash;&thinsp;TF-IDF cosine similarity between task description and agent capability vectors</li>
+          <li><strong>Historical success</strong> (confidence: 0.7)&thinsp;&mdash;&thinsp;query <code>task_results</code> for agents that succeeded on similar past tasks</li>
+          <li><strong>Section fallback</strong> (confidence: 0.4)&thinsp;&mdash;&thinsp;coarse domain routing using registry section indexes</li>
+          <li><strong>Load balancing</strong> (tie-breaker)&thinsp;&mdash;&thinsp;among equally capable agents, prefer idle ones</li>
+        </ol>
+        <p>
+          Confidence threshold: 0.6 (configurable via <code>settings.routing.confidenceThreshold</code>).
+          Below that, the router returns no match and the executor falls back to the default agent.
+        </p>
+      </section>
+
+      <!-- ═══════ 16. Conversation & Entity Memory ═══════ -->
+      <section id="convo-entity" class="reveal">
+        <h2><span class="sec-num">18</span>Conversation &amp; Entity Memory</h2>
+        <div class="section-line"></div>
+
+        <h3>Conversation Manager</h3>
+        <p>
+          Tracks multi-turn conversations between agents. Each conversation has an ID,
+          a participant list, and a message history. Key operations:
+          <code>create()</code>, <code>addMessage()</code>, <code>getHistory()</code>,
+          <code>getCleanHistory()</code> (strips irrelevant messages for handoff),
+          <code>checkpoint()</code>, and <code>restore()</code>.
+        </p>
+        <p>
+          History windowing: capped at <code>maxMessages</code> (default: 100, configurable
+          via <code>settings.conversation.maxMessages</code>). Oldest messages trim
+          first (FIFO). Backed by the <code>conversations</code> and
+          <code>conversation_messages</code> tables.
+        </p>
+
+        <h3>Entity Memory</h3>
+        <p>
+          Extracts and stores entity-level knowledge from task results. Every time a task
+          completes, <code>EntityMemory</code> scans the output for recognizable entities
+          and accumulates facts.
+        </p>
+        <p>
+          <strong>Entity types:</strong> <code>file</code>, <code>module</code>,
+          <code>api</code>, <code>concept</code>, <code>person</code>, <code>config</code>.
+        </p>
+        <pre><code>Task: "Fix the JWT expiration bug"
+&rarr; EntityMemory finds entity "JWT" with 4 accumulated facts
+&rarr; Facts injected into prompt alongside RAG context
+&rarr; Agent has project-specific JWT knowledge without re-reading codebase</code></pre>
+        <p>
+          Backed by the <code>entities</code> and <code>entity_facts</code> tables in V2 schema.
+        </p>
+      </section>
+
+      <!-- ═══════ CHAPTER V: SAFETY & RELIABILITY ═══════ -->
+      <div class="chapter-divider" id="ch-safety" data-chapter="safety">
+        <span class="chapter-label">Chapter V</span>
+        <span class="chapter-title">Safety &amp; Reliability</span>
+      </div>
+
+      <!-- ═══════ 17. Safety & Validation Pipeline ═══════ -->
+      <section id="safety" class="reveal">
+        <h2><span class="sec-num">19</span>Safety &amp; Validation Pipeline</h2>
+        <div class="section-line"></div>
+
+        <!-- ═══════ Diagram 5: Safety Pipeline ═══════ -->
+        <div class="diagram-container">
+          <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Safety Pipeline">
+            <defs><marker id="arrow-g" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4de094"/></marker><marker id="arrow-r" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#e04d7a"/></marker></defs>
+            <!-- Preflight Gate -->
+            <rect x="20" y="80" width="100" height="60" rx="8" fill="#16161f" stroke="#4de094" stroke-width="1.5"/>
+            <text x="70" y="105" text-anchor="middle" fill="#4de094" font-size="10" font-weight="700" font-family="sans-serif">PREFLIGHT</text>
+            <text x="70" y="122" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Agents &bull; Budget</text>
+            <line x1="120" y1="110" x2="150" y2="110" stroke="#4de094" stroke-width="1.5" marker-end="url(#arrow-g)"/>
+            <!-- Pre-Guards -->
+            <rect x="150" y="60" width="140" height="100" rx="8" fill="#16161f" stroke="#e04d7a" stroke-width="1.5"/>
+            <text x="220" y="85" text-anchor="middle" fill="#e04d7a" font-size="10" font-weight="700" font-family="sans-serif">PRE-GUARDS</text>
+            <text x="220" y="102" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Injection Detection</text>
+            <text x="220" y="116" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Length Check</text>
+            <text x="220" y="130" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">PII / Secrets Scan</text>
+            <line x1="290" y1="110" x2="320" y2="110" stroke="#4de094" stroke-width="1.5" marker-end="url(#arrow-g)"/>
+            <!-- LLM -->
+            <rect x="320" y="80" width="100" height="60" rx="30" fill="#16161f" stroke="#6c63ff" stroke-width="2"/>
+            <text x="370" y="114" text-anchor="middle" fill="#eeeef4" font-size="13" font-weight="700" font-family="sans-serif">LLM</text>
+            <line x1="420" y1="110" x2="450" y2="110" stroke="#4de094" stroke-width="1.5" marker-end="url(#arrow-g)"/>
+            <!-- Post-Guards -->
+            <rect x="450" y="60" width="140" height="100" rx="8" fill="#16161f" stroke="#e04d7a" stroke-width="1.5"/>
+            <text x="520" y="85" text-anchor="middle" fill="#e04d7a" font-size="10" font-weight="700" font-family="sans-serif">POST-GUARDS</text>
+            <text x="520" y="102" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Schema Validation</text>
+            <text x="520" y="116" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Code Safety Scan</text>
+            <text x="520" y="130" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Output Schema</text>
+            <line x1="590" y1="110" x2="620" y2="110" stroke="#4de094" stroke-width="1.5" marker-end="url(#arrow-g)"/>
+            <!-- Output -->
+            <rect x="620" y="80" width="100" height="60" rx="8" fill="#16161f" stroke="#4de094" stroke-width="2"/>
+            <text x="670" y="107" text-anchor="middle" fill="#4de094" font-size="11" font-weight="700" font-family="sans-serif">OUTPUT</text>
+            <text x="670" y="124" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Validated</text>
+            <!-- Retry loop -->
+            <path d="M 520 160 Q 520 220 420 220 Q 370 220 370 168" fill="none" stroke="#e0a84d" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="460" y="240" text-anchor="middle" fill="#e0a84d" font-size="9" font-family="sans-serif">Schema retry (1x with correction prompt)</text>
+            <!-- Block paths -->
+            <line x1="220" y1="160" x2="220" y2="200" stroke="#e04d7a" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="220" y="215" text-anchor="middle" fill="#e04d7a" font-size="8" font-family="sans-serif">BLOCKED</text>
+          </svg>
+          <div class="diagram-caption">Safety pipeline &mdash; pre/post LLM guards with schema retry loop</div>
+        </div>
+
+        <h3>Guardrails Pipeline</h3>
+        <p>
+          A pre/post LLM filter chain that validates inputs before they reach the model
+          and outputs before they reach the user.
+        </p>
+        <p><strong>Pre-guards</strong> (run before LLM call):</p>
+        <ul>
+          <li><code>PromptInjectionGuard</code>&thinsp;&mdash;&thinsp;detects &ldquo;ignore previous instructions&rdquo; and similar injection patterns</li>
+          <li><code>LengthGuard</code>&thinsp;&mdash;&thinsp;caps prompt at 50,000 characters (configurable)</li>
+          <li><code>SensitiveDataGuard</code>&thinsp;&mdash;&thinsp;scans for API keys, passwords, PII before sending to LLM</li>
+        </ul>
+        <p><strong>Post-guards</strong> (run after LLM response):</p>
+        <ul>
+          <li><code>OutputSchemaGuard</code>&thinsp;&mdash;&thinsp;validates output matches expected JSON schema</li>
+          <li><code>CodeSafetyGuard</code>&thinsp;&mdash;&thinsp;scans generated code for <code>rm -rf</code>, <code>eval()</code>, raw SQL concatenation</li>
+        </ul>
+
+        <h3>Schema Validation</h3>
+        <p>
+          The <code>SchemaValidator</code> validates LLM outputs against JSON Schema definitions.
+          On failure, it generates a correction prompt and retries once. Built-in schemas:
+          <code>CodeBlockSchema</code>, <code>PlanSchema</code>, <code>ReviewSchema</code>,
+          <code>JSONResponseSchema</code>.
+        </p>
+
+        <h3>Preflight Verification</h3>
+        <p>
+          Before executing a complex workflow, <code>PreflightChecker</code> verifies: all
+          referenced agents exist and are healthy, required capabilities are available,
+          token/time budget is sufficient, and no circular dependencies exist. Returns
+          <code>{ passed, warnings, errors, budget }</code>.
+        </p>
+      </section>
+
+      <!-- ═══════ 18. Progress Tracking ═══════ -->
+      <section id="progress" class="reveal">
+        <h2><span class="sec-num">20</span>Progress Tracking</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The <code>ProgressTracker</code> monitors long-running workflows for three failure modes:
+        </p>
+
+        <h3>Stall Detection</h3>
+        <p>
+          If time between consecutive workflow steps exceeds 2&times; the average step time,
+          a stall warning fires. Default threshold: 60 seconds
+          (<code>settings.progress.stallThresholdMs</code>).
+        </p>
+
+        <h3>Loop Detection</h3>
+        <p>
+          If the same agent produces outputs with cosine similarity &gt; 0.9 for 3+
+          consecutive rounds, a loop warning fires. Thresholds configurable via
+          <code>settings.progress.loopSimilarityThreshold</code> and
+          <code>settings.progress.maxConsecutiveSimilar</code>.
+        </p>
+
+        <h3>Budget Exhaustion</h3>
+        <p>
+          Every workflow has a token budget (default: 500,000) and wall-clock budget
+          (default: 10 minutes). Warning at 80%, abort at 100%. Progress events
+          recorded in the <code>progress_events</code> table.
+        </p>
+      </section>
+
+      <!-- ═══════ 19. Durable Workflows ═══════ -->
+      <section id="durable" class="reveal">
+        <h2><span class="sec-num">21</span>Durable Workflows</h2>
+        <div class="section-line"></div>
+
+        <!-- ═══════ Diagram 6: Durable Execution Lifecycle ═══════ -->
+        <div class="diagram-container">
+          <svg viewBox="0 0 800 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Durable Execution Lifecycle">
+            <defs><marker id="arrow-c" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4dd9e0"/></marker></defs>
+            <!-- START -->
+            <circle cx="80" cy="100" r="24" fill="#16161f" stroke="#7a7a90" stroke-width="1.5"/>
+            <text x="80" y="104" text-anchor="middle" fill="#c8c8d8" font-size="10" font-weight="700" font-family="sans-serif">START</text>
+            <line x1="104" y1="100" x2="160" y2="100" stroke="#4dd9e0" stroke-width="1.5" marker-end="url(#arrow-c)"/>
+            <!-- RUNNING -->
+            <rect x="160" y="74" width="120" height="52" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="2"/>
+            <text x="220" y="105" text-anchor="middle" fill="#4dd9e0" font-size="12" font-weight="700" font-family="sans-serif">RUNNING</text>
+            <!-- To COMPLETED -->
+            <line x1="280" y1="85" x2="380" y2="50" stroke="#4de094" stroke-width="1.5" marker-end="url(#arrow-c)"/>
+            <rect x="380" y="28" width="130" height="44" rx="8" fill="#16161f" stroke="#4de094" stroke-width="2"/>
+            <text x="445" y="55" text-anchor="middle" fill="#4de094" font-size="11" font-weight="700" font-family="sans-serif">COMPLETED</text>
+            <!-- To PAUSED -->
+            <line x1="280" y1="100" x2="380" y2="110" stroke="#e0a84d" stroke-width="1.5" marker-end="url(#arrow-c)"/>
+            <rect x="380" y="88" width="130" height="44" rx="8" fill="#16161f" stroke="#e0a84d" stroke-width="2"/>
+            <text x="445" y="115" text-anchor="middle" fill="#e0a84d" font-size="11" font-weight="700" font-family="sans-serif">PAUSED</text>
+            <text x="560" y="115" fill="#7a7a90" font-size="8" font-family="sans-serif">human-in-the-loop</text>
+            <!-- PAUSED back to RUNNING -->
+            <path d="M 380 120 Q 330 145 280 115" fill="none" stroke="#e0a84d" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="320" y="148" text-anchor="middle" fill="#e0a84d" font-size="8" font-family="sans-serif">approved</text>
+            <!-- To FAILED -->
+            <line x1="280" y1="115" x2="380" y2="170" stroke="#e04d7a" stroke-width="1.5" marker-end="url(#arrow-c)"/>
+            <rect x="380" y="148" width="130" height="44" rx="8" fill="#16161f" stroke="#e04d7a" stroke-width="2"/>
+            <text x="445" y="175" text-anchor="middle" fill="#e04d7a" font-size="11" font-weight="700" font-family="sans-serif">FAILED</text>
+            <text x="560" y="175" fill="#7a7a90" font-size="8" font-family="sans-serif">unrecoverable error</text>
+            <!-- To ABORTED -->
+            <line x1="220" y1="126" x2="220" y2="200" stroke="#e04d7a" stroke-width="1" stroke-dasharray="3 3"/>
+            <rect x="155" y="200" width="130" height="44" rx="8" fill="#16161f" stroke="#e04d7a" stroke-width="1.5"/>
+            <text x="220" y="227" text-anchor="middle" fill="#e04d7a" font-size="11" font-weight="700" font-family="sans-serif">ABORTED</text>
+            <text x="300" y="227" fill="#7a7a90" font-size="8" font-family="sans-serif">budget exhausted</text>
+            <!-- Checkpoint timeline -->
+            <line x1="50" y1="300" x2="750" y2="300" stroke="#2a2a42" stroke-width="1"/>
+            <circle cx="150" cy="300" r="5" fill="#4dd9e0"/><text x="150" y="320" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Step 1</text>
+            <circle cx="300" cy="300" r="5" fill="#4dd9e0"/><text x="300" y="320" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Step 2</text>
+            <circle cx="450" cy="300" r="5" fill="#e04d7a"/><text x="450" y="320" text-anchor="middle" fill="#e04d7a" font-size="8" font-family="sans-serif">Crash</text>
+            <text x="450" y="335" text-anchor="middle" fill="#e04d7a" font-size="7" font-family="sans-serif">&darr;</text>
+            <circle cx="500" cy="300" r="5" fill="#4de094"/><text x="500" y="320" text-anchor="middle" fill="#4de094" font-size="8" font-family="sans-serif">Resume</text>
+            <circle cx="650" cy="300" r="5" fill="#4dd9e0"/><text x="650" y="320" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">Step 3</text>
+            <text x="400" y="285" text-anchor="middle" fill="#7a7a90" font-size="9" font-family="sans-serif" font-style="italic">Checkpoint timeline</text>
+          </svg>
+          <div class="diagram-caption">Durable execution lifecycle &mdash; state machine with checkpoint timeline</div>
+        </div>
+
+        <p>
+          The <code>DurableWorkflow</code> class wraps a workflow definition and
+          checkpoints state to SQLite after each step. On crash and restart, the
+          runtime scans <code>workflow_checkpoints</code> for incomplete workflows
+          and offers to resume them.
+        </p>
+
+        <h3>Lifecycle States</h3>
+        <pre><code>START &rarr; RUNNING &rarr; COMPLETED
+                &rarr; PAUSED (human-in-the-loop)
+                &rarr; FAILED (unrecoverable error)
+                &rarr; ABORTED (budget exhausted or manual)</code></pre>
+
+        <h3>Checkpoint/Resume</h3>
+        <p>
+          After each step: write checkpoint (step index, accumulated context, conversation
+          ID, intermediate results). On resume: load last checkpoint, continue from next
+          step. Already-completed steps are not re-executed.
+        </p>
+
+        <h3>Human-in-the-Loop</h3>
+        <p>
+          Steps marked <code>requiresApproval: true</code> pause the workflow and wait
+          for external approval via WebSocket or CLI. The workflow moves to PAUSED state
+          until approval arrives.
+        </p>
+      </section>
+
+      <!-- ═══════ CHAPTER VI: INFRASTRUCTURE ═══════ -->
+      <div class="chapter-divider" id="ch-infrastructure" data-chapter="infrastructure">
+        <span class="chapter-label">Chapter VI</span>
+        <span class="chapter-title">Infrastructure</span>
+      </div>
+
+      <!-- ═══════ Diagram 3: Agent Communication Topology ═══════ -->
+      <div class="diagram-container reveal">
+        <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agent Communication Topology">
+          <!-- Swim lane backgrounds -->
+          <rect x="20" y="20" width="760" height="110" rx="8" fill="rgba(108,99,255,0.04)" stroke="#1e1e2e" stroke-width="1"/>
+          <rect x="20" y="145" width="760" height="110" rx="8" fill="rgba(77,217,224,0.04)" stroke="#1e1e2e" stroke-width="1"/>
+          <rect x="20" y="270" width="760" height="110" rx="8" fill="rgba(77,224,148,0.04)" stroke="#1e1e2e" stroke-width="1"/>
+          <!-- Lane labels -->
+          <text x="40" y="50" fill="#6c63ff" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.08em">MEMORY HIGHWAY</text>
+          <text x="40" y="66" fill="#7a7a90" font-size="8" font-family="sans-serif">Pub/Sub channels &bull; Untyped payload</text>
+          <text x="40" y="175" fill="#4dd9e0" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.08em">ACP BUS</text>
+          <text x="40" y="191" fill="#7a7a90" font-size="8" font-family="sans-serif">Typed envelopes &bull; Request-response &bull; Dead letters</text>
+          <text x="40" y="300" fill="#4de094" font-size="10" font-weight="700" font-family="sans-serif" letter-spacing="0.08em">SHARED STATE BUS</text>
+          <text x="40" y="316" fill="#7a7a90" font-size="8" font-family="sans-serif">Immutable transitions &bull; Versioned state &bull; Sessions</text>
+          <!-- Highway: agents and channels -->
+          <rect x="280" y="40" width="80" height="30" rx="6" fill="#16161f" stroke="#6c63ff" stroke-width="1"/><text x="320" y="59" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Agent A</text>
+          <rect x="480" y="40" width="80" height="30" rx="6" fill="#16161f" stroke="#6c63ff" stroke-width="1"/><text x="520" y="59" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Agent B</text>
+          <line x1="360" y1="55" x2="480" y2="55" stroke="#6c63ff" stroke-width="1" class="svg-pulse"/><text x="420" y="48" text-anchor="middle" fill="#7a7a90" font-size="7" font-family="sans-serif">publish/subscribe</text>
+          <rect x="650" y="40" width="80" height="30" rx="6" fill="#16161f" stroke="#6c63ff" stroke-width="1"/><text x="690" y="59" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Agent C</text>
+          <line x1="560" y1="55" x2="650" y2="55" stroke="#6c63ff" stroke-width="1" class="svg-pulse"/>
+          <rect x="280" y="85" width="450" height="24" rx="4" fill="rgba(108,99,255,0.06)" stroke="none"/><text x="505" y="101" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">channels: tasks &bull; results &bull; events &bull; state &bull; acp:*</text>
+          <!-- ACP: typed messages -->
+          <rect x="280" y="160" width="80" height="30" rx="6" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="320" y="179" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Agent A</text>
+          <rect x="480" y="160" width="80" height="30" rx="6" fill="#16161f" stroke="#4dd9e0" stroke-width="1"/><text x="520" y="179" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Agent B</text>
+          <line x1="360" y1="170" x2="480" y2="170" stroke="#4dd9e0" stroke-width="1.5"/><text x="420" y="163" text-anchor="middle" fill="#4dd9e0" font-size="7" font-family="sans-serif">request (typed envelope)</text>
+          <line x1="480" y1="182" x2="360" y2="182" stroke="#4dd9e0" stroke-width="1" stroke-dasharray="4 3"/><text x="420" y="196" text-anchor="middle" fill="#7a7a90" font-size="7" font-family="sans-serif">response (parentMsgId)</text>
+          <!-- Dead letter branch -->
+          <rect x="620" y="170" width="100" height="24" rx="4" fill="#16161f" stroke="#e04d7a" stroke-width="1"/><text x="670" y="186" text-anchor="middle" fill="#e04d7a" font-size="8" font-family="sans-serif">Dead Letters</text>
+          <line x1="560" y1="182" x2="620" y2="182" stroke="#e04d7a" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="590" y="175" fill="#e04d7a" font-size="7" font-family="sans-serif">retries exhausted</text>
+          <rect x="280" y="210" width="360" height="20" rx="4" fill="rgba(77,217,224,0.06)" stroke="none"/><text x="460" y="224" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">ack tracking &bull; comm graph &bull; schema validation</text>
+          <!-- SharedState -->
+          <rect x="280" y="285" width="80" height="30" rx="6" fill="#16161f" stroke="#4de094" stroke-width="1"/><text x="320" y="304" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">Session</text>
+          <rect x="420" y="285" width="100" height="30" rx="6" fill="#16161f" stroke="#4de094" stroke-width="1"/><text x="470" y="304" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">update()</text>
+          <line x1="360" y1="300" x2="420" y2="300" stroke="#4de094" stroke-width="1.5"/>
+          <rect x="580" y="285" width="100" height="30" rx="6" fill="#16161f" stroke="#4de094" stroke-width="1"/><text x="630" y="304" text-anchor="middle" fill="#c8c8d8" font-size="9" font-family="sans-serif">v1 &rarr; v2 &rarr; v3</text>
+          <line x1="520" y1="300" x2="580" y2="300" stroke="#4de094" stroke-width="1.5"/>
+          <rect x="280" y="332" width="400" height="20" rx="4" fill="rgba(77,224,148,0.06)" stroke="none"/><text x="480" y="346" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif">immutable transitions &bull; transition history &bull; adjacency list</text>
+        </svg>
+        <div class="diagram-caption">Three-layer communication &mdash; Highway (pub/sub) &rarr; ACP (typed) &rarr; SharedState (immutable)</div>
+      </div>
+
+      <!-- ═══════ 14. Architectural Decisions (old) → now comes after new sections ═══════ -->
+      <!-- ═══════ 20. Agent Communication Protocol ═══════ -->
+      <section id="acp" class="reveal">
+        <h2><span class="sec-num">22</span>Agent Communication Protocol (ACP)</h2>
+        <div class="section-line"></div>
+
+        <p>
+          ACP is a typed messaging layer on top of MemoryHighway. While MemoryHighway
+          handles pub/sub transport, ACP adds structure: typed envelopes, schema
+          validation, request-response futures, acknowledgments, dead-letter queues,
+          and communication graph tracking.
+        </p>
+
+        <h3>The ACP Envelope</h3>
+        <pre><code>{
+  msgId: "uuid",
+  sender: "frontend-agent",
+  receiver: "backend-agent",
+  msgType: "task",        // task | plan | result | validation | error | control | ack | query | broadcast
+  content: { ... },
+  meta: { schemaId: "task-v1", expectsResponse: true, retryCount: 0, maxRetries: 3 },
+  trace: { taskId: "...", workflowId: "...", parentMsgId: "...", hopCount: 2, hops: [...] },
+  acknowledged: false
+}</code><span class="lang-tag">ts</span></pre>
+
+        <h3>Request-Response Pattern</h3>
+        <p>
+          <code>acpBus.request(params)</code> sends a message with
+          <code>meta.expectsResponse</code> set and returns a Promise. The bus monitors
+          for responses matching <code>trace.parentMsgId</code>. Timeout default: 30s.
+        </p>
+
+        <h3>Dead-Letter Queue</h3>
+        <p>
+          Failed deliveries (handler throws, agent unreachable) retry up to
+          <code>meta.maxRetries</code>. Exhausted messages move to the dead-letter
+          queue for manual inspection and retry.
+        </p>
+
+        <h3>Communication Graph</h3>
+        <p>
+          Every <code>send()</code> records a directed edge: sender &rarr; receiver (msgType).
+          Queryable for debugging: which agents talk, what message types flow between them.
+        </p>
+      </section>
+
+      <!-- ═══════ 21. Conflict Resolution ═══════ -->
+      <section id="conflict" class="reveal">
+        <h2><span class="sec-num">23</span>Conflict Resolution</h2>
+        <div class="section-line"></div>
+
+        <p>
+          When multiple agents work in parallel or group chat, their outputs may conflict.
+          The <code>ConflictResolver</code> detects and resolves these conflicts.
+        </p>
+
+        <h3>Analysis</h3>
+        <p>
+          <code>analyze(outputs)</code> produces a <code>ConflictReport</code> identifying
+          <strong>agreements</strong> (multiple agents say the same thing),
+          <strong>contradictions</strong> (agents directly disagree), and
+          <strong>unique contributions</strong> (only one agent provides).
+        </p>
+
+        <h3>Resolution Strategies</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Strategy</th><th>How It Works</th><th>Best For</th></tr></thead>
+            <tbody>
+              <tr><td><code>majority-vote</code></td><td>3 say X, 1 says Y &rarr; pick X</td><td>Fact-checking</td></tr>
+              <tr><td><code>weighted-by-tier</code></td><td>Master &gt; Manager &gt; Worker</td><td>Hierarchical decisions</td></tr>
+              <tr><td><code>weighted-by-confidence</code></td><td>Agents self-report confidence</td><td>When agents know limits</td></tr>
+              <tr><td><code>llm-mediator</code></td><td>Send conflicts to manager</td><td>Complex disagreements</td></tr>
+              <tr><td><code>merge</code></td><td>Take unique contributions, flag contradictions</td><td>Documentation, summaries</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ═══════ 22. Observability & Structured Logging ═══════ -->
+      <section id="logging" class="reveal">
+        <h2><span class="sec-num">24</span>Observability &amp; Structured Logging</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The <code>StructuredLogger</code> replaces flat text logs with JSON-structured
+          entries that carry context automatically.
+        </p>
+
+        <pre><code>const logger = structuredLogger.scoped({ taskId: "task-123", agentId: "frontend" });
+logger.info("Starting component generation", { component: "Button" });
+// &rarr; { timestamp, level: "info", context: { taskId, agentId }, data: { component } }</code><span class="lang-tag">ts</span></pre>
+
+        <p>
+          <strong>Scoped loggers</strong> propagate context: every log entry automatically
+          includes fixed context (task ID, workflow ID, agent ID). Child scopes merge
+          parent and child context.
+        </p>
+        <p>
+          <strong>LLM call instrumentation:</strong> <code>recordLLMCall()</code> tracks every
+          API call with provider, model, token counts, latency, and success/failure.
+          <code>getLLMStats()</code> returns aggregates by provider and agent.
+        </p>
+        <p>
+          <strong>JSONL audit trail:</strong> ACP messages logged to
+          <code>.aether/logs/audit.jsonl</code> for compliance and debugging.
+        </p>
+        <p>
+          <strong>Log querying:</strong> <code>query({ taskId, agentId, level, since, until })</code>
+          scans the in-memory ring buffer (max 5,000 entries).
+        </p>
+      </section>
+
+      <!-- ═══════ 23. Shared State Bus ═══════ -->
+      <section id="sharedstate" class="reveal">
+        <h2><span class="sec-num">25</span>Shared State Bus</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The <code>SharedStateBus</code> provides centralized, observable state for
+          workflows. All participants see the same state. Changes are atomic and
+          immutable&thinsp;&mdash;&thinsp;every <code>update()</code> creates a new
+          version rather than mutating in place.
+        </p>
+
+        <h3>The Update Pattern</h3>
+        <pre><code>const newState = bus.update("session-123", {
+  agent: "frontend-agent",
+  reason: "Component generation complete",
+  patches: { componentCode: "...", testsPassing: true },
+  incrementStep: true,
+  addEdge: { from: "frontend-agent", to: "test-runner", msgType: "handoff" },
+});</code><span class="lang-tag">ts</span></pre>
+        <p>
+          Internally: get current state &rarr; spread new values &rarr; increment version &rarr;
+          record transition &rarr; persist to KV &rarr; publish notification via MemoryHighway
+          &rarr; return new state (old reference unchanged).
+        </p>
+        <p>
+          The bus also tracks a <strong>communication graph</strong> (which agents interact
+          within each session) and runs <strong>background maintenance</strong> that finally
+          schedules the existing <code>cleanExpiredKV()</code> on a timer.
+        </p>
+      </section>
+
+      <!-- ═══════ 24. Plugin System ═══════ -->
+      <section id="plugins" class="reveal">
+        <h2><span class="sec-num">26</span>Plugin System</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The <code>PluginRegistry</code> manages external code that hooks into
+          AETHER&rsquo;s lifecycle at eight defined points:
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Slot</th><th>When It Fires</th></tr></thead>
+            <tbody>
+              <tr><td><code>PreExecution</code></td><td>Before a task is sent to an agent</td></tr>
+              <tr><td><code>PostExecution</code></td><td>After a task result is received</td></tr>
+              <tr><td><code>PreRouting</code></td><td>Before the router picks an agent</td></tr>
+              <tr><td><code>PostRouting</code></td><td>After the router picks an agent</td></tr>
+              <tr><td><code>OnEscalation</code></td><td>When an agent escalates a failure</td></tr>
+              <tr><td><code>OnError</code></td><td>When any subsystem error occurs</td></tr>
+              <tr><td><code>OnStartup</code></td><td>During runtime initialization</td></tr>
+              <tr><td><code>OnShutdown</code></td><td>During runtime shutdown</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Plugins are discovered by scanning <code>.aether/plugins/</code> for
+          <code>*.plugin.ts</code> files. Each plugin declares which slots it hooks into.
+          The 8-slot model covers key lifecycle points without exposing all internal state.
+        </p>
+      </section>
+
+      <!-- ═══════ 25. Reaction Engine ═══════ -->
+      <section id="reaction" class="reveal">
+        <h2><span class="sec-num">27</span>Reaction Engine</h2>
+        <div class="section-line"></div>
+
+        <p>
+          The <code>ReactionEngine</code> watches MemoryHighway events and triggers
+          workflows automatically based on configurable rules.
+        </p>
+
+        <pre><code>{
+  id: "auto-test-on-review",
+  trigger: {
+    channel: "results",
+    condition: (msg) =&gt; msg.type === "task-complete"
+                      &amp;&amp; msg.summary.includes("code review"),
+  },
+  action: { type: "execute_task", target: "test-runner",
+            taskTemplate: "Run the test suite" },
+  cooldown: 30000,    // Don&rsquo;t fire more than once per 30s
+  maxFires: 10,       // Absolute cap (prevent runaway)
+  enabled: true,
+}</code><span class="lang-tag">ts</span></pre>
+
+        <p>
+          <strong>Action types:</strong> <code>execute_task</code>,
+          <code>execute_workflow</code>, <code>notify</code>, and <code>custom</code>
+          (user-provided handler). Cooldown prevents reaction storms. <code>maxFires</code>
+          provides an absolute cap.
+        </p>
+      </section>
+
+      <!-- ═══════ 26. Settings & Configuration ═══════ -->
+      <section id="settings" class="reveal">
+        <h2><span class="sec-num">28</span>Settings &amp; Configuration</h2>
+        <div class="section-line"></div>
+
+        <!-- ═══════ Diagram 7: Settings Hierarchy ═══════ -->
+        <div class="diagram-container">
+          <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Settings Hierarchy">
+            <defs><marker id="arrow-p" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6c63ff"/></marker></defs>
+            <!-- settings.json file -->
+            <rect x="250" y="20" width="200" height="44" rx="8" fill="#16161f" stroke="#6c63ff" stroke-width="2"/>
+            <text x="350" y="47" text-anchor="middle" fill="#eeeef4" font-size="12" font-weight="700" font-family="sans-serif">settings.json</text>
+            <line x1="350" y1="64" x2="350" y2="90" stroke="#6c63ff" stroke-width="1.5" marker-end="url(#arrow-p)"/>
+            <!-- CLI entry -->
+            <rect x="530" y="20" width="150" height="44" rx="8" fill="#16161f" stroke="#e0a84d" stroke-width="1.5"/>
+            <text x="605" y="47" text-anchor="middle" fill="#e0a84d" font-size="11" font-weight="600" font-family="sans-serif">aether config set</text>
+            <line x1="530" y1="42" x2="450" y2="42" stroke="#e0a84d" stroke-width="1" stroke-dasharray="4 3"/>
+            <!-- SettingsManager.load() -->
+            <rect x="220" y="90" width="260" height="40" rx="8" fill="#16161f" stroke="#4dd9e0" stroke-width="1.5"/>
+            <text x="350" y="115" text-anchor="middle" fill="#4dd9e0" font-size="11" font-weight="600" font-family="sans-serif">SettingsManager.load()</text>
+            <line x1="350" y1="130" x2="350" y2="156" stroke="#6c63ff" stroke-width="1.5" marker-end="url(#arrow-p)"/>
+            <!-- Deep merge -->
+            <rect x="220" y="156" width="260" height="36" rx="8" fill="rgba(108,99,255,0.06)" stroke="#2a2a42" stroke-width="1"/>
+            <text x="350" y="179" text-anchor="middle" fill="#c8c8d8" font-size="10" font-family="sans-serif">deep-merge with DEFAULT_SETTINGS</text>
+            <line x1="350" y1="192" x2="350" y2="218" stroke="#6c63ff" stroke-width="1.5" marker-end="url(#arrow-p)"/>
+            <!-- Validate -->
+            <rect x="220" y="218" width="260" height="36" rx="8" fill="rgba(108,99,255,0.06)" stroke="#2a2a42" stroke-width="1"/>
+            <text x="350" y="241" text-anchor="middle" fill="#c8c8d8" font-size="10" font-family="sans-serif">validate(types, ranges, enums)</text>
+            <line x1="350" y1="254" x2="350" y2="280" stroke="#6c63ff" stroke-width="1.5" marker-end="url(#arrow-p)"/>
+            <!-- AetherSettings object -->
+            <rect x="240" y="280" width="220" height="40" rx="8" fill="#16161f" stroke="#4de094" stroke-width="2"/>
+            <text x="350" y="305" text-anchor="middle" fill="#4de094" font-size="12" font-weight="700" font-family="sans-serif">AetherSettings</text>
+            <!-- 13 config groups fan-out -->
+            <line x1="350" y1="320" x2="350" y2="345" stroke="#4de094" stroke-width="1"/>
+            <text x="350" y="360" text-anchor="middle" fill="#7a7a90" font-size="9" font-family="sans-serif">methodology &bull; agents &bull; execution &bull; escalation &bull; routing &bull; conversation &bull; handoff</text>
+            <text x="350" y="378" text-anchor="middle" fill="#7a7a90" font-size="9" font-family="sans-serif">progress &bull; highway &bull; acp &bull; logging &bull; sharedState &bull; server</text>
+            <text x="350" y="396" text-anchor="middle" fill="#7a7a90" font-size="8" font-family="sans-serif" font-style="italic">&darr; passed to subsystem constructors</text>
+          </svg>
+          <div class="diagram-caption">Settings hierarchy &mdash; from file to validated config to subsystem constructors</div>
+        </div>
+
+        <p>AETHER has two configuration files in <code>.aether/</code>:</p>
+        <ul>
+          <li><strong><code>config.json</code></strong>&thinsp;&mdash;&thinsp;auto-generated by <code>aether init</code>. Contains workspace scan results, provider configuration, server settings. Not for manual editing.</li>
+          <li><strong><code>settings.json</code></strong>&thinsp;&mdash;&thinsp;user-editable tuning knobs for all subsystems. Created by <code>aether init</code> with sensible defaults.</li>
+        </ul>
+
+        <h3>Thirteen Configuration Groups</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Group</th><th>Controls</th></tr></thead>
+            <tbody>
+              <tr><td><code>methodology</code></td><td>TDD/SDD/hybrid mode, test command, spec directory</td></tr>
+              <tr><td><code>agents</code></td><td>Max concurrent, tier limits (masters/managers/workers)</td></tr>
+              <tr><td><code>execution</code></td><td>Max depth, timeout, tokens, temperature, feature toggles</td></tr>
+              <tr><td><code>escalation</code></td><td>Circuit breaker threshold and window</td></tr>
+              <tr><td><code>routing</code></td><td>Confidence threshold for agent resolution</td></tr>
+              <tr><td><code>conversation</code></td><td>Max messages per conversation</td></tr>
+              <tr><td><code>handoff</code></td><td>Max handoff chain length</td></tr>
+              <tr><td><code>progress</code></td><td>Token/time budgets, stall/loop thresholds</td></tr>
+              <tr><td><code>highway</code></td><td>RAG indexing, dedup window, KV TTL</td></tr>
+              <tr><td><code>acp</code></td><td>Request timeout, max retries, dead-letter limit</td></tr>
+              <tr><td><code>logging</code></td><td>Log level, max retained entries</td></tr>
+              <tr><td><code>sharedState</code></td><td>Cleanup interval, max transitions, persistence</td></tr>
+              <tr><td><code>server</code></td><td>WebSocket port and host</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The <code>aether config</code> CLI</h3>
+        <pre><code>aether config                          # Show all current settings
+aether config get execution.maxDepth   # Get a specific value
+aether config set execution.maxDepth 5 # Set a specific value
+aether config reset execution          # Reset one section
+aether config edit                     # Open in $EDITOR
+aether config validate                 # Check for errors
+aether config path                     # Print path to settings.json</code><span class="lang-tag">shell</span></pre>
+        <p>
+          Settings are deep-merged with defaults on load. Missing keys get default values.
+          <code>SettingsManager.validate()</code> checks types, numeric ranges, and enum values.
+        </p>
+      </section>
+
+      <!-- ═══════ CHAPTER VII: DECISIONS & FLOW ═══════ -->
+      <div class="chapter-divider" id="ch-decisions" data-chapter="decisions">
+        <span class="chapter-label">Chapter VII</span>
+        <span class="chapter-title">Decisions &amp; Flow</span>
+      </div>
+
+      <!-- ═══════ 27. Architectural Decisions ═══════ -->
+      <section id="decisions" class="reveal">
+        <h2><span class="sec-num">29</span>Key Architectural Decisions</h2>
+        <div class="section-line"></div>
+
+        <div class="callout decision">
+          <div class="callout-title">
+            SQLite over Redis / Mongo / flat files
+          </div>
+          <p>
+            AETHER needs five storage patterns simultaneously: relational,
+            key-value with TTL, vector similarity, full-text search, and
+            time-series. SQLite with sqlite-vec and FTS5 handles all five in one
+            file with ACID guarantees and zero operational overhead.
+          </p>
+        </div>
+
+        <div class="callout decision">
+          <div class="callout-title">
+            Interface-based storage with constructor injection
+          </div>
+          <p>
+            Global singletons make testing impossible (shared state) and the
+            dependency graph implicit. Constructor injection documents what each
+            subsystem needs. The interface boundary means swapping SQLite for
+            Postgres requires zero changes to business logic.
+          </p>
+        </div>
+
+        <div class="callout decision">
+          <div class="callout-title">
+            Interaction combinators over async/await DAGs
+          </div>
+          <p>
+            Every other approach requires manual deadlock reasoning. Interaction
+            combinators have a mathematical proof (strong confluence)
+            guaranteeing the same result regardless of reduction order. The cost
+            is implementation complexity. The benefit is correctness by
+            construction.
+          </p>
+        </div>
+
+        <div class="callout decision">
+          <div class="callout-title">TF-IDF embeddings with API fallback</div>
+          <p>
+            AETHER should work out of the box with zero configuration. TF-IDF is
+            deterministic, zero-latency, and good enough for capability matching
+            and context retrieval. API embeddings are an opt-in upgrade when
+            <code>OPENAI_API_KEY</code> is present.
+          </p>
+        </div>
+
+        <div class="callout decision">
+          <div class="callout-title">N-tier extensible hierarchy with 5 defaults</div>
+          <p>
+            The original design used three fixed tiers. As complexity grew, we needed
+            a system guardian (Sentinel) and an agent factory (Forge) that sat above
+            Master. Rather than special-casing them, we generalized to an N-tier
+            <code>TierRegistry</code> where any number of tiers can be registered at
+            any rank. The 5 built-in tiers cover the standard use cases.
+            <code>TierRegistry.classicTiers()</code> still returns the original three
+            for backward compatibility.
+          </p>
+        </div>
+
+        <div class="callout decision">
+          <div class="callout-title">WAL mode for SQLite</div>
+          <p>
+            WAL allows concurrent readers and a single writer without blocking.
+            Multiple subsystems read the DB simultaneously (registry queries,
+            task execution, message logging). Rollback journal mode would
+            serialize everything through the database.
+          </p>
+        </div>
+
+        <div class="callout decision">
+          <div class="callout-title">FNV-1a for message deduplication</div>
+          <p>
+            Fast, non-cryptographic, collision-resistant enough for
+            deduplication. MD5/SHA are overkill&thinsp;&mdash;&thinsp;we prevent
+            accidental duplicates from retries, not adversarial collisions.
+            FNV-1a runs in nanoseconds and produces compact hashes.
+          </p>
+        </div>
+
+        <div class="callout decision">
+          <div class="callout-title">Immutable state transitions in SharedStateBus</div>
+          <p>
+            Mutable shared state with locks is the classic source of concurrency bugs.
+            Immutable transitions with version numbering give the simplicity of direct
+            state access with the auditability of event sourcing. Every transition
+            records who changed what, when, and why.
+          </p>
+        </div>
+
+        <div class="callout decision">
+          <div class="callout-title">Horizontal handoff separate from vertical escalation</div>
+          <p>
+            Escalation is failure-driven and vertical (worker &rarr; manager &rarr; master).
+            Handoff is success-driven and horizontal (specialist &rarr; specialist).
+            Merging them would conflate &ldquo;I failed&rdquo; with &ldquo;this needs a different
+            expert.&rdquo; Keeping them separate means escalation can trigger circuit breakers
+            while handoff transfers state without marking the source agent as failed.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════ 28. End-to-End Data Flow ═══════ -->
+      <section id="dataflow" class="reveal">
+        <h2><span class="sec-num">30</span>Data Flow: A Request End to End</h2>
+        <div class="section-line"></div>
+
+        <pre><code>aether run "Refactor the authentication module to use JWT"</code><span class="lang-tag">shell</span></pre>
+
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-text">
+              <strong>CLI parses the command</strong> and calls
+              <code>runtime.run(taskText)</code>.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-text">
+              <strong>Runtime bootstraps:</strong> init SQLite store, load
+              config and settings, discover agents from <code>.agent.md</code> files,
+              populate registry, build <code>TierRegistry</code>, initialize Forge and
+              Sentinel, start MemoryHighway, initialize all subsystems.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-text">
+              <strong>AgentRouter resolves the target agent.</strong> Runs the 6-strategy
+              pipeline: direct ID (no match) &rarr; file ownership (no file paths) &rarr;
+              capability scoring (finds <code>auth-specialist</code> at 0.82 confidence) &rarr; accepts.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-text">
+              <strong>PreflightChecker verifies</strong> the selected agent is healthy,
+              not circuit-broken, and token budget is sufficient.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-text">
+              <strong>Sentinel constitutional check.</strong> The task action passes through
+              the ConstitutionalRulesEngine. No blocked patterns detected. Sentinel records
+              the task in its ledger.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">6</div>
+            <div class="flow-text">
+              <strong>Executor queries RAG + EntityMemory.</strong> RAG finds: last auth
+              refactor result, agent definition, JWT middleware code. EntityMemory finds:
+              4 facts about &ldquo;JWT&rdquo; entity, 2 facts about &ldquo;auth module&rdquo;. All injected into prompt.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">7</div>
+            <div class="flow-text">
+              <strong>Guardrails pre-check</strong> scans the assembled prompt for
+              injection patterns, sensitive data, and length. All clear.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">8</div>
+            <div class="flow-text">
+              <strong>Executor calls the LLM</strong> with system prompt + RAG context +
+              entity context + task description. LLM responds with a plan and two sub-tasks.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">9</div>
+            <div class="flow-text">
+              <strong>Guardrails post-check</strong> validates the response.
+              <strong>SchemaValidator</strong> checks output structure. Both pass.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">10</div>
+            <div class="flow-text">
+              <strong>Sub-tasks execute concurrently</strong> via InteractionNet.
+              Routed to capable agents. ProgressTracker monitors for stalls and loops.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">11</div>
+            <div class="flow-text">
+              <strong>ConflictResolver merges</strong> the two sub-task results, detecting
+              no contradictions. EntityMemory extracts new entities from the output.
+              Sentinel updates its facts ledger with any new discoveries.
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">12</div>
+            <div class="flow-text">
+              <strong>Result persisted.</strong> Saved to <code>task_results</code>.
+              Published to <code>results</code> channel. Indexed into RAG.
+              <strong>ACP</strong> publishes a typed <code>result</code> envelope.
+              <strong>ReactionEngine</strong> checks rules (no matches this time).
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">13</div>
+            <div class="flow-text">
+              <strong>CLI prints the result</strong> and exits. 3 LLM calls, ~30
+              SQL writes, 10&ndash;30 seconds total.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════ 29. What Doesn't Exist ═══════ -->
+      <section id="nonexist" class="reveal">
+        <h2><span class="sec-num">31</span>What Doesn&rsquo;t Exist (And Why)</h2>
+        <div class="section-line"></div>
+
+        <h3>No distributed lock manager</h3>
+        <p>
+          AETHER runs as a single process. SQLite's WAL handles concurrency.
+          Multi-machine? Use federation transport between instances instead of
+          sharing a SQLite file.
+        </p>
+
+        <h3>No streaming LLM responses</h3>
+        <p>
+          The executor waits for full responses. Streaming complicates sub-task
+          JSON parsing (can't parse partial JSON), guardrails post-checks, and
+          schema validation. The 120s timeout provides a safety bound.
+        </p>
+
+        <h3>No intra-process auth</h3>
+        <p>
+          Agents in the same instance are co-tenants by definition.
+          Authentication exists at the WebSocket layer (external connections)
+          and transport layer (external APIs), not between local agents.
+        </p>
+
+        <h3>No hot plugin reloading</h3>
+        <p>
+          Plugins load during <code>runtime.init()</code> and destroy during
+          <code>runtime.shutdown()</code>. Hot reloading introduces state
+          consistency issues (what happens to in-flight tasks when behavior
+          changes?) that are not worth solving for a local tool.
+        </p>
+
+        <h3>No built-in secret management</h3>
+        <p>
+          API keys come from environment variables. No vault, no encrypted config,
+          no rotation. AETHER is a local dev tool&thinsp;&mdash;&thinsp;secrets are
+          managed by the OS environment or tools like <code>dotenv</code>.
+        </p>
+
+        <h3>No distributed consensus</h3>
+        <p>
+          The SharedStateBus uses version numbering for optimistic concurrency,
+          not Raft or Paxos. Single-process means no split-brain problem.
+          Federation uses BAP-02 message ordering, not a consensus algorithm.
+        </p>
+      </section>
+
+      <!-- ═══════ CHAPTER VIII: CHANGELOG ═══════ -->
+      <div class="chapter-divider" id="ch-changelog" data-chapter="changelog">
+        <span class="chapter-label">Chapter VIII</span>
+        <span class="chapter-title">Changelog</span>
+      </div>
+
+      <!-- ═══════ 32. Changelog ═══════ -->
+      <section id="changelog" class="reveal">
+        <h2><span class="sec-num">32</span>Changelog</h2>
+        <div class="section-line"></div>
+
+        <div class="changelog-entry">
+          <h4>Phase 13 &mdash; Extensible Tier System</h4>
+          <ul>
+            <li>Replaced hardcoded 3-tier hierarchy with an N-tier <code>TierRegistry</code> supporting custom tiers at any rank</li>
+            <li>Added <strong>Sentinel</strong> (rank 0) &mdash; system guardian with constitutional rules engine, health monitoring, dual-ledger, pause/resume</li>
+            <li>Added <strong>Forge</strong> (rank 1) &mdash; runtime agent factory with spawn/retire, ephemeral agents, DyLAN-inspired contribution scoring</li>
+            <li>Introduced <strong>gate policies</strong> (open, priority, tier-only) for fine-grained escalation control</li>
+            <li>Added tier-level <strong>weights</strong> (conflict resolution, RAG boost, cost multiplier) for tier-aware subsystems</li>
+            <li>Migrated SQLite schema to V4 &mdash; removed CHECK constraint on tier column to support custom tiers</li>
+            <li>Wired <code>TierRegistry</code>, <code>AgentForge</code>, and <code>SystemSentinel</code> into the runtime initialization</li>
+            <li>88 new tests (726 total, 0 failures)</li>
+          </ul>
+        </div>
+
+        <div class="changelog-entry">
+          <h4>Migration Notes</h4>
+          <ul>
+            <li>Existing databases auto-migrate to V4 schema on first startup</li>
+            <li><code>TierRegistry.classicTiers()</code> returns the original 3 tiers for backward compatibility</li>
+            <li><code>TierRegistry.builtinTiers()</code> returns all 5 tiers (sentinel, forge, master, manager, worker)</li>
+            <li>Provider config changed from <code>{ master, manager, worker }</code> to <code>{ tiers: { ... }, fallbackChain: [...] }</code></li>
+            <li>Agent <code>.agent.md</code> files can now use any registered tier name in the <code>tier</code> field</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ═══════ 33. Version History ═══════ -->
+      <section id="versions" class="reveal">
+        <h2><span class="sec-num">33</span>Version History</h2>
+        <div class="section-line"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Version</th><th>Phases</th><th>Highlights</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>v0.2.0</code></td>
+                <td>10&ndash;13</td>
+                <td>N-tier extensible hierarchy, Sentinel, Forge, constitutional rules, 726 tests</td>
+              </tr>
+              <tr>
+                <td><code>v0.1.0</code></td>
+                <td>1&ndash;9</td>
+                <td>Core platform: 3-tier agents, RAG, interaction nets, BAP-02, orchestration patterns, safety pipeline, ACP, settings system</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ═══════ Footer ═══════ -->
+      <footer class="footer">
+        <div class="footer-glyph">AETHER</div>
+        <p>v0.2.0 &mdash; BSL-1.1 License, converts to MIT in 2030.</p>
+      </footer>
+    </div>
+
+    <a href="#" class="back-top" id="backTop" aria-label="Back to top"
+      >&uarr;</a
+    >
+
+    <script>
+      // ── Scroll progress bar ──────────────────────────────────
+      const progress = document.getElementById("progressBar");
+      function updateProgress() {
+        const h = document.documentElement;
+        const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+        progress.style.width = pct + "%";
+      }
+      window.addEventListener("scroll", updateProgress, { passive: true });
+
+      // ── Back to top button ───────────────────────────────────
+      const backTop = document.getElementById("backTop");
+      window.addEventListener(
+        "scroll",
+        () => {
+          backTop.classList.toggle("visible", window.scrollY > 600);
+        },
+        { passive: true },
+      );
+
+      // ── Reveal on scroll ─────────────────────────────────────
+      const reveals = document.querySelectorAll(".reveal");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("visible");
+              observer.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.08 },
+      );
+      reveals.forEach((el) => observer.observe(el));
+
+      // ── Chapter navigation scroll tracking ───────────────────
+      const chapterDividers = document.querySelectorAll(".chapter-divider");
+      const chapterLinks = document.querySelectorAll(".chapter-nav a");
+      const chapterObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const chapterId = entry.target.getAttribute("data-chapter");
+              chapterLinks.forEach((link) => {
+                link.classList.toggle(
+                  "active",
+                  link.getAttribute("data-chapter") === chapterId,
+                );
+              });
+            }
+          });
+        },
+        { rootMargin: "-10% 0px -80% 0px" },
+      );
+      chapterDividers.forEach((div) => chapterObserver.observe(div));
+
+      // ── Lifecycle Animation ───────────────────────────────────
+      (function () {
+        const viz = document.getElementById("lifecycleViz");
+        if (!viz) return;
+        const pulse = document.getElementById("lvPulse");
+        const pulse2 = document.getElementById("lvPulse2");
+        const nodes = viz.querySelectorAll(".lv-node");
+        const replay = document.getElementById("lvReplay");
+        const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        // Waypoints: [cx, cy, nodeIdx, duration_ms]
+        const waypoints = [
+          [40, 80, 0, 0],
+          [165, 80, 1, 600],
+          [295, 80, 2, 600],
+          [425, 80, 3, 600],
+          [555, 80, 4, 600],
+          [675, 80, 5, 600],
+        ];
+        // Fan-out waypoints
+        const fan1 = [[780, 30, 6, 500]];
+        const fan2 = [[780, 130, 7, 500]];
+        // Merge + result
+        const mergeWp = [[677, 176, 8, 800], [570, 176, 9, 500]];
+
+        function lightNode(idx) {
+          const n = nodes[idx];
+          if (!n) return;
+          const r = n.querySelector("rect");
+          if (r) {
+            const orig = r.getAttribute("stroke");
+            r.setAttribute("stroke-width", "3");
+            r.setAttribute("stroke-opacity", "1");
+            setTimeout(() => r.setAttribute("stroke-width", "1.5"), 800);
+          }
+        }
+
+        function resetNodes() {
+          nodes.forEach((n) => {
+            const r = n.querySelector("rect");
+            if (r) r.setAttribute("stroke-width", "1.5");
+          });
+        }
+
+        function animatePulse(el, from, to, dur) {
+          return new Promise((resolve) => {
+            const sx = from[0], sy = from[1], ex = to[0], ey = to[1];
+            const start = performance.now();
+            el.setAttribute("opacity", "1");
+            function step(now) {
+              const t = Math.min((now - start) / dur, 1);
+              const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+              el.setAttribute("cx", sx + (ex - sx) * ease);
+              el.setAttribute("cy", sy + (ey - sy) * ease);
+              if (t < 1) requestAnimationFrame(step);
+              else resolve();
+            }
+            requestAnimationFrame(step);
+          });
+        }
+
+        async function runAnimation() {
+          resetNodes();
+          pulse.setAttribute("opacity", "0");
+          pulse2.setAttribute("opacity", "0");
+
+          // Main path
+          for (let i = 0; i < waypoints.length; i++) {
+            const wp = waypoints[i];
+            if (i === 0) {
+              pulse.setAttribute("cx", wp[0]);
+              pulse.setAttribute("cy", wp[1]);
+              pulse.setAttribute("opacity", "1");
+              lightNode(wp[2]);
+              await new Promise((r) => setTimeout(r, 400));
+            } else {
+              const prev = waypoints[i - 1];
+              await animatePulse(pulse, prev, wp, wp[3]);
+              lightNode(wp[2]);
+              await new Promise((r) => setTimeout(r, 200));
+            }
+          }
+
+          // Fan-out: split into two pulses
+          const llmPos = waypoints[waypoints.length - 1];
+          pulse2.setAttribute("cx", llmPos[0]);
+          pulse2.setAttribute("cy", llmPos[1]);
+          pulse2.setAttribute("opacity", "1");
+          pulse2.setAttribute("fill", "#e0a84d");
+          pulse.setAttribute("fill", "#e0a84d");
+
+          await Promise.all([
+            (async () => {
+              await animatePulse(pulse, llmPos, fan1[0], fan1[0][3]);
+              lightNode(fan1[0][2]);
+            })(),
+            (async () => {
+              await animatePulse(pulse2, llmPos, fan2[0], fan2[0][3]);
+              lightNode(fan2[0][2]);
+            })(),
+          ]);
+
+          await new Promise((r) => setTimeout(r, 600));
+
+          // Merge
+          pulse.setAttribute("fill", "#4dd9e0");
+          pulse2.setAttribute("opacity", "0");
+          pulse.setAttribute("cx", mergeWp[0][0]);
+          pulse.setAttribute("cy", mergeWp[0][1]);
+          lightNode(mergeWp[0][2]);
+          await new Promise((r) => setTimeout(r, 300));
+
+          // Result
+          pulse.setAttribute("fill", "#4de094");
+          await animatePulse(pulse, mergeWp[0], mergeWp[1], mergeWp[1][3]);
+          lightNode(mergeWp[1][2]);
+
+          await new Promise((r) => setTimeout(r, 1000));
+          pulse.setAttribute("opacity", "0");
+        }
+
+        // Reduced motion: show all nodes lit, no animation
+        if (prefersReduced) {
+          nodes.forEach((_, i) => lightNode(i));
+          pulse.setAttribute("opacity", "0");
+          pulse2.setAttribute("opacity", "0");
+        } else {
+          // Auto-play on scroll
+          const lvObserver = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((e) => {
+                if (e.isIntersecting) {
+                  runAnimation();
+                  lvObserver.unobserve(e.target);
+                }
+              });
+            },
+            { threshold: 0.3 },
+          );
+          lvObserver.observe(viz);
+        }
+
+        // Replay button
+        if (replay) {
+          replay.addEventListener("click", () => {
+            if (!prefersReduced) runAnimation();
+          });
+        }
+      })();
+
+      // ── Particles ────────────────────────────────────────────
+      (function () {
+        const canvas = document.getElementById("particles");
+        const ctx = canvas.getContext("2d");
+        let w,
+          h,
+          particles = [];
+        const COUNT = 40;
+
+        function resize() {
+          w = canvas.width = window.innerWidth;
+          h = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        for (let i = 0; i < COUNT; i++) {
+          particles.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: (Math.random() - 0.5) * 0.25,
+            r: Math.random() * 1.5 + 0.5,
+            a: Math.random() * 0.3 + 0.05,
+          });
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, w, h);
+
+          // Draw faint connection lines
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 160) {
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[j].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle =
+                  "rgba(108, 99, 255," + 0.04 * (1 - dist / 160) + ")";
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+              }
+            }
+          }
+
+          // Draw particles
+          for (const p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0) p.x = w;
+            if (p.x > w) p.x = 0;
+            if (p.y < 0) p.y = h;
+            if (p.y > h) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(108, 99, 255," + p.a + ")";
+            ctx.fill();
+          }
+
+          requestAnimationFrame(draw);
+        }
+        draw();
+      })();
+    </script>
+  </body>
+</html>
