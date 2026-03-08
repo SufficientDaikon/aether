@@ -1,12 +1,32 @@
 /** @jsxImportSource preact */
 import { h } from "preact";
-import { useRef, useEffect } from "preact/hooks";
+import { useRef, useEffect, useMemo, useState } from "preact/hooks";
 import { useChatStore } from "../stores";
 import { useSendChat } from "../hooks/useAether";
 import { Button, Spinner, Badge } from "../components/ui";
 import { rpcCall } from "../lib/message-bus";
 import type { ChatMessage } from "../lib/types";
-import { formatRelativeTime, escapeHtml } from "../lib/formatters";
+import { formatRelativeTime } from "../lib/formatters";
+import MarkdownIt from "markdown-it";
+import Prism from "prismjs";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-bash";
+
+const md = new MarkdownIt({
+  html: false,
+  linkify: true,
+  typographer: true,
+  highlight(str: string, lang: string) {
+    const grammar = lang && Prism.languages[lang];
+    if (grammar) {
+      const highlighted = Prism.highlight(str, grammar, lang);
+      return `<pre class="prism-code bg-vsc-sidebar-bg border border-vsc-border rounded p-2 my-2 overflow-x-auto text-xs font-vsc-editor"><code class="language-${lang}">${highlighted}</code></pre>`;
+    }
+    return `<pre class="prism-code bg-vsc-sidebar-bg border border-vsc-border rounded p-2 my-2 overflow-x-auto text-xs font-vsc-editor"><code>${md.utils.escapeHtml(str)}</code></pre>`;
+  },
+});
 
 const SLASH_COMMANDS = [
   { cmd: "/run", desc: "Execute task on best-fit agent" },
@@ -21,37 +41,7 @@ const SLASH_COMMANDS = [
 ];
 
 function renderMarkdown(content: string): string {
-  // Simple markdown rendering (no external deps needed for basic rendering)
-  let html = escapeHtml(content);
-  // Code blocks
-  html = html.replace(
-    /```(\w*)\n([\s\S]*?)```/g,
-    (_m, lang, code) =>
-      `<pre class="bg-vsc-sidebar-bg border border-vsc-border rounded p-2 my-2 overflow-x-auto text-xs font-vsc-editor"><code class="language-${lang}">${code.trim()}</code></pre>`,
-  );
-  // Inline code
-  html = html.replace(
-    /`([^`]+)`/g,
-    '<code class="bg-vsc-sidebar-bg px-1 rounded text-xs font-vsc-editor">$1</code>',
-  );
-  // Bold
-  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-  // Italic
-  html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
-  // Headers
-  html = html.replace(
-    /^### (.+)$/gm,
-    '<h3 class="text-sm font-bold mt-3 mb-1">$1</h3>',
-  );
-  html = html.replace(
-    /^## (.+)$/gm,
-    '<h2 class="text-sm font-bold mt-3 mb-1">$1</h2>',
-  );
-  // Lists
-  html = html.replace(/^- (.+)$/gm, '<li class="ml-4 text-xs">$1</li>');
-  // Line breaks
-  html = html.replace(/\n/g, "<br/>");
-  return html;
+  return md.render(content);
 }
 
 function ChatMessageComponent({ message }: { message: ChatMessage }) {
@@ -85,7 +75,7 @@ function ChatMessageComponent({ message }: { message: ChatMessage }) {
           </span>
         </div>
         <div
-          class="text-xs text-vsc-fg leading-relaxed"
+          class="text-xs text-vsc-fg leading-relaxed markdown-body"
           dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
         />
         {message.codeBlocks?.map((block) => (
@@ -125,7 +115,7 @@ export function ChatView() {
   const loading = useChatStore((s) => s.loading);
   const sendChat = useSendChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [showCommands, setShowCommands] = [false, (_: boolean) => {}]; // simplified
+  const [showCommands, setShowCommands] = useState(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

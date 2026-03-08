@@ -105,6 +105,7 @@ export function SettingsView() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [modified, setModified] = useState<Record<string, any>>({});
+  const [saveStatus, setSaveStatus] = useState<"saved" | "error" | null>(null);
 
   useEffect(() => {
     rpcCall<Record<string, any>>("getConfig")
@@ -126,10 +127,15 @@ export function SettingsView() {
       for (const [section, updates] of Object.entries(modified)) {
         await rpcCall("updateConfig", { section, updates });
       }
-      // Refresh
+      // Refresh config after save
       const data = await rpcCall<Record<string, any>>("getConfig");
       if (data) setConfig(data);
       setModified({});
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus(null), 2000);
+    } catch (err) {
+      setSaveStatus("error");
+      setTimeout(() => setSaveStatus(null), 3000);
     } finally {
       setSaving(false);
     }
@@ -157,7 +163,15 @@ export function SettingsView() {
   return (
     <div class="flex flex-col h-full animate-fade-in">
       <div class="flex items-center justify-between p-3 border-b border-vsc-border">
-        <h3 class="text-sm font-semibold text-vsc-fg">AETHER Settings</h3>
+        <div class="flex items-center gap-2">
+          <h3 class="text-sm font-semibold text-vsc-fg">AETHER Settings</h3>
+          {saveStatus === "saved" && (
+            <span class="text-[11px] text-emerald-400 animate-fade-in">✓ Saved</span>
+          )}
+          {saveStatus === "error" && (
+            <span class="text-[11px] text-red-400 animate-fade-in">✕ Save failed</span>
+          )}
+        </div>
         <div class="flex gap-2">
           {hasChanges && (
             <Button

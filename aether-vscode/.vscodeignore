@@ -4,5 +4,14 @@ src/**
 node_modules/**
 .gitignore
 tsconfig.json
+tsconfig.webview.json
 esbuild.config.mjs
+tailwind.config.js
+postcss.config.js
 *.vsix
+.vscode/**
+SPEC.md
+SPEC-REVIEW.md
+SPEC-REVIEW-R2.md
+.vscode-test/**
+**/*.map

@@ -11,6 +11,7 @@ import {
   EmptyState,
   Spinner,
 } from "../components/ui";
+import { AgentHierarchyGraph } from "../components/AgentHierarchyGraph";
 import type { Agent } from "../lib/types";
 import { formatMs, formatRelativeTime, formatNumber } from "../lib/formatters";
 
@@ -184,6 +185,7 @@ export function AgentsView() {
   const selectAgent = useAgentsStore((s) => s.selectAgent);
   const [tierFilter, setTierFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<"list" | "graph">("graph");
 
   const agentList = useMemo(() => {
     let list = Object.values(agents);
@@ -220,69 +222,100 @@ export function AgentsView() {
   }
 
   return (
-    <div class="flex h-full animate-fade-in">
-      {/* Agent List */}
-      <div
-        class={`${selected ? "w-1/2" : "w-full"} border-r border-vsc-border flex flex-col`}
-      >
-        {/* Filters */}
-        <div class="p-3 border-b border-vsc-border space-y-2">
-          <Input
-            placeholder="Search agents..."
-            value={searchTerm}
-            onChange={setSearch}
-          />
-          <div class="flex gap-2">
-            <Select
-              value={tierFilter}
-              onChange={setTierFilter}
-              options={[
-                { label: "All Tiers", value: "all" },
-                { label: "Master", value: "master" },
-                { label: "Manager", value: "manager" },
-                { label: "Worker", value: "worker" },
-              ]}
-            />
-            <Select
-              value={statusFilter}
-              onChange={setStatusFilter}
-              options={[
-                { label: "All Status", value: "all" },
-                { label: "Online", value: "online" },
-                { label: "Busy", value: "busy" },
-                { label: "Offline", value: "offline" },
-                { label: "Error", value: "error" },
-              ]}
-            />
-          </div>
-          <div class="text-[11px] text-vsc-desc">{agentList.length} agents</div>
+    <div class="flex flex-col h-full animate-fade-in">
+      {/* Toolbar */}
+      <div class="flex items-center gap-2 p-2 border-b border-vsc-border">
+        <div class="flex bg-vsc-sidebar-bg rounded border border-vsc-border">
+          <button
+            class={`px-2.5 py-1 text-xs transition-colors rounded-l ${viewMode === "graph" ? "bg-vsc-btn-bg text-vsc-btn-fg" : "text-vsc-desc hover:text-vsc-fg"}`}
+            onClick={() => setViewMode("graph")}
+            title="Hierarchy Graph"
+          >◉ Graph</button>
+          <button
+            class={`px-2.5 py-1 text-xs transition-colors rounded-r ${viewMode === "list" ? "bg-vsc-btn-bg text-vsc-btn-fg" : "text-vsc-desc hover:text-vsc-fg"}`}
+            onClick={() => setViewMode("list")}
+            title="Agent List"
+          >☰ List</button>
         </div>
-
-        {/* Agent Grid */}
-        <div class="flex-1 overflow-y-auto p-3 space-y-2">
-          {agentList.map((agent) => (
-            <AgentCard
-              key={agent.id}
-              agent={agent}
-              selected={selectedAgent === agent.id}
-              onClick={() =>
-                selectAgent(selectedAgent === agent.id ? null : agent.id)
-              }
-            />
-          ))}
+        <div class="text-[11px] text-vsc-desc ml-auto">
+          {agentList.length} agents
         </div>
       </div>
 
-      {/* Detail Panel */}
-      {selected && (
-        <div class="w-1/2 overflow-y-auto p-3">
-          <div class="flex justify-between items-center mb-3">
-            <h3 class="text-sm font-semibold text-vsc-fg">Agent Details</h3>
-            <Button variant="ghost" size="sm" onClick={() => selectAgent(null)}>
-              ✕
-            </Button>
+      {viewMode === "graph" ? (
+        <div class="flex flex-1 overflow-hidden">
+          <div class={selected ? "w-2/3" : "w-full"}>
+            <AgentHierarchyGraph
+              agents={agentList}
+              selectedAgent={selectedAgent}
+              onSelectAgent={selectAgent}
+            />
           </div>
-          <AgentDetail agent={selected} />
+          {selected && (
+            <div class="w-1/3 overflow-y-auto p-3 border-l border-vsc-border">
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="text-sm font-semibold text-vsc-fg">Agent Details</h3>
+                <Button variant="ghost" size="sm" onClick={() => selectAgent(null)}>✕</Button>
+              </div>
+              <AgentDetail agent={selected} />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div class="flex flex-1 overflow-hidden">
+          {/* Agent List */}
+          <div class={`${selected ? "w-1/2" : "w-full"} border-r border-vsc-border flex flex-col`}>
+            {/* Filters */}
+            <div class="p-3 border-b border-vsc-border space-y-2">
+              <Input placeholder="Search agents..." value={searchTerm} onChange={setSearch} />
+              <div class="flex gap-2">
+                <Select
+                  value={tierFilter}
+                  onChange={setTierFilter}
+                  options={[
+                    { label: "All Tiers", value: "all" },
+                    { label: "Master", value: "master" },
+                    { label: "Manager", value: "manager" },
+                    { label: "Worker", value: "worker" },
+                  ]}
+                />
+                <Select
+                  value={statusFilter}
+                  onChange={setStatusFilter}
+                  options={[
+                    { label: "All Status", value: "all" },
+                    { label: "Online", value: "online" },
+                    { label: "Busy", value: "busy" },
+                    { label: "Offline", value: "offline" },
+                    { label: "Error", value: "error" },
+                  ]}
+                />
+              </div>
+            </div>
+
+            {/* Agent Grid */}
+            <div class="flex-1 overflow-y-auto p-3 space-y-2">
+              {agentList.map((agent) => (
+                <AgentCard
+                  key={agent.id}
+                  agent={agent}
+                  selected={selectedAgent === agent.id}
+                  onClick={() => selectAgent(selectedAgent === agent.id ? null : agent.id)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Detail Panel */}
+          {selected && (
+            <div class="w-1/2 overflow-y-auto p-3">
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="text-sm font-semibold text-vsc-fg">Agent Details</h3>
+                <Button variant="ghost" size="sm" onClick={() => selectAgent(null)}>✕</Button>
+              </div>
+              <AgentDetail agent={selected} />
+            </div>
+          )}
         </div>
       )}
     </div>

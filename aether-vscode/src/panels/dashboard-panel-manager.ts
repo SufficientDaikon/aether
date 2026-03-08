@@ -137,13 +137,13 @@ export class DashboardPanelManager {
       case "sendChatMessage":
         return this.sendChatMessage(params);
       case "getPendingApprovals":
-        return []; // Will be populated when approval system is wired
+        return this.getPendingApprovals();
       case "approveChange":
-        return { success: true };
+        return this.approveChange(params);
       case "rejectChange":
-        return { success: true };
+        return this.rejectChange(params);
       case "batchApprove":
-        return { success: true };
+        return this.batchApprove(params);
       case "searchMemory":
         return this.searchMemory(params);
       case "getConfig":
@@ -291,6 +291,56 @@ export class DashboardPanelManager {
       description: `Update configuration: ${params.section} = ${JSON.stringify(params.updates)}`,
     });
     return { success: true };
+  }
+
+  private async getPendingApprovals() {
+    try {
+      const raw = await this.bridge.callTool("get_status", {});
+      if (!raw) return [];
+      const data = JSON.parse(raw);
+      return Array.isArray(data.pendingApprovals) ? data.pendingApprovals : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private async approveChange(params: any) {
+    try {
+      await this.bridge.callTool("submit_task", {
+        description: `Approve change: ${params.approvalId}`,
+        target: "cortex-0",
+      });
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message };
+    }
+  }
+
+  private async rejectChange(params: any) {
+    try {
+      await this.bridge.callTool("submit_task", {
+        description: `Reject change: ${params.approvalId} — Reason: ${params.reason || "Rejected via dashboard"}`,
+        target: "cortex-0",
+      });
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message };
+    }
+  }
+
+  private async batchApprove(params: any) {
+    const ids = params.approvalIds || [];
+    try {
+      for (const id of ids) {
+        await this.bridge.callTool("submit_task", {
+          description: `Approve change: ${id}`,
+          target: "cortex-0",
+        });
+      }
+      return { success: true, approved: ids.length };
+    } catch (err: any) {
+      return { success: false, error: err?.message };
+    }
   }
 
   // ── Helpers ────────────────────────────────────────────────

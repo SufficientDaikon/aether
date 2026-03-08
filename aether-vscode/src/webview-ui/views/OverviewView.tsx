@@ -16,6 +16,37 @@ interface HealthCardProps {
   status: "healthy" | "warning" | "error";
   icon: string;
   onClick?: () => void;
+  sparkline?: number[];
+}
+
+function Sparkline({ data, color = "#4a9eff", width = 60, height = 20 }: {
+  data: number[];
+  color?: string;
+  width?: number;
+  height?: number;
+}) {
+  if (data.length < 2) return null;
+  const max = Math.max(...data, 1);
+  const min = Math.min(...data, 0);
+  const range = max - min || 1;
+  const points = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / range) * (height - 2) - 1;
+    return `${x},${y}`;
+  }).join(" ");
+  const areaPath = `M 0,${height} L ${points.split(" ").map((p) => p).join(" L ")} L ${width},${height} Z`;
+  return (
+    <svg width={width} height={height} class="inline-block ml-1">
+      <defs>
+        <linearGradient id={`spark-${color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color={color} stop-opacity="0.3" />
+          <stop offset="100%" stop-color={color} stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={areaPath} fill={`url(#spark-${color.replace("#", "")})`} />
+      <polyline points={points} fill="none" stroke={color} stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" />
+    </svg>
+  );
 }
 
 function HealthCard({
@@ -25,6 +56,7 @@ function HealthCard({
   status,
   icon,
   onClick,
+  sparkline,
 }: HealthCardProps) {
   const statusColor = {
     healthy: "border-emerald-500/30",
@@ -36,6 +68,11 @@ function HealthCard({
     warning: "bg-amber-400",
     error: "bg-red-400",
   };
+  const sparkColors = {
+    healthy: "#5cb85c",
+    warning: "#f5a623",
+    error: "#d9534f",
+  };
 
   return (
     <Card
@@ -46,7 +83,12 @@ function HealthCard({
         <div>
           <span class="text-lg">{icon}</span>
           <p class="text-xs text-vsc-desc mt-1">{title}</p>
-          <p class="text-xl font-bold text-vsc-fg mt-0.5">{value}</p>
+          <div class="flex items-end gap-1">
+            <p class="text-xl font-bold text-vsc-fg mt-0.5">{value}</p>
+            {sparkline && sparkline.length > 1 && (
+              <Sparkline data={sparkline} color={sparkColors[status]} />
+            )}
+          </div>
           {subtitle && (
             <p class="text-[11px] text-vsc-desc mt-0.5">{subtitle}</p>
           )}

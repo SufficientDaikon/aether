@@ -125,3 +125,107 @@ body {
 .status-error {
   color: #d9534f;
 }
+
+/* Prism.js syntax highlighting — VS Code dark theme */
+.prism-code {
+  tab-size: 2;
+}
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6a9955;
+}
+.token.punctuation {
+  color: #d4d4d4;
+}
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #b5cea8;
+}
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #ce9178;
+}
+.token.operator,
+.token.entity,
+.token.url {
+  color: #d4d4d4;
+}
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #569cd6;
+}
+.token.function,
+.token.class-name {
+  color: #dcdcaa;
+}
+.token.regex,
+.token.important,
+.token.variable {
+  color: #d16969;
+}
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+/* Markdown rendered content styles */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  font-weight: 600;
+  margin-top: 0.75em;
+  margin-bottom: 0.25em;
+}
+.markdown-body h1 { font-size: 1.1em; }
+.markdown-body h2 { font-size: 1em; }
+.markdown-body h3 { font-size: 0.95em; }
+.markdown-body p {
+  margin: 0.25em 0;
+}
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.5em;
+  margin: 0.25em 0;
+}
+.markdown-body code:not([class*="language-"]) {
+  background: var(--vscode-textCodeBlock-background, rgba(255,255,255,0.06));
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: var(--vscode-editor-font-family, monospace);
+}
+.markdown-body a {
+  color: var(--vscode-textLink-foreground);
+  text-decoration: none;
+}
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+.markdown-body blockquote {
+  border-left: 3px solid var(--vscode-editorWidget-border);
+  padding-left: 0.75em;
+  margin: 0.25em 0;
+  opacity: 0.8;
+}
+.markdown-body table {
+  border-collapse: collapse;
+  margin: 0.5em 0;
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--vscode-editorWidget-border);
+  padding: 0.25em 0.5em;
+  font-size: 0.85em;
+}

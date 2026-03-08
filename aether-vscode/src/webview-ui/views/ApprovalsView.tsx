@@ -126,11 +126,18 @@ export function ApprovalsView() {
   const [approvals, setApprovals] = useState<Approval[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchApprovals = async () => {
+    try {
+      const data = await rpcCall<Approval[]>("getPendingApprovals");
+      if (data) setApprovals(data);
+    } catch { /* silent */ }
+    finally { setLoading(false); }
+  };
+
   useEffect(() => {
-    rpcCall<Approval[]>("getPendingApprovals")
-      .then((data) => data && setApprovals(data))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    fetchApprovals();
+    const interval = setInterval(fetchApprovals, 8000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleAction = async (id: string, action: "approve" | "reject") => {
