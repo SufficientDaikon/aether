@@ -2,6 +2,7 @@
 !dist/**
 src/**
 node_modules/**
+docs/**
 .gitignore
 tsconfig.json
 tsconfig.webview.json
@@ -10,8 +11,5 @@ tailwind.config.js
 postcss.config.js
 *.vsix
 .vscode/**
-SPEC.md
-SPEC-REVIEW.md
-SPEC-REVIEW-R2.md
 .vscode-test/**
 **/*.map
