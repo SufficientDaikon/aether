@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Changelog — AETHER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ── Reset ──────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #06060b;
+        --bg-surface: #0c0c14;
+        --bg-card: #10101a;
+        --border: #1a1a2e;
+        --text: #b8b8cc;
+        --text-dim: #5a5a72;
+        --text-bright: #eeeef6;
+        --accent: #00e4ff;
+        --accent-2: #7b61ff;
+        --accent-3: #ff6b6b;
+        --accent-warm: #ffb347;
+        --green: #4de094;
+        --amber: #ffb347;
+        --cyan: #00e4ff;
+        --glow-cyan: rgba(0, 228, 255, 0.12);
+        --glow-purple: rgba(123, 97, 255, 0.12);
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Space Grotesk", system-ui, sans-serif;
+        --serif: "Instrument Serif", Georgia, serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        overflow-x: hidden;
+      }
+
+      body {
+        background: var(--bg);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      ::selection {
+        background: rgba(0, 228, 255, 0.25);
+        color: #fff;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      /* ── Navigation ────────────────────────────────── */
+      nav#nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 1.25rem 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(6, 6, 11, 0.6);
+        backdrop-filter: blur(20px) saturate(1.5);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        transition: all 0.4s ease;
+      }
+
+      nav#nav.scrolled {
+        padding: 0.8rem 2.5rem;
+        background: rgba(6, 6, 11, 0.92);
+        border-bottom-color: rgba(0, 228, 255, 0.08);
+      }
+
+      .nav-logo {
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 1.15rem;
+        letter-spacing: 0.2em;
+        color: var(--text-bright);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+      }
+      .nav-logo:hover {
+        text-decoration: none;
+      }
+
+      .nav-logo .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow:
+          0 0 12px var(--accent),
+          0 0 30px rgba(0, 228, 255, 0.3);
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.6;
+          transform: scale(0.85);
+        }
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        color: var(--text-dim);
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .nav-links a.active {
+        color: var(--accent);
+      }
+
+      .nav-cta {
+        padding: 0.5rem 1.25rem;
+        border: 1px solid rgba(0, 228, 255, 0.3);
+        border-radius: 6px;
+        color: var(--accent) !important;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        transition: all 0.3s;
+      }
+
+      .nav-cta:hover {
+        background: rgba(0, 228, 255, 0.08);
+        border-color: var(--accent);
+        box-shadow: 0 0 20px rgba(0, 228, 255, 0.15);
+      }
+
+      .mobile-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+      }
+      .mobile-toggle span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--text-dim);
+        border-radius: 2px;
+        transition: all 0.3s;
+      }
+
+      /* ── Page Layout ────────────────────────────────── */
+      .page-wrapper {
+        display: flex;
+        padding-top: 72px;
+        min-height: 100vh;
+      }
+
+      /* ── Sidebar ────────────────────────────────────── */
+      .sidebar {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        width: 240px;
+        height: calc(100vh - 72px);
+        overflow-y: auto;
+        padding: 2rem 1.25rem 3rem 1.5rem;
+        border-right: 1px solid var(--border);
+        background: rgba(6, 6, 11, 0.85);
+        backdrop-filter: blur(12px);
+        z-index: 50;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      .sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      .sidebar-label {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 1rem;
+        padding-left: 0.5rem;
+      }
+
+      .sidebar-nav {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .sidebar-nav a {
+        display: block;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.82rem;
+        font-weight: 400;
+        color: var(--text-dim);
+        border-radius: 6px;
+        border-left: 2px solid transparent;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        line-height: 1.4;
+      }
+
+      .sidebar-nav a:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.03);
+        text-decoration: none;
+      }
+
+      .sidebar-nav a.active {
+        color: var(--accent);
+        background: rgba(0, 228, 255, 0.05);
+        border-left-color: var(--accent);
+        font-weight: 500;
+      }
+
+      .sidebar-nav .sub {
+        padding-left: 1.25rem;
+        font-size: 0.78rem;
+      }
+
+      /* ── Main Content ───────────────────────────────── */
+      .main-content {
+        margin-left: 240px;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        padding: 3rem 2.5rem 6rem;
+      }
+
+      .content {
+        max-width: 780px;
+        width: 100%;
+      }
+
+      /* ── Page Header ────────────────────────────────── */
+      .page-header {
+        margin-bottom: 3.5rem;
+        padding-bottom: 2.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .page-header .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        background: rgba(0, 228, 255, 0.06);
+        border: 1px solid rgba(0, 228, 255, 0.15);
+        padding: 0.35rem 0.9rem;
+        border-radius: 100px;
+        margin-bottom: 1.5rem;
+      }
+
+      .page-header .badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent);
+      }
+
+      .page-header h1 {
+        font-family: var(--sans);
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin-bottom: 1rem;
+      }
+
+      .page-header p {
+        font-size: 1.1rem;
+        color: var(--text-dim);
+        line-height: 1.7;
+        max-width: 600px;
+      }
+
+      /* ── Typography ─────────────────────────────────── */
+      h2 {
+        font-family: var(--sans);
+        font-size: 1.65rem;
+        font-weight: 600;
+        color: var(--text-bright);
+        letter-spacing: -0.02em;
+        margin-top: 3.5rem;
+        margin-bottom: 1.25rem;
+        padding-top: 1rem;
+      }
+
+      h3 {
+        font-family: var(--sans);
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--text-bright);
+        margin-top: 2.25rem;
+        margin-bottom: 0.85rem;
+      }
+
+      h4 {
+        font-family: var(--mono);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+        margin-top: 1.75rem;
+        margin-bottom: 0.65rem;
+      }
+
+      p {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: var(--text);
+        margin-bottom: 1rem;
+      }
+
+      ul,
+      ol {
+        margin-bottom: 1rem;
+        padding-left: 1.25rem;
+      }
+
+      li {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: var(--text);
+        margin-bottom: 0.35rem;
+      }
+
+      li a {
+        text-decoration: none;
+      }
+      li a:hover {
+        text-decoration: underline;
+      }
+
+      strong {
+        color: var(--text-bright);
+        font-weight: 600;
+      }
+
+      /* ── Inline Code ────────────────────────────────── */
+      code {
+        font-family: var(--mono);
+        font-size: 0.82em;
+        color: var(--accent);
+        background: rgba(0, 228, 255, 0.07);
+        padding: 0.15em 0.45em;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 228, 255, 0.1);
+      }
+
+      /* ── Code Blocks ────────────────────────────────── */
+      pre {
+        position: relative;
+        margin: 1.25rem 0 1.75rem;
+        padding: 1.35rem 1.5rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow-x: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        color: var(--text);
+        font-size: 0.82rem;
+        line-height: 1.75;
+      }
+
+      pre .lang-tag {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.8rem;
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      /* Syntax highlights */
+      .hl-comment { color: #5a5a72; font-style: italic; }
+      .hl-string  { color: #4de094; }
+      .hl-key     { color: var(--accent); }
+      .hl-number  { color: var(--accent-warm); }
+      .hl-kw      { color: var(--accent-2); }
+      .hl-flag    { color: var(--accent-warm); }
+      .hl-cmd     { color: var(--text-bright); }
+
+      /* ── Callout Boxes ──────────────────────────────── */
+      .callout {
+        margin: 1.5rem 0;
+        padding: 1.15rem 1.35rem;
+        border-radius: 10px;
+        border-left: 3px solid;
+        font-size: 0.9rem;
+        line-height: 1.7;
+      }
+
+      .callout-info {
+        background: rgba(0, 228, 255, 0.04);
+        border-left-color: var(--accent);
+        color: var(--text);
+      }
+
+      .callout-info strong {
+        color: var(--accent);
+      }
+
+      .callout-tip {
+        background: rgba(77, 224, 148, 0.04);
+        border-left-color: #4de094;
+      }
+
+      .callout-tip strong {
+        color: #4de094;
+      }
+
+      /* ── Section Divider ────────────────────────────── */
+      .section-divider {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--border), transparent);
+        margin: 3rem 0;
+      }
+
+      /* ── Reveal Animation ───────────────────────────── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ── Ambient Glow ───────────────────────────────── */
+      .ambient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .ambient::before {
+        content: "";
+        position: absolute;
+        top: -20%;
+        left: -10%;
+        width: 50%;
+        height: 50%;
+        background: radial-gradient(circle, rgba(0, 228, 255, 0.035) 0%, transparent 65%);
+      }
+
+      .ambient::after {
+        content: "";
+        position: absolute;
+        bottom: -10%;
+        right: -10%;
+        width: 45%;
+        height: 45%;
+        background: radial-gradient(circle, rgba(123, 97, 255, 0.03) 0%, transparent 65%);
+      }
+
+      /* ── Footer ─────────────────────────────────────── */
+      .footer {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+        text-align: center;
+      }
+
+      .footer p {
+        font-size: 0.78rem;
+        color: var(--text-dim);
+      }
+
+      .footer a {
+        color: var(--text-dim);
+        transition: color 0.3s;
+      }
+      .footer a:hover {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      /* ── npm Badge ───────────────────────────────────── */
+      .npm-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.5rem 1rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--text);
+        transition: all 0.3s;
+        text-decoration: none;
+        margin-bottom: 2rem;
+      }
+
+      .npm-badge:hover {
+        border-color: rgba(0, 228, 255, 0.3);
+        background: rgba(0, 228, 255, 0.04);
+        text-decoration: none;
+      }
+
+      .npm-badge .npm-icon {
+        color: #cb3837;
+        font-weight: 700;
+        font-size: 0.75rem;
+      }
+
+      .npm-badge .npm-ver {
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      /* ── Timeline ────────────────────────────────────── */
+      .timeline {
+        position: relative;
+        padding-left: 2rem;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 7px;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(180deg, var(--accent), var(--accent-2), var(--border));
+        border-radius: 2px;
+      }
+
+      /* ── Version Card ────────────────────────────────── */
+      .version-card {
+        position: relative;
+        margin-bottom: 3rem;
+        padding: 1.75rem 2rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .version-card:hover {
+        border-color: rgba(0, 228, 255, 0.15);
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Timeline dot */
+      .version-card::before {
+        content: "";
+        position: absolute;
+        left: -2rem;
+        top: 2rem;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--bg);
+        border: 2.5px solid var(--accent);
+        box-shadow: 0 0 12px rgba(0, 228, 255, 0.3);
+        transform: translateX(-0.5px);
+        z-index: 2;
+      }
+
+      /* Connector from dot to card */
+      .version-card::after {
+        content: "";
+        position: absolute;
+        left: -0.65rem;
+        top: 2.35rem;
+        width: 0.65rem;
+        height: 2px;
+        background: rgba(0, 228, 255, 0.2);
+      }
+
+      .version-card:last-child::before {
+        border-color: var(--accent-2);
+        box-shadow: 0 0 12px rgba(123, 97, 255, 0.3);
+      }
+
+      .version-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .version-tag {
+        font-family: var(--mono);
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        letter-spacing: -0.01em;
+      }
+
+      .version-date {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--text-dim);
+        padding: 0.2rem 0.65rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 100px;
+      }
+
+      /* ── Change Category ─────────────────────────────── */
+      .change-category {
+        margin-top: 1.25rem;
+      }
+
+      .change-category + .change-category {
+        margin-top: 1.75rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(26, 26, 46, 0.5);
+      }
+
+      .category-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.3rem 0.75rem;
+        border-radius: 100px;
+        margin-bottom: 0.85rem;
+      }
+
+      .category-label::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+
+      .category-added {
+        color: var(--green);
+        background: rgba(77, 224, 148, 0.08);
+        border: 1px solid rgba(77, 224, 148, 0.15);
+      }
+
+      .category-added::before {
+        background: var(--green);
+        box-shadow: 0 0 6px var(--green);
+      }
+
+      .category-fixed {
+        color: var(--amber);
+        background: rgba(255, 179, 71, 0.08);
+        border: 1px solid rgba(255, 179, 71, 0.15);
+      }
+
+      .category-fixed::before {
+        background: var(--amber);
+        box-shadow: 0 0 6px var(--amber);
+      }
+
+      .category-resolved {
+        color: var(--cyan);
+        background: rgba(0, 228, 255, 0.08);
+        border: 1px solid rgba(0, 228, 255, 0.15);
+      }
+
+      .category-resolved::before {
+        background: var(--cyan);
+        box-shadow: 0 0 6px var(--cyan);
+      }
+
+      .change-list {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+      }
+
+      .change-list li {
+        position: relative;
+        padding-left: 1.1rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        line-height: 1.7;
+      }
+
+      .change-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.6rem;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+      }
+
+      .change-added li::before {
+        background: var(--green);
+        box-shadow: 0 0 4px rgba(77, 224, 148, 0.4);
+      }
+
+      .change-fixed li::before {
+        background: var(--amber);
+        box-shadow: 0 0 4px rgba(255, 179, 71, 0.4);
+      }
+
+      .change-resolved li::before {
+        background: var(--cyan);
+        box-shadow: 0 0 4px rgba(0, 228, 255, 0.4);
+      }
+
+      .change-list li strong {
+        color: var(--text-bright);
+      }
+
+      .change-list .sub-list {
+        margin-top: 0.35rem;
+        margin-bottom: 0.35rem;
+        padding-left: 1rem;
+        list-style: none;
+      }
+
+      .change-list .sub-list li {
+        padding-left: 1rem;
+        font-size: 0.84rem;
+        color: var(--text-dim);
+        margin-bottom: 0.2rem;
+      }
+
+      .change-list .sub-list li::before {
+        width: 4px;
+        height: 4px;
+        top: 0.55rem;
+        background: var(--border);
+        box-shadow: none;
+        border: 1px solid var(--text-dim);
+      }
+
+      /* ── Responsive ─────────────────────────────────── */
+      @media (max-width: 1024px) {
+        .main-content {
+          padding: 2.5rem 2rem 5rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        nav#nav {
+          padding: 1rem 1.25rem;
+        }
+        nav#nav.scrolled {
+          padding: 0.7rem 1.25rem;
+        }
+
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: 0;
+          height: 100vh;
+          width: 260px;
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 5rem 2rem 2rem;
+          gap: 1.25rem;
+          background: rgba(6, 6, 11, 0.97);
+          backdrop-filter: blur(20px);
+          border-left: 1px solid var(--border);
+          transform: translateX(100%);
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+          z-index: 200;
+        }
+
+        .nav-links.open {
+          transform: translateX(0);
+        }
+
+        .mobile-toggle {
+          display: flex;
+          z-index: 210;
+        }
+
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 280px;
+          height: 100vh;
+          padding-top: 5rem;
+          transform: translateX(-100%);
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+          z-index: 90;
+          background: rgba(6, 6, 11, 0.97);
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .sidebar-toggle {
+          display: flex;
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 2rem 1.25rem 4rem;
+        }
+
+        .page-header h1 {
+          font-size: 2rem;
+        }
+
+        h2 {
+          font-size: 1.35rem;
+        }
+
+        .version-card {
+          padding: 1.25rem 1.25rem;
+        }
+
+        .version-tag {
+          font-size: 1.15rem;
+        }
+
+        .timeline {
+          padding-left: 1.5rem;
+        }
+      }
+
+      @media (min-width: 769px) {
+        .sidebar-toggle {
+          display: none;
+        }
+      }
+
+      .sidebar-toggle {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 85;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .sidebar-toggle:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ── Overlay ────────────────────────────────────── */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 80;
+      }
+
+      .overlay.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ambient"></div>
+
+    <!-- ── Navigation ──────────────────────────────── -->
+    <nav id="nav">
+      <a href="./index.html" class="nav-logo">
+        <span class="dot"></span>
+        AETHER
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./getting-started.html">Get Started</a></li>
+        <li><a href="./architecture.html">Architecture</a></li>
+        <li><a href="./cli.html">CLI</a></li>
+        <li><a href="./agents.html">Agents</a></li>
+        <li><a href="./changelog.html" class="active">Changelog</a></li>
+        <li>
+          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta">GitHub →</a>
+        </li>
+      </ul>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ── Page Layout ─────────────────────────────── -->
+    <div class="page-wrapper">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-label">Releases</div>
+        <ul class="sidebar-nav" id="sidebarNav">
+          <li><a href="#v0.2.0">v0.2.0</a></li>
+          <li><a href="#v0.2.0-added" class="sub">Added</a></li>
+          <li><a href="#v0.2.0-fixed" class="sub">Fixed</a></li>
+          <li><a href="#v0.2.0-resolved" class="sub">Resolved</a></li>
+          <li><a href="#v0.1.0">v0.1.0</a></li>
+          <li><a href="#v0.1.0-added" class="sub">Added</a></li>
+        </ul>
+      </aside>
+
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="content">
+          <!-- Page Header -->
+          <header class="page-header reveal">
+            <div class="badge">Changelog</div>
+            <h1>Changelog</h1>
+            <p>
+              All notable changes to AETHER are documented here.
+              Format based on <a href="https://keepachangelog.com" target="_blank" rel="noopener">Keep a Changelog</a>.
+            </p>
+          </header>
+
+          <!-- npm badge -->
+          <div class="reveal">
+            <a href="https://www.npmjs.com/package/@ahmedtaha/aether" class="npm-badge" target="_blank" rel="noopener">
+              <span class="npm-icon">npm</span>
+              <span>@ahmedtaha/aether</span>
+              <span class="npm-ver">v0.2.0</span>
+            </a>
+          </div>
+
+          <!-- Timeline -->
+          <div class="timeline">
+
+            <!-- ── v0.2.0 ──────────────────────────────── -->
+            <section id="v0.2.0" class="version-card reveal">
+              <div class="version-header">
+                <span class="version-tag">0.2.0</span>
+                <span class="version-date">2026-03-08</span>
+              </div>
+
+              <!-- Added -->
+              <div id="v0.2.0-added" class="change-category">
+                <div class="category-label category-added">Added</div>
+                <ul class="change-list change-added">
+                  <li><strong>SQLite persistence</strong> — 19-table database (<code>.aether/aether.db</code>) with WAL mode, sqlite-vec for vector embeddings, and FTS5 for full-text search. All runtime state persists across restarts.</li>
+                  <li><strong>28 subsystems</strong> — Registry, Escalation, MemoryHighway, RAGIndex, InteractionNet, Aether-Link, AgentRouter, GuardrailsPipeline, SchemaValidator, ConversationManager, EntityMemory, HandoffManager, GroupChat, StateGraph, ProgressTracker, DurableWorkflow, ACPBus, ConflictResolver, SharedStateBus, StructuredLogger, PluginRegistry, ReactionEngine, SettingsManager, and more.</li>
+                  <li><strong>Synapse DSL</strong> — Define workflows in <code>.syn</code> files with lexer, parser, and transpiler.</li>
+                  <li><strong>MCP server</strong> — Model Context Protocol server for AI assistant integration with 6 tools and 4 resources.</li>
+                  <li><strong>VS Code extension</strong> — Language support and integration (aether-vscode v0.1.0).</li>
+                  <li><strong>Eval suite</strong> — 17-phase evaluation framework covering subsystems, protocol, DSL, integration, quality, and production readiness.</li>
+                  <li><strong>726 tests</strong> across 101 test files with full coverage of core subsystems.</li>
+                  <li><strong>Multi-provider support</strong> — Claude, OpenAI, Gemini, and Ollama with automatic tier mapping and fallback chains.</li>
+                  <li><strong>CI/CD</strong> — GitHub Actions for type checking, unit tests, npm publishing, and VS Code extension builds.</li>
+                </ul>
+              </div>
+
+              <!-- Fixed -->
+              <div id="v0.2.0-fixed" class="change-category">
+                <div class="category-label category-fixed">Fixed</div>
+                <ul class="change-list change-fixed">
+                  <li>Rate limiter now accepts configurable <code>rateLimitMax</code> and <code>rateLimitWindow</code> via constructor options (was hardcoded at 100).</li>
+                  <li>CLITransport tests now work cross-platform (Windows + Unix).</li>
+                  <li>35 TypeScript errors resolved across core modules:
+                    <ul class="sub-list">
+                      <li>ProviderConfig type aligned with tiers record structure.</li>
+                      <li>DurableWorkflow async status checks no longer produce unreachable-code errors.</li>
+                      <li>RAGIndex metadata spread order fixed.</li>
+                      <li>AgentRouter.query() call signature corrected.</li>
+                      <li>Embedder constructor called with required logger argument.</li>
+                      <li>SettingsManager type casts use <code>unknown</code> intermediate for safety.</li>
+                      <li>MCPPool stdio stream type narrowing added.</li>
+                      <li>Forge agent scoring uses <code>getRecentTasks()</code> instead of non-existent property.</li>
+                      <li>Eval test files annotated with explicit types.</li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Resolved -->
+              <div id="v0.2.0-resolved" class="change-category">
+                <div class="category-label category-resolved">Resolved</div>
+                <ul class="change-list change-resolved">
+                  <li><strong>PERSIST-01</strong> — All runtime state now persists in SQLite. Issue closed.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- ── v0.1.0 ──────────────────────────────── -->
+            <section id="v0.1.0" class="version-card reveal">
+              <div class="version-header">
+                <span class="version-tag">0.1.0</span>
+                <span class="version-date">2026-02-21</span>
+              </div>
+
+              <!-- Added -->
+              <div id="v0.1.0-added" class="change-category">
+                <div class="category-label category-added">Added</div>
+                <ul class="change-list change-added">
+                  <li>Initial framework with 3-tier agent hierarchy (Master / Manager / Worker).</li>
+                  <li>Agent definition via <code>.agent.md</code> files with YAML frontmatter.</li>
+                  <li>CLI with <code>init</code>, <code>run</code>, <code>link</code>, <code>status</code>, <code>registry</code>, <code>spawn</code>, <code>config</code>, <code>scan</code> commands.</li>
+                  <li>WebSocket server (Aether-Link) with BAP-02 binary protocol.</li>
+                  <li>Provider abstraction for Claude, OpenAI, Gemini, Ollama.</li>
+                  <li>In-memory agent registry, escalation, and task execution.</li>
+                </ul>
+              </div>
+            </section>
+
+          </div>
+          <!-- end .timeline -->
+
+          <!-- Footer -->
+          <footer class="footer reveal">
+            <p>
+              AETHER — Multi-Agent LLM Orchestration ·
+              <a href="https://github.com/SufficientDaikon/aether">GitHub</a> ·
+              <a href="./index.html">Home</a>
+            </p>
+          </footer>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      /* ── Nav Scroll Effect ────────────────────────── */
+      const nav = document.getElementById("nav");
+      window.addEventListener("scroll", () => {
+        nav.classList.toggle("scrolled", window.scrollY > 30);
+      });
+
+      /* ── Mobile Nav Toggle ────────────────────────── */
+      const mobileToggle = document.getElementById("mobileToggle");
+      const navLinks = document.getElementById("navLinks");
+      const overlay = document.getElementById("overlay");
+
+      function closeMenus() {
+        navLinks.classList.remove("open");
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+      }
+
+      mobileToggle.addEventListener("click", () => {
+        const isOpen = navLinks.classList.toggle("open");
+        overlay.classList.toggle("active", isOpen);
+      });
+
+      overlay.addEventListener("click", closeMenus);
+
+      /* ── Sidebar Toggle (Mobile) ──────────────────── */
+      const sidebar = document.getElementById("sidebar");
+      const sidebarToggle = document.getElementById("sidebarToggle");
+
+      sidebarToggle.addEventListener("click", () => {
+        const isOpen = sidebar.classList.toggle("open");
+        overlay.classList.toggle("active", isOpen);
+      });
+
+      /* Close sidebar on link click (mobile) */
+      document.querySelectorAll(".sidebar-nav a").forEach((a) => {
+        a.addEventListener("click", () => {
+          if (window.innerWidth <= 768) closeMenus();
+        });
+      });
+
+      /* ── Active Sidebar Link ──────────────────────── */
+      const sections = document.querySelectorAll("section[id], div[id]");
+      const sidebarLinks = document.querySelectorAll(".sidebar-nav a");
+
+      function updateActiveSidebarLink() {
+        let current = "";
+        const offset = 120;
+
+        sections.forEach((section) => {
+          const top = section.getBoundingClientRect().top;
+          if (top <= offset) current = section.id;
+        });
+
+        sidebarLinks.forEach((link) => {
+          link.classList.toggle(
+            "active",
+            link.getAttribute("href") === "#" + current
+          );
+        });
+      }
+
+      window.addEventListener("scroll", updateActiveSidebarLink, { passive: true });
+      updateActiveSidebarLink();
+
+      /* ── Reveal on Scroll ─────────────────────────── */
+      const reveals = document.querySelectorAll(".reveal");
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+      );
+
+      reveals.forEach((el) => revealObserver.observe(el));
+    </script>
+  </body>
+</html>
