@@ -1,0 +1,194 @@
+{
+  "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+  "startedAt": "2026-03-07T22:57:09.025Z",
+  "completedAt": "2026-03-07T22:57:09.049Z",
+  "totalTests": 18,
+  "passed": 18,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 80,
+  "maxPossibleScore": 80,
+  "results": [
+    {
+      "id": "4.1.1",
+      "name": "Lexer -- Tokenize agent definition, verify token types",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 6,
+      "maxScore": 6,
+      "details": "Produced 11 tokens; First token is KEYWORD 'agent'; Agent id tokenized as IDENTIFIER 'test-worker'; Contains BLOCK_START token; STRING token 'Test Worker' found; Last token is EOF"
+    },
+    {
+      "id": "4.1.2",
+      "name": "Lexer -- Single-line comments are stripped from token stream",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 3,
+      "maxScore": 3,
+      "details": "Comment text absent from token stream; KEYWORD 'agent' present after comment stripping; STRING 'Agent' present after comment stripping"
+    },
+    {
+      "id": "4.1.3",
+      "name": "Lexer -- Multiline prompt block tokenized as MULTILINE_STRING",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 4,
+      "maxScore": 4,
+      "details": "KEYWORD 'prompt' found; MULTILINE_STRING token present; Prompt content preserved in MULTILINE_STRING; MULTILINE_STRING follows directly after prompt keyword (no BLOCK_START)"
+    },
+    {
+      "id": "4.1.4",
+      "name": "Lexer -- Hyphenated keywords (on-fail, escalates-to) tokenized correctly",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 4,
+      "maxScore": 4,
+      "details": "'on-fail' tokenized as single KEYWORD; 'escalates-to' tokenized as single KEYWORD; 'system-architect' tokenized as IDENTIFIER; Arrow '->' not consumed by hyphen logic"
+    },
+    {
+      "id": "4.1.5",
+      "name": "Lexer -- Structural tokens: arrows, brackets, commas, newlines",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 3,
+      "maxScore": 3,
+      "details": "LIST_START and LIST_END present; Two COMMA tokens found (3-element list); All tokens have line and column metadata"
+    },
+    {
+      "id": "4.2.1",
+      "name": "Parser -- Parse agent definition with properties, tools, prompt",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 6,
+      "maxScore": 6,
+      "details": "Parsed 1 top-level node; Node type is 'agent'; Agent id: react-specialist; All scalar properties correct; Array properties (sections, capabilities) correct; Prompt text parsed correctly"
+    },
+    {
+      "id": "4.2.2",
+      "name": "Parser -- Parse workflow with trigger, steps, requires, on-fail",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 5,
+      "maxScore": 5,
+      "details": "Parsed 1 workflow node; Workflow id and trigger correct; 2 steps parsed; Step 'lint' parsed correctly; Step 'build' with requires/on-fail correct"
+    },
+    {
+      "id": "4.2.3",
+      "name": "Parser -- Parse pipeline with parallel and then stages",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 5,
+      "maxScore": 5,
+      "details": "Parsed 1 pipeline node; Pipeline id correct; 2 stages parsed; Parallel stage with 2 tasks correct; Then stage with 1 task correct"
+    },
+    {
+      "id": "4.2.4",
+      "name": "Parser -- Parse agent with when-handlers (request, notify actions)",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 4,
+      "maxScore": 4,
+      "details": "Parsed agent node; 2 handlers parsed; Handler 'needs_help' with request+notify actions correct; Handler 'context overflow' with include action correct"
+    },
+    {
+      "id": "4.3.1",
+      "name": "Transpiler -- Agent AST to JSON (toJSON)",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 6,
+      "maxScore": 6,
+      "details": "toJSON returned 1 object; id and name correct; tier and llmRequirement correct; Sections uppercased correctly; escalationTarget correct; metadata.tools and metadata.prompt correct"
+    },
+    {
+      "id": "4.3.2",
+      "name": "Transpiler -- Agent AST to Markdown (toAgentFile)",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 6,
+      "maxScore": 6,
+      "details": "YAML frontmatter present with correct id; Name in frontmatter correct; Markdown title correct; Prompt text present in markdown; Tools section correct; Event Handlers section correct"
+    },
+    {
+      "id": "4.3.3",
+      "name": "Transpiler -- Workflow and Pipeline AST to JSON",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 4,
+      "maxScore": 4,
+      "details": "2 JSON objects produced; Workflow JSON id, type, trigger correct; Workflow step JSON correct with onFail; Pipeline JSON with parallel+then stages correct"
+    },
+    {
+      "id": "4.3.4",
+      "name": "Transpiler -- toRegistrationMessages produces BAP-01 register payloads",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 4,
+      "maxScore": 4,
+      "details": "2 registration messages (agents only, workflow skipped); Message 1 structure correct (from, to, type, id, timestamp); Message 1 payload contains agent JSON; Message 2 from=beta with priority field"
+    },
+    {
+      "id": "4.4.1",
+      "name": "Complex -- Full Lexer->Parser->Transpiler on multi-construct .syn",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Lexer produced 247 tokens; Comments stripped from token stream; Parser produced 5 top-level nodes (3 agents, 1 workflow, 1 pipeline); Correct distribution: 3 agents, 1 workflow, 1 pipeline; Transpiler.toJSON produced 5 JSON objects; system-architect JSON fields correct; Workflow JSON with 3 steps and on-fail=retry correct; Pipeline JSON with 3 stages (1 parallel, 2 then) correct; Agent markdown: frontmatter, title, prompt, handlers all present; 3 registration messages (agents only)"
+    },
+    {
+      "id": "4.5.1",
+      "name": "Errors -- Missing fields: agent without id, step without braces",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 3,
+      "maxScore": 3,
+      "details": "SyntaxError for agent without id; SyntaxError for step missing block; SyntaxError for pipeline task missing agent keyword"
+    },
+    {
+      "id": "4.5.2",
+      "name": "Errors -- Invalid keywords at top level and in bodies",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 2,
+      "maxScore": 2,
+      "details": "SyntaxError for invalid top-level keyword; SyntaxError for invalid on-fail value 'explode'"
+    },
+    {
+      "id": "4.5.3",
+      "name": "Errors -- Unclosed blocks and unterminated strings",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 3,
+      "maxScore": 3,
+      "details": "SyntaxError for unclosed agent block; SyntaxError for unterminated string; SyntaxError for unterminated prompt block"
+    },
+    {
+      "id": "4.5.4",
+      "name": "Errors -- Empty and whitespace-only input produces no nodes",
+      "phase": "Phase 4: DSL (Lexer / Parser / Transpiler) Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 2,
+      "maxScore": 2,
+      "details": "Empty input produces 0 AST nodes; Whitespace/comment-only input produces 0 AST nodes"
+    }
+  ]
+}

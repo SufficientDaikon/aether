@@ -1,0 +1,164 @@
+{
+  "phase": "Phase 12: Quality Benchmarks",
+  "startedAt": "2026-03-07T22:59:19.007Z",
+  "completedAt": "2026-03-07T22:59:19.198Z",
+  "totalTests": 15,
+  "passed": 15,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 144,
+  "maxPossibleScore": 150,
+  "results": [
+    {
+      "id": "12.01.1",
+      "name": "Routing — react task routes to react-specialist",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 32,
+      "score": 10,
+      "maxScore": 10,
+      "details": "routed to react-specialist expected react-specialist"
+    },
+    {
+      "id": "12.01.2",
+      "name": "Routing — SQL task routes to backend agent",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 31,
+      "score": 7,
+      "maxScore": 10,
+      "details": "routed to playwright-tester expected postgres-db-architect"
+    },
+    {
+      "id": "12.01.3",
+      "name": "Routing — security task routes to code-hardener",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 33,
+      "score": 10,
+      "maxScore": 10,
+      "details": "routed to code-hardener expected code-hardener"
+    },
+    {
+      "id": "12.01.4",
+      "name": "Routing — testing task routes to tester agent",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 30,
+      "score": 7,
+      "maxScore": 10,
+      "details": "routed to system-architect expected playwright-tester"
+    },
+    {
+      "id": "12.01.5",
+      "name": "Routing — batch accuracy >= 4/6",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 30,
+      "score": 10,
+      "maxScore": 10,
+      "details": "batch accuracy: 5/6"
+    },
+    {
+      "id": "12.01.6",
+      "name": "Routing — unknown task gets load-balanced (not null)",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 27,
+      "score": 10,
+      "maxScore": 10,
+      "details": "result=playwright-tester strategy=load-balance"
+    },
+    {
+      "id": "12.02.1",
+      "name": "Guardrails — safe prompts not blocked (low FP rate)",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "false positives: 0/10 (FP rate: 0.0%)"
+    },
+    {
+      "id": "12.02.2",
+      "name": "Guardrails — malicious prompts blocked (low FN rate)",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "false negatives: 0/10 (FN rate: 0.0%)"
+    },
+    {
+      "id": "12.02.3",
+      "name": "Guardrails — F1 score >= 0.9",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "F1=1.000 precision=1.000 recall=1.000 TP=5 FP=0 FN=0"
+    },
+    {
+      "id": "12.03.1",
+      "name": "Workflow — sequential chain builds correctly",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "steps=3 sequential=true deps=true"
+    },
+    {
+      "id": "12.03.2",
+      "name": "Workflow — parallel fan-out groups steps",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "steps=3 allParallel=true hasGroup=true"
+    },
+    {
+      "id": "12.03.3",
+      "name": "Workflow — build rejects empty workflow",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "empty build threw: true"
+    },
+    {
+      "id": "12.04.1",
+      "name": "Conflict — majority-vote picks centroid output",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "strategy=majority-vote picked react=true"
+    },
+    {
+      "id": "12.04.2",
+      "name": "Conflict — weighted-by-tier picks highest tier",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "strategy=weighted-by-tier pickedMaster=true"
+    },
+    {
+      "id": "12.04.3",
+      "name": "Conflict — merge combines outputs",
+      "phase": "Phase 12: Quality Benchmarks",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "strategy=merge merged output length=140 (longer than single: true)"
+    }
+  ]
+}

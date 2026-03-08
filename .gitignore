@@ -10,6 +10,7 @@ yarn.lock
 dist/
 build/
 out/
+*.vsix
 
 # Environment
 .env
@@ -36,6 +37,13 @@ Thumbs.db
 # Testing
 .nyc_output/
 coverage/
+**/.pipeline-tmp*/
+**/.routing-tmp*/
+**/.limits-tmp*/
+**/.recovery-tmp*/
+**/.degradation-tmp*/
+**/.health-tmp*/
+aether.db
 
 # macOS
 ._*
@@ -43,5 +51,18 @@ coverage/
 .LSOverride/
 
 # Temporary files
-tmpclaude-*/
+tmpclaude-*
+**/tmpclaude-*
 nul
+**/nul
+.routing-tmp-*
+**/.routing-tmp-*
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+
+# Claude session artifacts
+.claude/
+
+# Python test artifacts
+docs/_test_*.py

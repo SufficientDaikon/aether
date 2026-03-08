@@ -1,0 +1,20 @@
+{
+  "master": {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro"
+  },
+  "manager": {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro"
+  },
+  "worker": {
+    "provider": "gemini",
+    "model": "gemini-2.5-flash"
+  },
+  "fallbackChain": [
+    {
+      "provider": "gemini",
+      "model": "gemini-2.5-flash"
+    }
+  ]
+}

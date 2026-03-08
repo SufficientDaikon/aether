@@ -975,7 +975,7 @@ describe("Rate Limiting", () => {
     port = randomPort();
     logDir = join(import.meta.dir, `.tmp-ws-ratelimit-${port}`);
     mkdirSync(logDir, { recursive: true });
-    server = new AetherLinkServer(port, logDir);
+    server = new AetherLinkServer(port, logDir, { rateLimitMax: 10 });
     await server.start();
   });
 
@@ -1125,7 +1125,7 @@ describe("Combined Security Scenarios", () => {
     port = randomPort();
     logDir = join(import.meta.dir, `.tmp-ws-combined-${port}`);
     mkdirSync(logDir, { recursive: true });
-    server = new AetherLinkServer(port, logDir);
+    server = new AetherLinkServer(port, logDir, { rateLimitMax: 10 });
     server.setAuthToken("combined-secret");
     await server.start();
   });

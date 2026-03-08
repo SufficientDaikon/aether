@@ -158,8 +158,9 @@ export class DurableWorkflow {
     }
 
     for (let i = startIndex; i < ordered.length; i++) {
-      // Check for pause or abort
-      if (this.status === "paused") {
+      // Check for pause or abort (status may change asynchronously via pause()/abort())
+      const currentStatus = this.getStatus();
+      if (currentStatus === "paused") {
         return {
           workflowId: this.workflow.id,
           status: "paused",
@@ -170,7 +171,7 @@ export class DurableWorkflow {
         };
       }
 
-      if (this.status === "aborted") {
+      if (currentStatus === "aborted") {
         return {
           workflowId: this.workflow.id,
           status: "aborted",

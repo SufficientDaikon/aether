@@ -1,0 +1,204 @@
+{
+  "phase": "Phase 11: Integration Testing",
+  "startedAt": "2026-03-07T22:58:54.468Z",
+  "completedAt": "2026-03-07T22:59:18.995Z",
+  "totalTests": 19,
+  "passed": 19,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 190,
+  "maxPossibleScore": 190,
+  "results": [
+    {
+      "id": "11.01.1",
+      "name": "Runtime — constructor and init",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 59,
+      "score": 10,
+      "maxScore": 10,
+      "details": "registry=true logger=true config=true"
+    },
+    {
+      "id": "11.01.2",
+      "name": "Runtime — subsystems initialized",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 49,
+      "score": 10,
+      "maxScore": 10,
+      "details": "4/4 non-store subsystems initialized"
+    },
+    {
+      "id": "11.01.3",
+      "name": "Runtime — store-backed subsystems",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 50,
+      "score": 10,
+      "maxScore": 10,
+      "details": "5/5 store-backed subsystems initialized"
+    },
+    {
+      "id": "11.01.4",
+      "name": "Runtime — clean shutdown",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 48,
+      "score": 10,
+      "maxScore": 10,
+      "details": "server cleared after shutdown: true"
+    },
+    {
+      "id": "11.02.1",
+      "name": "Pipeline — router resolves correct agent",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 31,
+      "score": 10,
+      "maxScore": 10,
+      "details": "routed to: react-specialist (strategy: section-fallback)"
+    },
+    {
+      "id": "11.02.2",
+      "name": "Pipeline — guardrails pre-check passes safe input",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "allowed=true guardId=pipeline"
+    },
+    {
+      "id": "11.02.3",
+      "name": "Pipeline — guardrails blocks injection",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Potential prompt injection detected: ignore\\s+(all\\s+)?previous\\s+instructions"
+    },
+    {
+      "id": "11.02.4",
+      "name": "Pipeline — schema validator extracts JSON",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "valid=true parsed={\"name\":\"test\",\"count\":42}"
+    },
+    {
+      "id": "11.03.1",
+      "name": "Escalation — worker to manager",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "target=manager-1 circuitBroken=false"
+    },
+    {
+      "id": "11.03.2",
+      "name": "Escalation — manager to master",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "target=mstr-a"
+    },
+    {
+      "id": "11.03.3",
+      "name": "Escalation — circuit breaker trips",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "circuitBroken=true"
+    },
+    {
+      "id": "11.03.4",
+      "name": "Escalation — chain traversal (registry)",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "chain=[chain-m → chain-x] length=2"
+    },
+    {
+      "id": "11.04.1",
+      "name": "MCP Bridge — get_status tool",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 6036,
+      "score": 10,
+      "maxScore": 10,
+      "details": "response contains status info: true (len=759)"
+    },
+    {
+      "id": "11.04.2",
+      "name": "MCP Bridge — query_agents tool",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 6032,
+      "score": 10,
+      "maxScore": 10,
+      "details": "query_agents response relevant: true"
+    },
+    {
+      "id": "11.04.3",
+      "name": "MCP Bridge — switch_context tool",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 6048,
+      "score": 10,
+      "maxScore": 10,
+      "details": "switch_context responded: true"
+    },
+    {
+      "id": "11.04.4",
+      "name": "MCP Bridge — invalid method returns error",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 6027,
+      "score": 10,
+      "maxScore": 10,
+      "details": "error response for bad method: true"
+    },
+    {
+      "id": "11.05.1",
+      "name": "WebSocket — server starts and /health responds",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 6,
+      "score": 10,
+      "maxScore": 10,
+      "details": "status=200 body.status=ok"
+    },
+    {
+      "id": "11.05.2",
+      "name": "WebSocket — client connects",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 124,
+      "score": 10,
+      "maxScore": 10,
+      "details": "connected=true"
+    },
+    {
+      "id": "11.05.3",
+      "name": "WebSocket — /registry endpoint responds",
+      "phase": "Phase 11: Integration Testing",
+      "status": "pass",
+      "durationMs": 5,
+      "score": 10,
+      "maxScore": 10,
+      "details": "status=200 containsAgent=true"
+    }
+  ]
+}

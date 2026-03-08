@@ -1,0 +1,144 @@
+{
+  "phase": "Phase 3: Protocol & Transport Tests",
+  "startedAt": "2026-03-07T22:57:08.666Z",
+  "completedAt": "2026-03-07T22:57:09.013Z",
+  "totalTests": 13,
+  "passed": 13,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 81,
+  "maxPossibleScore": 84,
+  "results": [
+    {
+      "id": "3.1.1",
+      "name": "BAPCodec -- Encode/Decode roundtrip",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 26,
+      "score": 6,
+      "maxScore": 6,
+      "details": "Encoded to 163 bytes; Decoded message ID matches; All core fields preserved through roundtrip; Payload preserved through roundtrip"
+    },
+    {
+      "id": "3.1.2",
+      "name": "BAPCodec -- Unicode payload roundtrip",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 4,
+      "maxScore": 4,
+      "details": "Japanese characters preserved; Emoji preserved; Arabic characters preserved; Mixed diacritics preserved"
+    },
+    {
+      "id": "3.1.3",
+      "name": "BAPCodec -- Large payload (100KB+)",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 4,
+      "maxScore": 4,
+      "details": "Raw JSON size: 102557 bytes; Encoded size: 152 bytes; Large payload survived roundtrip intact; Compression effective: 0.1% of original"
+    },
+    {
+      "id": "3.1.4",
+      "name": "BAPCodec -- BAP-01 legacy hex backward compat",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 4,
+      "maxScore": 4,
+      "details": "Legacy BAP-01 hex decoded successfully, ID matches; Legacy from/to fields correct; isValid returns true for legacy format"
+    },
+    {
+      "id": "3.1.5",
+      "name": "BAPCodec -- Validation rules (invalid types, missing fields)",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 8,
+      "maxScore": 8,
+      "details": "Throws BAPError for missing 'from'; Throws BAPError for invalid message type; Throws BAPError for invalid priority; Throws BAPError for invalid 'from' characters"
+    },
+    {
+      "id": "3.1.6",
+      "name": "BAPCodec -- Compression efficiency measurement",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 4,
+      "maxScore": 4,
+      "details": "rawBytes=4058, encodedBytes=279, overhead=0.069; Compression effective: 93.1% savings"
+    },
+    {
+      "id": "3.1.7",
+      "name": "BAPCodec -- Magic header BAP02 verification",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 4,
+      "maxScore": 4,
+      "details": "BAP02 magic header present and correct; Tampered header correctly rejected with BAPError; Short data correctly rejected with BAPError"
+    },
+    {
+      "id": "3.2.1",
+      "name": "AetherLinkServer -- HTTP endpoints /health, /status, /registry",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 28,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Server started on port 19999; /health returned 200: {\"status\":\"ok\"}; /status returned valid metrics: agents=0, msgs=0; /registry returned 200: {\"agents\":[]}; Server stopped cleanly (3.2.1)"
+    },
+    {
+      "id": "3.2.2",
+      "name": "AetherLinkServer -- WebSocket connect and register",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 213,
+      "score": 8,
+      "maxScore": 8,
+      "details": "Server started; WebSocket connected successfully; Server tracks connected agent; Register message sent successfully; Server processed 1 message(s); Server stopped cleanly (3.2.2)"
+    },
+    {
+      "id": "3.2.3",
+      "name": "AetherLinkServer -- Broadcast to channel",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 11,
+      "score": 3,
+      "maxScore": 6,
+      "details": "Two clients connected to same channel; Broadcast sent from bcast-agent-1; bcast-agent-2 did not receive broadcast within timeout; Server stopped cleanly (3.2.3)"
+    },
+    {
+      "id": "3.2.4",
+      "name": "AetherLinkServer -- Clean shutdown",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 11,
+      "score": 6,
+      "maxScore": 6,
+      "details": "Server started for shutdown test; Client connected; server.stop() returned; Client received close: code=1000, reason=\"Server shutting down\"; No agents connected after shutdown"
+    },
+    {
+      "id": "3.3.1",
+      "name": "CLITransport -- Execute echo command and verify output",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 45,
+      "score": 10,
+      "maxScore": 10,
+      "details": "transportType is 'cli'; isConnected() returns true after connect; Result requestId matches task ID; Task completed with status=success; Output contains expected text: \"hello-from-eval {\"id\":\"eval-cli-task-001\",\"description\":\"Test CLI transport\",\"co\"; Duration: 43ms; Disconnected successfully"
+    },
+    {
+      "id": "3.3.2",
+      "name": "TransportManager -- Instantiate and check routing logic",
+      "phase": "Phase 3: Protocol & Transport Tests",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 10,
+      "maxScore": 10,
+      "details": "TransportManager instantiated; isExternalAgent returns false for local agent; isExternalAgent returns true for CLI agent; execute throws for agent without transport config; getStatus returns empty array initially; disconnectAll completed without error"
+    }
+  ]
+}

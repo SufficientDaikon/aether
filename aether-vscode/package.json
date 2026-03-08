@@ -4,7 +4,6 @@
   "description": "33 specialized AI agents with 3-tier hierarchy, visual orchestration, approval workflows, cost tracking, and codebase memory",
   "version": "0.1.0",
   "publisher": "aether",
-  "icon": "media/aether-icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/aether-framework/aether"

@@ -75,7 +75,7 @@ export interface MessageMetadata extends RAGMetadata {
 export interface RAGIndexConfig {
   /** Default number of results to return (default: 5) */
   defaultTopK: number;
-  /** Minimum similarity score to include (default: 0.3) */
+  /** Minimum similarity score to include (default: 0.1) */
   minScore: number;
   /** Whether to use BM25 for keyword search (default: true) */
   enableBM25: boolean;
@@ -83,7 +83,7 @@ export interface RAGIndexConfig {
 
 const DEFAULT_CONFIG: RAGIndexConfig = {
   defaultTopK: 5,
-  minScore: 0.3,
+  minScore: 0.1,
   enableBM25: true,
 };
 
@@ -203,16 +203,18 @@ export class RAGIndex {
   ): Promise<string> {
     this.ensureInitialized();
 
-    const embedding = await this.embedder.embed(text);
-
-    // Also add to TF-IDF corpus for better IDF scores
+    // Add to TF-IDF corpus BEFORE embedding so IDF weights are
+    // consistent between index-time and query-time vectors.
     this.embedder.addToCorpus(text);
+
+    const embedding = await this.embedder.embed(text);
 
     const now = Date.now();
     const itemId =
       id ?? `${namespace}-${now}-${Math.random().toString(36).slice(2, 8)}`;
 
     const fullMetadata: RAGMetadata = {
+      ...metadata,
       namespace,
       text: text.slice(0, 2000), // Cap stored text to prevent bloat
       sourceId: metadata.sourceId,
@@ -220,7 +222,6 @@ export class RAGIndex {
       createdAt: metadata.createdAt ?? now,
       updatedAt: now,
       boost: metadata.boost ?? 1.0,
-      ...metadata,
     };
 
     if (this.store) {
@@ -259,11 +260,12 @@ export class RAGIndex {
 
     const texts = items.map((i) => i.text);
 
+    // Add to corpus BEFORE embedding so IDF weights are consistent
+    // between index-time and query-time vectors.
+    this.embedder.addBatchToCorpus(texts);
+
     // Batch embed
     const embeddings = await this.embedder.embedBatch(texts);
-
-    // Add to corpus
-    this.embedder.addBatchToCorpus(texts);
 
     const now = Date.now();
     const ids: string[] = [];
@@ -275,6 +277,7 @@ export class RAGIndex {
         `${namespace}-${now}-${i}-${Math.random().toString(36).slice(2, 8)}`;
 
       const fullMetadata: RAGMetadata = {
+        ...item.metadata,
         namespace,
         text: item.text.slice(0, 2000),
         sourceId: item.metadata.sourceId,
@@ -282,7 +285,6 @@ export class RAGIndex {
         createdAt: item.metadata.createdAt ?? now,
         updatedAt: now,
         boost: item.metadata.boost ?? 1.0,
-        ...item.metadata,
       };
 
       if (this.store) {
@@ -616,8 +618,16 @@ export class RAGIndex {
         sourceId: agent.id,
         contentType: "agent",
         boost:
-          ({ sentinel: 2.0, forge: 1.8, master: 1.5, manager: 1.2, worker: 1.0 } as Record<string, number>)[agent.tier] ?? 1.0,
-      } as Partial<AgentMetadata>,
+          (
+            {
+              sentinel: 2.0,
+              forge: 1.8,
+              master: 1.5,
+              manager: 1.2,
+              worker: 1.0,
+            } as Record<string, number>
+          )[agent.tier] ?? 1.0,
+      },
       agent.id,
     );
   }
@@ -637,7 +647,7 @@ export class RAGIndex {
       {
         sourceId: filePath,
         contentType: "code",
-      } as Partial<CodeMetadata>,
+      },
       `code-${filePath}-${startLine}`,
     );
   }
@@ -657,7 +667,7 @@ export class RAGIndex {
         sourceId: messageId,
         contentType: "message",
         boost: priority >= 4 ? 1.3 : 1.0,
-      } as Partial<MessageMetadata>,
+      },
       messageId,
     );
   }

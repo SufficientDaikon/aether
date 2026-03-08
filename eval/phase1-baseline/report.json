@@ -1,0 +1,138 @@
+{
+  "phase": "Phase 1 — Baseline Environment",
+  "startedAt": "2026-03-07T22:54:49.546Z",
+  "completedAt": "2026-03-07T22:57:06.695Z",
+  "totalTests": 8,
+  "passed": 5,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 3,
+  "totalScore": 34,
+  "maxPossibleScore": 34,
+  "results": [
+    {
+      "id": "1.1",
+      "name": "Bun version >= 1.1.0",
+      "phase": "Phase 1 — Baseline Environment",
+      "status": "pass",
+      "durationMs": 0,
+      "details": "Bun 1.3.9 detected",
+      "metadata": {
+        "version": "1.3.9"
+      }
+    },
+    {
+      "id": "1.2",
+      "name": "Critical dependencies present",
+      "phase": "Phase 1 — Baseline Environment",
+      "status": "pass",
+      "durationMs": 0,
+      "details": "All critical dependencies found: msgpackr, sqlite-vec",
+      "metadata": {
+        "found": [
+          "msgpackr",
+          "sqlite-vec"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "id": "1.3",
+      "name": "Config file exists",
+      "phase": "Phase 1 — Baseline Environment",
+      "status": "pass",
+      "durationMs": 1,
+      "details": "Found .aether/config.json",
+      "metadata": {
+        "path": "H:\\aether\\.aether\\config.json"
+      }
+    },
+    {
+      "id": "1.4",
+      "name": "SQLiteStore boots in-memory",
+      "phase": "Phase 1 — Baseline Environment",
+      "status": "pass",
+      "durationMs": 50,
+      "details": "SQLiteStore constructed, initialized, and closed without error",
+      "metadata": {
+        "tempDir": "C:\\Users\\tahaa\\AppData\\Local\\Temp\\aether-eval-zzPPDn"
+      }
+    },
+    {
+      "id": "1.5",
+      "name": "Agent definition discovery",
+      "phase": "Phase 1 — Baseline Environment",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 34,
+      "maxScore": 34,
+      "details": "Discovered 34 agent definition(s) under agents/",
+      "metadata": {
+        "count": 34,
+        "files": [
+          "H:\\aether\\agents\\external\\local-comfyui.agent.md",
+          "H:\\aether\\agents\\external\\mcp-filesystem.agent.md",
+          "H:\\aether\\agents\\external\\nano-banana-pro.agent.md",
+          "H:\\aether\\agents\\external\\remote-aether-images.agent.md",
+          "H:\\aether\\agents\\external\\replicate-sdxl.agent.md",
+          "H:\\aether\\agents\\forge-0.agent.md",
+          "H:\\aether\\agents\\managers\\cyber-sentinel.agent.md",
+          "H:\\aether\\agents\\managers\\marketing-lead.agent.md",
+          "H:\\aether\\agents\\managers\\product-visionary.agent.md",
+          "H:\\aether\\agents\\managers\\qa-audit-director.agent.md",
+          "H:\\aether\\agents\\managers\\system-architect.agent.md",
+          "H:\\aether\\agents\\master\\cortex.agent.md",
+          "H:\\aether\\agents\\sentinel-0.agent.md",
+          "H:\\aether\\agents\\workers\\backend\\bun-runtime-master.agent.md",
+          "H:\\aether\\agents\\workers\\backend\\postgres-db-architect.agent.md",
+          "H:\\aether\\agents\\workers\\backend\\redis-state-guard.agent.md",
+          "H:\\aether\\agents\\workers\\frontend\\react-specialist.agent.md",
+          "H:\\aether\\agents\\workers\\frontend\\ui-designer.agent.md",
+          "H:\\aether\\agents\\workers\\frontend\\ux-psychologist.agent.md",
+          "H:\\aether\\agents\\workers\\marketing\\copywriter.agent.md",
+          "H:\\aether\\agents\\workers\\marketing\\fomo-logic-engine.agent.md",
+          "H:\\aether\\agents\\workers\\mcp\\mcp-server-creator.agent.md",
+          "H:\\aether\\agents\\workers\\mcp\\skill-logic-generator.agent.md",
+          "H:\\aether\\agents\\workers\\meta\\agent-breeder.agent.md",
+          "H:\\aether\\agents\\workers\\meta\\general.agent.md",
+          "H:\\aether\\agents\\workers\\research\\market-analyst.agent.md",
+          "H:\\aether\\agents\\workers\\research\\ragx-indexer.agent.md",
+          "H:\\aether\\agents\\workers\\security\\code-hardener.agent.md",
+          "H:\\aether\\agents\\workers\\security\\dependency-sentinel.agent.md",
+          "H:\\aether\\agents\\workers\\security\\threat-architect.agent.md",
+          "H:\\aether\\agents\\workers\\security\\vuln-hunter.agent.md",
+          "H:\\aether\\agents\\workers\\tools\\cli-wizard.agent.md",
+          "H:\\aether\\agents\\workers\\tools\\playwright-tester.agent.md",
+          "H:\\aether\\agents\\workers\\workflow\\script-automator.agent.md"
+        ]
+      }
+    },
+    {
+      "id": "1.6",
+      "name": "Existing unit tests pass",
+      "phase": "Phase 1 — Baseline Environment",
+      "status": "error",
+      "durationMs": 16544,
+      "details": "Test threw an exception",
+      "error": "bun test exited with code 1. Parsed: 722 pass, 4 fail.\nOutput (last 500 chars): s\\federation.ts                                      |    0.00 |    2.37 | 30-203,210-236,242-246\n transports\\manager.ts                                         |   70.00 |   81.25 | 155-172\n transports\\mcp.ts                                             |    0.00 |    1.94 | 36-220,226-283,287-369,375-395,399-405\n---------------------------------------------------------------|---------|---------|-------------------\n\n 722 pass\n 4 fail\n 1833 expect() calls\nRan 726 tests across 101 files. [16.42s]\n\nError: bun test exited with code 1. Parsed: 722 pass, 4 fail.\nOutput (last 500 chars): s\\federation.ts                                      |    0.00 |    2.37 | 30-203,210-236,242-246\n transports\\manager.ts                                         |   70.00 |   81.25 | 155-172\n transports\\mcp.ts                                             |    0.00 |    1.94 | 36-220,226-283,287-369,375-395,399-405\n---------------------------------------------------------------|---------|---------|-------------------\n\n 722 pass\n 4 fail\n 1833 expect() calls\nRan 726 tests across 101 files. [16.42s]\n\n    at <anonymous> (H:\\aether\\eval\\phase1-baseline\\run.ts:221:17)\n    at async runTest (H:\\aether\\eval\\helpers\\test-harness.ts:67:29)\n    at async run (H:\\aether\\eval\\phase1-baseline\\run.ts:204:17)\n    at async main (H:\\aether\\eval\\run-all.ts:117:38)\n    at processTicksAndRejections (native:7:39)"
+    },
+    {
+      "id": "1.7",
+      "name": "Simulation test passes",
+      "phase": "Phase 1 — Baseline Environment",
+      "status": "error",
+      "durationMs": 472,
+      "details": "Test threw an exception",
+      "error": "Simulation exited with code 1.\nOutput (last 500 chars): m ms\n\n623 | \n624 | // Serialization round-trip\n625 | const serResult = bench(\n626 |   \"Serialize + deserialize registry\",\n627 |   () => {\n628 |     const json = registry.toJSON();\n                                ^\nTypeError: registry.toJSON is not a function. (In 'registry.toJSON()', 'registry.toJSON' is undefined)\n      at <anonymous> (H:\\aether\\tests\\simulation.ts:628:27)\n      at bench (H:\\aether\\tests\\simulation.ts:74:3)\n      at H:\\aether\\tests\\simulation.ts:625:19\n\nBun v1.3.9 (Windows x64)\nError: Simulation exited with code 1.\nOutput (last 500 chars): m ms\n\n623 | \n624 | // Serialization round-trip\n625 | const serResult = bench(\n626 |   \"Serialize + deserialize registry\",\n627 |   () => {\n628 |     const json = registry.toJSON();\n                                ^\nTypeError: registry.toJSON is not a function. (In 'registry.toJSON()', 'registry.toJSON' is undefined)\n      at <anonymous> (H:\\aether\\tests\\simulation.ts:628:27)\n      at bench (H:\\aether\\tests\\simulation.ts:74:3)\n      at H:\\aether\\tests\\simulation.ts:625:19\n\nBun v1.3.9 (Windows x64)\n    at <anonymous> (H:\\aether\\eval\\phase1-baseline\\run.ts:250:17)\n    at async runTest (H:\\aether\\eval\\helpers\\test-harness.ts:67:29)\n    at async run (H:\\aether\\eval\\phase1-baseline\\run.ts:237:17)\n    at async main (H:\\aether\\eval\\run-all.ts:117:38)\n    at processTicksAndRejections (native:7:39)"
+    },
+    {
+      "id": "1.8",
+      "name": "E2E executor test passes",
+      "phase": "Phase 1 — Baseline Environment",
+      "status": "error",
+      "durationMs": 120077,
+      "details": "Test threw an exception",
+      "error": "Process timed out after 120000ms\nError: Process timed out after 120000ms\n    at <anonymous> (H:\\aether\\eval\\phase1-baseline\\run.ts:59:18)"
+    }
+  ]
+}

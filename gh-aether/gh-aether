@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+# ─────────────────────────────────────────────────────────────
+# gh-aether — GitHub CLI extension for AETHER
+#
+# Usage:
+#   gh aether run "task description"
+#   gh aether status
+#   gh aether registry
+#   gh aether pr-review              # Review current PR
+#   gh aether issue-plan <number>    # Plan from GitHub issue
+#   gh aether commit-review          # Review staged changes
+#   gh aether help
+# ─────────────────────────────────────────────────────────────
+
+set -euo pipefail
+
+# Resolve AETHER root (relative to this script)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+AETHER_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+AETHER_CLI="$AETHER_ROOT/bin/aether.ts"
+
+# Ensure bun is available
+if ! command -v bun &>/dev/null; then
+  echo "Error: bun is required but not found. Install: https://bun.sh" >&2
+  exit 1
+fi
+
+# ── GitHub-specific commands ─────────────────────────────────
+
+cmd_pr_review() {
+  local pr_diff
+  pr_diff=$(gh pr diff 2>/dev/null) || {
+    echo "Error: No PR found for current branch. Are you on a PR branch?" >&2
+    exit 1
+  }
+
+  local pr_info
+  pr_info=$(gh pr view --json title,body,url --jq '"\(.title)\n\(.url)\n\(.body)"' 2>/dev/null) || pr_info=""
+
+  local prompt="Review this pull request. Focus on correctness, security, performance, and code quality.
+
+PR Info:
+${pr_info}
+
+Diff:
+${pr_diff}"
+
+  bun run "$AETHER_CLI" run -a code-reviewer "$prompt"
+}
+
+cmd_issue_plan() {
+  local issue_num="${1:-}"
+  if [[ -z "$issue_num" ]]; then
+    echo "Usage: gh aether issue-plan <issue-number>" >&2
+    exit 1
+  fi
+
+  local issue_body
+  issue_body=$(gh issue view "$issue_num" --json title,body,labels --jq '
+    "Title: \(.title)\nLabels: \(.labels | map(.name) | join(", "))\n\nBody:\n\(.body)"
+  ') || {
+    echo "Error: Could not fetch issue #${issue_num}" >&2
+    exit 1
+  }
+
+  local prompt="Create an implementation plan for this GitHub issue. Break it into sub-tasks with agent assignments, file changes, and estimated complexity.
+
+${issue_body}"
+
+  bun run "$AETHER_CLI" run -a system-architect "$prompt"
+}
+
+cmd_commit_review() {
+  local staged_diff
+  staged_diff=$(git diff --cached 2>/dev/null) || {
+    echo "Error: Not in a git repository or no staged changes." >&2
+    exit 1
+  }
+
+  if [[ -z "$staged_diff" ]]; then
+    echo "No staged changes to review. Stage files with 'git add' first." >&2
+    exit 1
+  fi
+
+  local prompt="Review these staged changes before commit. Check for bugs, security issues, missing tests, and code quality.
+
+Staged diff:
+${staged_diff}"
+
+  bun run "$AETHER_CLI" run -a code-reviewer "$prompt"
+}
+
+cmd_help() {
+  cat <<'HELP'
+AETHER — Multi-Agent AI Orchestrator (GitHub CLI Extension)
+
+COMMANDS:
+  gh aether run <task>          Route task to best-fit agent
+  gh aether run -a <id> <task>  Run task on specific agent
+  gh aether status              Show runtime status
+  gh aether registry            List all registered agents
+  gh aether spawn <id>          Activate a specific agent
+  gh aether config get <path>   Read config value
+  gh aether config set <p> <v>  Set config value
+  gh aether context list        List contexts
+  gh aether context switch <n>  Switch context
+  gh aether scan                Scan workspace tech stack
+
+GITHUB-SPECIFIC:
+  gh aether pr-review           Review current PR diff
+  gh aether issue-plan <num>    Create plan from issue
+  gh aether commit-review       Review staged changes
+
+OPTIONS:
+  -p, --provider <name>    LLM provider (default: gemini)
+  -m, --model <name>       Model name
+  -a, --agent <id>         Target agent
+
+EXAMPLES:
+  gh aether run "add input validation to login form"
+  gh aether run -a react-specialist "build a search component"
+  gh aether pr-review
+  gh aether issue-plan 42
+  gh aether commit-review
+HELP
+}
+
+# ── Main dispatch ────────────────────────────────────────────
+
+main() {
+  local cmd="${1:-help}"
+  shift 2>/dev/null || true
+
+  case "$cmd" in
+    pr-review)
+      cmd_pr_review "$@"
+      ;;
+    issue-plan)
+      cmd_issue_plan "$@"
+      ;;
+    commit-review)
+      cmd_commit_review "$@"
+      ;;
+    help|--help|-h)
+      cmd_help
+      ;;
+    *)
+      # Pass through to AETHER CLI
+      bun run "$AETHER_CLI" "$cmd" "$@"
+      ;;
+  esac
+}
+
+main "$@"

@@ -9,8 +9,6 @@
 // Minimal React-free implementation to avoid bundling React
 // into the extension. Uses vanilla DOM for webview panels.
 
-const vscode = acquireVsCodeApi();
-
 interface VsCodeApi {
   postMessage(message: unknown): void;
   getState(): unknown;
@@ -18,6 +16,8 @@ interface VsCodeApi {
 }
 
 declare function acquireVsCodeApi(): VsCodeApi;
+
+const vscode = acquireVsCodeApi();
 
 // ── Router ───────────────────────────────────────────────────
 

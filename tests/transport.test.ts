@@ -323,10 +323,11 @@ describe("CLITransport", () => {
   });
 
   it("should execute a simple echo command", async () => {
+    const isWindows = process.platform === "win32";
     const config: CLITransportConfig = {
       transport: "cli",
-      command: "echo",
-      args: ["hello world"],
+      command: isWindows ? "cmd" : "echo",
+      args: isWindows ? ["/c", "echo", "hello world"] : ["hello world"],
       inputFormat: "args",
       outputFormat: "stdout-text",
     };
@@ -360,10 +361,13 @@ describe("CLITransport", () => {
   });
 
   it("should parse JSON output when outputFormat is stdout-json", async () => {
+    const isWindows = process.platform === "win32";
     const config: CLITransportConfig = {
       transport: "cli",
-      command: "echo",
-      args: ['{"result":"ok","value":42}'],
+      command: isWindows ? "cmd" : "echo",
+      args: isWindows
+        ? ["/c", "echo", '{"result":"ok","value":42}']
+        : ['{"result":"ok","value":42}'],
       inputFormat: "args",
       outputFormat: "stdout-json",
     };

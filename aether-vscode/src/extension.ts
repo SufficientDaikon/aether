@@ -13,6 +13,9 @@ import { AgentsTreeProvider } from "./sidebar/agents-tree";
 import { TasksTreeProvider } from "./sidebar/tasks-tree";
 import { ContextsTreeProvider } from "./sidebar/contexts-tree";
 import { AetherStatusBar } from "./status/status-bar";
+import { AetherCodeLensProvider } from "./editor/codelens";
+import { AetherDiagnostics } from "./editor/diagnostics";
+import { KnowledgeTreeProvider } from "./sidebar/knowledge-tree";
 import { OrchestratorPanel } from "./panels/orchestrator";
 import { CostDashboardPanel } from "./panels/task-history";
 import { MemoryExplorerPanel } from "./panels/memory-explorer";
@@ -71,11 +74,25 @@ export async function activate(context: vscode.ExtensionContext) {
   const agentsTree = new AgentsTreeProvider(bridge);
   const tasksTree = new TasksTreeProvider(bridge);
   const contextsTree = new ContextsTreeProvider(bridge);
+  const knowledgeTree = new KnowledgeTreeProvider(bridge);
 
   context.subscriptions.push(
     vscode.window.registerTreeDataProvider("aether.agents", agentsTree),
     vscode.window.registerTreeDataProvider("aether.tasks", tasksTree),
     vscode.window.registerTreeDataProvider("aether.contexts", contextsTree),
+    vscode.window.registerTreeDataProvider("aether.knowledge", knowledgeTree),
+  );
+
+  // ── CodeLens + Diagnostics ──────────────────────────────────
+  const codeLensProvider = new AetherCodeLensProvider();
+  const diagnostics = new AetherDiagnostics();
+
+  context.subscriptions.push(
+    vscode.languages.registerCodeLensProvider(
+      { scheme: "file" },
+      codeLensProvider,
+    ),
+    diagnostics,
   );
 
   // ── Chat Participant ─────────────────────────────────────
@@ -181,10 +198,23 @@ export async function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand(
       "aether.agentDetail",
-      (item: { agentId?: string }) => {
+      async (item: { agentId?: string }) => {
         if (!item?.agentId) return;
-        outputChannel.appendLine(`Agent detail for: ${item.agentId}`);
-        // TODO: Open agent detail webview
+        try {
+          const result = await bridge?.readResource(
+            `aether://agents/${item.agentId}`,
+          );
+          if (result) {
+            const doc = await vscode.workspace.openTextDocument({
+              content: JSON.stringify(JSON.parse(result), null, 2),
+              language: "json",
+            });
+            await vscode.window.showTextDocument(doc, { preview: true });
+          }
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          outputChannel.appendLine(`Agent detail error: ${msg}`);
+        }
       },
     ),
 

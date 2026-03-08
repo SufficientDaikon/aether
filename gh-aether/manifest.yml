@@ -1,0 +1,5 @@
+owner: aether-framework
+name: gh-aether
+host: github.com
+tag: v0.1.0
+description: AETHER multi-agent AI orchestrator — route tasks, review PRs, plan issues

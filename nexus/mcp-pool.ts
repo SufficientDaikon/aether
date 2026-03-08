@@ -350,7 +350,7 @@ export class MCPPool {
 
   /** Continuously read from stdio process */
   private async readStdio(conn: ManagedConnection): Promise<void> {
-    if (!conn.process?.stdout) return;
+    if (!conn.process?.stdout || typeof conn.process.stdout === "number") return;
 
     const reader = conn.process.stdout.getReader();
     const decoder = new TextDecoder();
@@ -451,7 +451,9 @@ export class MCPPool {
       conn.pendingRequests.set(id, { resolve, reject, timeout });
 
       const data = JSON.stringify(request) + "\n";
-      conn.process?.stdin?.write(data);
+      if (conn.process?.stdin && typeof conn.process.stdin !== "number") {
+        conn.process.stdin.write(data);
+      }
     });
   }
 
@@ -507,7 +509,9 @@ export class MCPPool {
     };
 
     if (conn.config.transport === "stdio") {
-      conn.process?.stdin?.write(JSON.stringify(notification) + "\n");
+      if (conn.process?.stdin && typeof conn.process.stdin !== "number") {
+        conn.process.stdin.write(JSON.stringify(notification) + "\n");
+      }
     } else {
       const headers: Record<string, string> = {
         "Content-Type": "application/json",

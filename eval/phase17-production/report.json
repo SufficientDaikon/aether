@@ -1,0 +1,154 @@
+{
+  "phase": "Phase 17: Production Readiness",
+  "startedAt": "2026-03-07T22:59:41.635Z",
+  "completedAt": "2026-03-07T22:59:41.807Z",
+  "totalTests": 14,
+  "passed": 14,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 137,
+  "maxPossibleScore": 140,
+  "results": [
+    {
+      "id": "17.01.1",
+      "name": "Degradation — runtime init without API keys",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 60,
+      "score": 10,
+      "maxScore": 10,
+      "details": "runtime booted without API keys: true"
+    },
+    {
+      "id": "17.01.2",
+      "name": "Degradation — guardrails work without store",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "standalone guardrails work: true"
+    },
+    {
+      "id": "17.01.3",
+      "name": "Degradation — registry works without store",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "registry works without store: deg-test"
+    },
+    {
+      "id": "17.01.4",
+      "name": "Degradation — settings manager defaults on missing dir",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "defaults loaded from missing path: true"
+    },
+    {
+      "id": "17.02.1",
+      "name": "Health — sentinel healthCheck returns score",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "healthy=true score=100"
+    },
+    {
+      "id": "17.02.2",
+      "name": "Health — AetherLink /health endpoint",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 6,
+      "score": 10,
+      "maxScore": 10,
+      "details": "status=200 body.status=ok"
+    },
+    {
+      "id": "17.02.3",
+      "name": "Health — forceKillAgent changes status",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "agent status after kill: error"
+    },
+    {
+      "id": "17.02.4",
+      "name": "Health — pause and resume swarm",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "paused=true agentStatus=offline resumed=true resumedStatus=idle"
+    },
+    {
+      "id": "17.03.1",
+      "name": "Limits — ConversationManager trims at maxMessages",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 31,
+      "score": 7,
+      "maxScore": 10,
+      "details": "messages after trim: 14 (limit: 10)"
+    },
+    {
+      "id": "17.03.2",
+      "name": "Limits — OutputLengthGuard truncates long output",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "truncated: true modified length=1020 reason=Output truncated from 2000 to 1000 chars"
+    },
+    {
+      "id": "17.03.3",
+      "name": "Limits — LengthGuard blocks oversized prompt",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "prompt blocked: true"
+    },
+    {
+      "id": "17.04.1",
+      "name": "Recovery — escalation circuit breaker trips and resets",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "circuit broken after threshold: true"
+    },
+    {
+      "id": "17.04.2",
+      "name": "Recovery — durable workflow checkpoint and resume",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 30,
+      "score": 10,
+      "maxScore": 10,
+      "details": "status=completed completedSteps=2/2"
+    },
+    {
+      "id": "17.04.3",
+      "name": "Recovery — conversation checkpoint and restore",
+      "phase": "Phase 17: Production Readiness",
+      "status": "pass",
+      "durationMs": 33,
+      "score": 10,
+      "maxScore": 10,
+      "details": "snapshot=true restored=true"
+    }
+  ]
+}

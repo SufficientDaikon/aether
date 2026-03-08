@@ -9,9 +9,9 @@ export class GeminiProvider extends BaseLLMProvider {
 
   /** Model tier → Gemini model ID */
   static modelMap: Record<string, string> = {
-    "gemini-ultra": "gemini-1.5-pro",
-    "gemini-pro": "gemini-1.5-pro",
-    "gemini-flash": "gemini-1.5-flash",
+    "gemini-ultra": "gemini-2.5-pro",
+    "gemini-pro": "gemini-2.5-pro",
+    "gemini-flash": "gemini-2.5-flash",
   };
 
   constructor(apiKey?: string) {

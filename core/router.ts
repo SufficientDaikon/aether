@@ -428,12 +428,12 @@ export class AgentRouter {
       const availableIds = new Set(agents.map((a) => a.id));
 
       // Query the "agents" vector namespace
-      const results = await this.ragIndex.query("agents", taskDescription, 10);
+      const results = await this.ragIndex.query(taskDescription, { namespace: "agents", topK: 10 });
       if (!results || results.length === 0) return null;
 
       // Find the best match that's in our available agents list
       for (const result of results) {
-        const agentId = result.sourceId ?? result.id;
+        const agentId = result.metadata.sourceId ?? result.id;
         if (!availableIds.has(agentId)) continue;
 
         const agent = agents.find((a) => a.id === agentId);

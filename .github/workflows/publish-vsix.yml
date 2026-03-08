@@ -1,0 +1,33 @@
+name: Publish VS Code Extension
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    name: Package & Release VSIX
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install extension dependencies
+        run: cd aether-vscode && npm ci
+
+      - name: Compile extension
+        run: cd aether-vscode && npm run compile
+
+      - name: Package VSIX
+        run: cd aether-vscode && npx vsce package --allow-missing-repository
+
+      - name: Upload VSIX to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: aether-vscode/*.vsix

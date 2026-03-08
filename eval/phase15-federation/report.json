@@ -1,0 +1,114 @@
+{
+  "phase": "Phase 15: Federation & Distributed",
+  "startedAt": "2026-03-07T22:59:39.402Z",
+  "completedAt": "2026-03-07T22:59:39.725Z",
+  "totalTests": 10,
+  "passed": 10,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 100,
+  "maxPossibleScore": 100,
+  "results": [
+    {
+      "id": "15.01.1",
+      "name": "Federation — transport construction",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "FederationTransport created successfully"
+    },
+    {
+      "id": "15.01.2",
+      "name": "Federation — healthCheck against running server",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 8,
+      "score": 10,
+      "maxScore": 10,
+      "details": "healthy=true latency=2ms"
+    },
+    {
+      "id": "15.01.3",
+      "name": "Federation — connect to server",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 8,
+      "score": 10,
+      "maxScore": 10,
+      "details": "connected and disconnected successfully"
+    },
+    {
+      "id": "15.01.4",
+      "name": "Federation — timeout on unreachable server",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "timed out in 2ms"
+    },
+    {
+      "id": "15.02.1",
+      "name": "Dual — two servers start on different ports",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 13,
+      "score": 10,
+      "maxScore": 10,
+      "details": "serverA=ok serverB=ok"
+    },
+    {
+      "id": "15.02.2",
+      "name": "Dual — WebSocket connects to both servers",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 135,
+      "score": 10,
+      "maxScore": 10,
+      "details": "connA=true connB=true"
+    },
+    {
+      "id": "15.02.3",
+      "name": "Dual — servers report independent metrics",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 27,
+      "score": 10,
+      "maxScore": 10,
+      "details": "metricsA length=489 metricsB length=489"
+    },
+    {
+      "id": "15.03.1",
+      "name": "Security — server with auth token rejects unauthenticated",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 10,
+      "score": 10,
+      "maxScore": 10,
+      "details": "unauthenticated result: error"
+    },
+    {
+      "id": "15.03.2",
+      "name": "Security — server with auth token accepts authenticated",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 115,
+      "score": 10,
+      "maxScore": 10,
+      "details": "authenticated result: connected"
+    },
+    {
+      "id": "15.03.3",
+      "name": "Security — BAPCodec rejects tampered message",
+      "phase": "Phase 15: Federation & Distributed",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "tampered buffer rejected: true"
+    }
+  ]
+}

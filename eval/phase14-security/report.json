@@ -1,0 +1,254 @@
+{
+  "phase": "Phase 14: Security & Adversarial",
+  "startedAt": "2026-03-07T22:59:39.388Z",
+  "completedAt": "2026-03-07T22:59:39.400Z",
+  "totalTests": 24,
+  "passed": 24,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 240,
+  "maxPossibleScore": 240,
+  "results": [
+    {
+      "id": "14.01.1",
+      "name": "Injection — ignore previous instructions",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Potential prompt injection detected: ignore\\s+(all\\s+)?previous\\s+instructions"
+    },
+    {
+      "id": "14.01.2",
+      "name": "Injection — DAN jailbreak",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Potential prompt injection detected: \\bDAN\\b.*\\bjailbreak"
+    },
+    {
+      "id": "14.01.3",
+      "name": "Injection — system role override",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Potential prompt injection detected: system\\s*:\\s*you\\s+are"
+    },
+    {
+      "id": "14.01.4",
+      "name": "Injection — disregard rules",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Potential prompt injection detected: disregard\\s+(all\\s+)?prior\\s+(instructions|rules)"
+    },
+    {
+      "id": "14.01.5",
+      "name": "Injection — override system prompt",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Potential prompt injection detected: override\\s+(?:your\\s+)?(?:system|safety)\\s+(?:prompt|instructions)"
+    },
+    {
+      "id": "14.01.6",
+      "name": "Injection — pretend no restrictions",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Potential prompt injection detected: pretend\\s+(?:you\\s+)?(?:are|to\\s+be)\\s+(?:a|an)\\s+AI\\s+(?:without|with\\s+no)\\s+(?:rules|restrictions)"
+    },
+    {
+      "id": "14.02.1",
+      "name": "Sensitive — AWS access key",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Sensitive data detected in prompt: AWS key"
+    },
+    {
+      "id": "14.02.2",
+      "name": "Sensitive — GitHub token",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Sensitive data detected in prompt: GitHub token"
+    },
+    {
+      "id": "14.02.3",
+      "name": "Sensitive — Bearer token",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Sensitive data detected in prompt: Bearer token"
+    },
+    {
+      "id": "14.02.4",
+      "name": "Sensitive — private key",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Sensitive data detected in prompt: Private key"
+    },
+    {
+      "id": "14.02.5",
+      "name": "Sensitive — password assignment",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true reason=Sensitive data detected in prompt: Password assignment"
+    },
+    {
+      "id": "14.03.1",
+      "name": "Constitutional — case-mixed DROP TABLE",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true"
+    },
+    {
+      "id": "14.03.2",
+      "name": "Constitutional — rm -rf root slash",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true"
+    },
+    {
+      "id": "14.03.3",
+      "name": "Constitutional — safe SQL allowed",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "allowed=true"
+    },
+    {
+      "id": "14.03.4",
+      "name": "Constitutional — secret pattern in action",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked=true"
+    },
+    {
+      "id": "14.03.5",
+      "name": "Constitutional — master can do more than worker",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "worker blocked=true master blocked=false"
+    },
+    {
+      "id": "14.04.1",
+      "name": "Boundary — BAPCodec rejects corrupt buffer",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "threw on corrupt buffer: true"
+    },
+    {
+      "id": "14.04.2",
+      "name": "Boundary — Registry rejects duplicate ID",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "threw on duplicate: true"
+    },
+    {
+      "id": "14.04.3",
+      "name": "Boundary — LengthGuard blocks oversized prompt",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "blocked oversized: true"
+    },
+    {
+      "id": "14.04.4",
+      "name": "Boundary — Registry get returns undefined for missing ID",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "returns undefined for missing: true"
+    },
+    {
+      "id": "14.05.1",
+      "name": "Tier — worker blocked from DROP TABLE",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "worker blocked from DROP TABLE: true"
+    },
+    {
+      "id": "14.05.2",
+      "name": "Tier — worker blocked from secret exposure",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "worker blocked from secret write: true"
+    },
+    {
+      "id": "14.05.3",
+      "name": "Tier — code safety guard detects eval injection",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "detected eval: Code safety warnings: eval() with user input"
+    },
+    {
+      "id": "14.05.4",
+      "name": "Tier — code safety guard detects curl pipe",
+      "phase": "Phase 14: Security & Adversarial",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "detected curl pipe: Code safety warnings: curl pipe to shell"
+    }
+  ]
+}
