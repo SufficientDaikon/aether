@@ -9,13 +9,10 @@
 import * as vscode from "vscode";
 import { AetherBridge } from "./aether-bridge";
 import { registerChatParticipant } from "./chat/participant";
-import { AgentsTreeProvider } from "./sidebar/agents-tree";
-import { TasksTreeProvider } from "./sidebar/tasks-tree";
-import { ContextsTreeProvider } from "./sidebar/contexts-tree";
+import { AetherSidebarProvider } from "./sidebar/sidebar-provider";
 import { AetherStatusBar } from "./status/status-bar";
 import { AetherCodeLensProvider } from "./editor/codelens";
 import { AetherDiagnostics } from "./editor/diagnostics";
-import { KnowledgeTreeProvider } from "./sidebar/knowledge-tree";
 import { OrchestratorPanel } from "./panels/orchestrator";
 import { CostDashboardPanel } from "./panels/task-history";
 import { MemoryExplorerPanel } from "./panels/memory-explorer";
@@ -70,18 +67,15 @@ export async function activate(context: vscode.ExtensionContext) {
   const statusBar = new AetherStatusBar(bridge);
   context.subscriptions.push(statusBar);
 
-  // ── Sidebar TreeViews ────────────────────────────────────
+  // ── Sidebar WebviewView ──────────────────────────────────
 
-  const agentsTree = new AgentsTreeProvider(bridge);
-  const tasksTree = new TasksTreeProvider(bridge);
-  const contextsTree = new ContextsTreeProvider(bridge);
-  const knowledgeTree = new KnowledgeTreeProvider(bridge);
-
+  const sidebarProvider = new AetherSidebarProvider(context, bridge!);
   context.subscriptions.push(
-    vscode.window.registerTreeDataProvider("aether.agents", agentsTree),
-    vscode.window.registerTreeDataProvider("aether.tasks", tasksTree),
-    vscode.window.registerTreeDataProvider("aether.contexts", contextsTree),
-    vscode.window.registerTreeDataProvider("aether.knowledge", knowledgeTree),
+    vscode.window.registerWebviewViewProvider(
+      AetherSidebarProvider.viewId,
+      sidebarProvider,
+      { webviewOptions: { retainContextWhenHidden: true } },
+    ),
   );
 
   // ── CodeLens + Diagnostics ──────────────────────────────────
@@ -114,6 +108,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("aether.dashboard", () => {
       dashboardManager.show();
+      sidebarProvider.reveal();
     }),
     vscode.commands.registerCommand("aether.dashboard.overview", () => {
       dashboardManager.show("overview");
@@ -207,7 +202,6 @@ export async function activate(context: vscode.ExtensionContext) {
         });
         if (picked) {
           await bridge?.callTool("switch_context", { context: picked });
-          contextsTree.refresh();
           statusBar.refresh();
           vscode.window.showInformationMessage(
             `AETHER: Switched to context "${picked}"`,
@@ -217,52 +211,6 @@ export async function activate(context: vscode.ExtensionContext) {
         // Parsing failed — status wasn't valid JSON
       }
     }),
-
-    vscode.commands.registerCommand("aether.refreshAgents", () => {
-      agentsTree.refresh();
-    }),
-
-    vscode.commands.registerCommand(
-      "aether.agentRunTask",
-      async (item: { agentId?: string }) => {
-        if (!item?.agentId) return;
-        const description = await vscode.window.showInputBox({
-          prompt: `Task for agent: ${item.agentId}`,
-        });
-        if (description) {
-          const result = await bridge?.callTool("submit_task", {
-            description,
-            target: item.agentId,
-          });
-          if (result) {
-            outputChannel.appendLine(`[${item.agentId}] ${result}`);
-            outputChannel.show();
-          }
-        }
-      },
-    ),
-
-    vscode.commands.registerCommand(
-      "aether.agentDetail",
-      async (item: { agentId?: string }) => {
-        if (!item?.agentId) return;
-        try {
-          const result = await bridge?.readResource(
-            `aether://agents/${item.agentId}`,
-          );
-          if (result) {
-            const doc = await vscode.workspace.openTextDocument({
-              content: JSON.stringify(JSON.parse(result), null, 2),
-              language: "json",
-            });
-            await vscode.window.showTextDocument(doc, { preview: true });
-          }
-        } catch (err) {
-          const msg = err instanceof Error ? err.message : String(err);
-          outputChannel.appendLine(`Agent detail error: ${msg}`);
-        }
-      },
-    ),
 
     vscode.commands.registerCommand("aether.approveAll", () => {
       vscode.window.showInformationMessage(

@@ -143,3 +143,18 @@ export const useChatStore = create<ChatState>((set) => ({
   setCommand: (cmd) => set({ selectedCommand: cmd }),
   setLoading: (loading) => set({ loading }),
 }));
+
+// Sidebar UI store
+export interface SidebarState {
+  activePanel: string | null;
+  selectedAgentId: string;
+  setActivePanel: (panel: string | null) => void;
+  setSelectedAgentId: (id: string) => void;
+}
+
+export const useSidebarStore = create<SidebarState>((set) => ({
+  activePanel: null,
+  selectedAgentId: "cortex-0",
+  setActivePanel: (panel) => set({ activePanel: panel }),
+  setSelectedAgentId: (id) => set({ selectedAgentId: id }),
+}));

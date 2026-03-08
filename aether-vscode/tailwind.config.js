@@ -29,6 +29,14 @@ module.exports = {
           success: "var(--vscode-testing-iconPassed)",
           focus: "var(--vscode-focusBorder)",
         },
+        aether: {
+          purple: "#7C3AED",
+          "purple-dim": "rgba(124, 58, 237, 0.12)",
+          "purple-glow": "rgba(124, 58, 237, 0.35)",
+          cyan: "#38BDF8",
+          "cyan-dim": "rgba(56, 189, 248, 0.12)",
+          "cyan-glow": "rgba(56, 189, 248, 0.35)",
+        },
       },
       fontFamily: {
         vsc: "var(--vscode-font-family)",

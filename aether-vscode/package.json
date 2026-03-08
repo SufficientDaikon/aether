@@ -82,21 +82,9 @@
     "views": {
       "aether-sidebar": [
         {
-          "id": "aether.agents",
-          "name": "Agents",
-          "icon": "media/aether-icon.svg"
-        },
-        {
-          "id": "aether.tasks",
-          "name": "Tasks"
-        },
-        {
-          "id": "aether.contexts",
-          "name": "Contexts"
-        },
-        {
-          "id": "aether.knowledge",
-          "name": "Knowledge"
+          "id": "aether.sidebar",
+          "name": "AETHER",
+          "type": "webview"
         }
       ]
     },
@@ -185,42 +173,11 @@
         "command": "aether.rejectAll",
         "title": "AETHER: Reject All Pending",
         "icon": "$(close-all)"
-      },
-      {
-        "command": "aether.agentRunTask",
-        "title": "Run Task on This Agent",
-        "icon": "$(play)"
-      },
-      {
-        "command": "aether.agentDetail",
-        "title": "View Agent Detail",
-        "icon": "$(info)"
-      },
-      {
-        "command": "aether.refreshAgents",
-        "title": "Refresh Agents",
-        "icon": "$(refresh)"
       }
     ],
     "menus": {
-      "view/item/context": [
-        {
-          "command": "aether.agentRunTask",
-          "when": "view == aether.agents",
-          "group": "inline"
-        },
-        {
-          "command": "aether.agentDetail",
-          "when": "view == aether.agents"
-        }
-      ],
-      "view/title": [
-        {
-          "command": "aether.refreshAgents",
-          "when": "view == aether.agents",
-          "group": "navigation"
-        }
-      ]
+      "view/item/context": [],
+      "view/title": []
     },
     "configuration": {
       "title": "AETHER",
