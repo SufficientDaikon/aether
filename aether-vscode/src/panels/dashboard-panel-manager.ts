@@ -373,6 +373,9 @@ export class DashboardPanelManager {
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(distUri, "webview.js"),
     );
+    const styleUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(distUri, "webview.css"),
+    );
     const nonce = crypto.randomBytes(16).toString("hex");
 
     return `<!DOCTYPE html>
@@ -380,8 +383,9 @@ export class DashboardPanelManager {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline'; img-src data: https:; font-src data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; style-src ${webview.cspSource} 'unsafe-inline'; img-src data: https:; font-src data:;">
   <title>AETHER Dashboard</title>
+  <link rel="stylesheet" href="${styleUri}">
 </head>
 <body>
   <div id="root"></div>
