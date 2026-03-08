@@ -445,13 +445,28 @@
       }
 
       /* Syntax highlights */
-      .hl-comment { color: #5a5a72; font-style: italic; }
-      .hl-string  { color: #4de094; }
-      .hl-key     { color: var(--accent); }
-      .hl-number  { color: var(--accent-warm); }
-      .hl-kw      { color: var(--accent-2); }
-      .hl-flag    { color: var(--accent-warm); }
-      .hl-cmd     { color: var(--text-bright); }
+      .hl-comment {
+        color: #5a5a72;
+        font-style: italic;
+      }
+      .hl-string {
+        color: #4de094;
+      }
+      .hl-key {
+        color: var(--accent);
+      }
+      .hl-number {
+        color: var(--accent-warm);
+      }
+      .hl-kw {
+        color: var(--accent-2);
+      }
+      .hl-flag {
+        color: var(--accent-warm);
+      }
+      .hl-cmd {
+        color: var(--text-bright);
+      }
 
       /* ── Tables ─────────────────────────────────────── */
       .table-wrap {
@@ -540,7 +555,12 @@
       .section-divider {
         border: none;
         height: 1px;
-        background: linear-gradient(90deg, transparent, var(--border), transparent);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border),
+          transparent
+        );
         margin: 3rem 0;
       }
 
@@ -631,7 +651,11 @@
         left: -10%;
         width: 50%;
         height: 50%;
-        background: radial-gradient(circle, rgba(0, 228, 255, 0.035) 0%, transparent 65%);
+        background: radial-gradient(
+          circle,
+          rgba(0, 228, 255, 0.035) 0%,
+          transparent 65%
+        );
       }
 
       .ambient::after {
@@ -641,7 +665,11 @@
         right: -10%;
         width: 45%;
         height: 45%;
-        background: radial-gradient(circle, rgba(123, 97, 255, 0.03) 0%, transparent 65%);
+        background: radial-gradient(
+          circle,
+          rgba(123, 97, 255, 0.03) 0%,
+          transparent 65%
+        );
       }
 
       /* ── Footer ─────────────────────────────────────── */
@@ -716,7 +744,12 @@
         left: 0;
         right: 0;
         height: 1px;
-        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
         opacity: 0.3;
       }
 
@@ -737,10 +770,18 @@
         margin-bottom: 0.65rem;
       }
 
-      .hier-label.master { color: var(--accent-3); }
-      .hier-label.manager { color: var(--accent-2); }
-      .hier-label.worker { color: var(--accent); }
-      .hier-label.infra { color: var(--accent-warm); }
+      .hier-label.master {
+        color: var(--accent-3);
+      }
+      .hier-label.manager {
+        color: var(--accent-2);
+      }
+      .hier-label.worker {
+        color: var(--accent);
+      }
+      .hier-label.infra {
+        color: var(--accent-warm);
+      }
 
       .hier-node {
         display: inline-flex;
@@ -1053,7 +1094,9 @@
         <li><a href="./agents.html" class="active">Agents</a></li>
         <li><a href="./changelog.html">Changelog</a></li>
         <li>
-          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta">GitHub →</a>
+          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta"
+            >GitHub →</a
+          >
         </li>
       </ul>
       <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
@@ -1077,7 +1120,9 @@
           <li><a href="#infrastructure" class="sub">Infrastructure</a></li>
           <li><a href="#external" class="sub">External Agents</a></li>
           <li><a href="#definition-format">Agent Definition Format</a></li>
-          <li><a href="#frontmatter-fields" class="sub">Frontmatter Fields</a></li>
+          <li>
+            <a href="#frontmatter-fields" class="sub">Frontmatter Fields</a>
+          </li>
           <li><a href="#file-locations" class="sub">File Locations</a></li>
           <li><a href="#routing">Routing &amp; Resolution</a></li>
           <li><a href="#escalation">Escalation Flow</a></li>
@@ -1085,7 +1130,13 @@
         </ul>
       </aside>
 
-      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+      <button
+        class="sidebar-toggle"
+        id="sidebarToggle"
+        aria-label="Toggle sidebar"
+      >
+        ☰
+      </button>
 
       <!-- Main Content -->
       <main class="main-content">
@@ -1095,9 +1146,10 @@
             <div class="badge">Documentation</div>
             <h1>Agent Hierarchy</h1>
             <p>
-              AETHER organizes 34 AI agents in a 3-tier hierarchy: Master → Manager → Worker.
-              Each agent is defined as an <code>.agent.md</code> file with YAML frontmatter
-              metadata and a system prompt body.
+              AETHER organizes 34 AI agents in a 3-tier hierarchy: Master →
+              Manager → Worker. Each agent is defined as an
+              <code>.agent.md</code> file with YAML frontmatter metadata and a
+              system prompt body.
             </p>
           </header>
 
@@ -1109,9 +1161,13 @@
                 <span class="hier-node master">⬡ cortex-0</span>
               </div>
 
-              <div class="hier-connector">│<br>├────────┬────────┬────────┤</div>
+              <div class="hier-connector">
+                │<br />├────────┬────────┬────────┤
+              </div>
 
-              <div class="hier-label manager">Managers — Domain Coordination</div>
+              <div class="hier-label manager">
+                Managers — Domain Coordination
+              </div>
               <div class="hier-tier">
                 <span class="hier-node manager">system-architect</span>
                 <span class="hier-node manager">product-visionary</span>
@@ -1120,7 +1176,9 @@
                 <span class="hier-node manager">qa-audit-director</span>
               </div>
 
-              <div class="hier-connector">│<br>├──┬──┬──┬──┬──┬──┬──┬──┬──┤</div>
+              <div class="hier-connector">
+                │<br />├──┬──┬──┬──┬──┬──┬──┬──┬──┤
+              </div>
 
               <div class="hier-label worker">Workers — Task Execution</div>
               <div class="hier-tier">
@@ -1139,7 +1197,9 @@
                 <span class="hier-node worker">+ 10 more</span>
               </div>
 
-              <div class="hier-connector" style="margin-top: 0.75rem;">─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─</div>
+              <div class="hier-connector" style="margin-top: 0.75rem">
+                ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+              </div>
 
               <div class="hier-label infra">Infrastructure</div>
               <div class="hier-tier">
@@ -1156,99 +1216,156 @@
             <h2>The Three Tiers</h2>
 
             <!-- Master Tier -->
-            <h3 id="master-tier">Master Tier <span class="tier-badge master">Master</span></h3>
+            <h3 id="master-tier">
+              Master Tier <span class="tier-badge master">Master</span>
+            </h3>
             <p>
-              Strategic oversight and final escalation target. Uses the most capable (and expensive) model.
+              Strategic oversight and final escalation target. Uses the most
+              capable (and expensive) model.
             </p>
             <ul class="agent-list">
               <li>
-                <strong>cortex-0</strong> — CORTEX-0 Master Intelligence. Top-level orchestrator.
-                Decomposes complex tasks, manages priorities, spawns sub-agents.
+                <strong>cortex-0</strong> — CORTEX-0 Master Intelligence.
+                Top-level orchestrator. Decomposes complex tasks, manages
+                priorities, spawns sub-agents.
               </li>
             </ul>
 
             <!-- Manager Tier -->
-            <h3 id="manager-tier">Manager Tier <span class="tier-badge manager">Manager</span></h3>
+            <h3 id="manager-tier">
+              Manager Tier <span class="tier-badge manager">Manager</span>
+            </h3>
             <p>
-              Domain coordinators. They receive complex tasks, decompose them, delegate to workers,
-              and consolidate results. Escalate to master if unresolvable.
+              Domain coordinators. They receive complex tasks, decompose them,
+              delegate to workers, and consolidate results. Escalate to master
+              if unresolvable.
             </p>
             <ul class="agent-list">
               <li>
-                <strong>system-architect</strong> — Backend architecture, API design, code review,
-                tech stack decisions. Sections: <code>FRONTEND</code>, <code>BACKEND</code>,
-                <code>TOOLS</code>, <code>MCP_SERVER</code>
+                <strong>system-architect</strong> — Backend architecture, API
+                design, code review, tech stack decisions. Sections:
+                <code>FRONTEND</code>, <code>BACKEND</code>, <code>TOOLS</code>,
+                <code>MCP_SERVER</code>
               </li>
               <li>
-                <strong>product-visionary</strong> — Product strategy, feature prioritization,
-                market analysis, roadmap. Section: <code>RESEARCH</code>
+                <strong>product-visionary</strong> — Product strategy, feature
+                prioritization, market analysis, roadmap. Section:
+                <code>RESEARCH</code>
               </li>
               <li>
-                <strong>cyber-sentinel</strong> — Security ops: vulnerability assessment, threat
-                modeling, penetration testing, compliance. Sections: <code>SECURITY</code>,
+                <strong>cyber-sentinel</strong> — Security ops: vulnerability
+                assessment, threat modeling, penetration testing, compliance.
+                Sections: <code>SECURITY</code>,
                 <code>AUDIT</code>
               </li>
               <li>
-                <strong>marketing-lead</strong> — Copywriting direction, growth strategy, brand
-                voice, campaign planning. Section: <code>MARKETING</code>
+                <strong>marketing-lead</strong> — Copywriting direction, growth
+                strategy, brand voice, campaign planning. Section:
+                <code>MARKETING</code>
               </li>
               <li>
-                <strong>qa-audit-director</strong> — Test strategy, quality gates,
-                security/performance/accessibility audit. Sections: <code>AUDIT</code>,
+                <strong>qa-audit-director</strong> — Test strategy, quality
+                gates, security/performance/accessibility audit. Sections:
+                <code>AUDIT</code>,
                 <code>TOOLS</code>
               </li>
             </ul>
 
             <!-- Worker Tier -->
-            <h3 id="worker-tier">Worker Tier <span class="tier-badge worker">Worker</span></h3>
+            <h3 id="worker-tier">
+              Worker Tier <span class="tier-badge worker">Worker</span>
+            </h3>
             <p>
-              Specialized task executors. Cheapest to run (Haiku/Flash models). Each handles a specific domain.
+              Specialized task executors. Cheapest to run (Haiku/Flash models).
+              Each handles a specific domain.
             </p>
 
             <h4>Frontend Workers</h4>
             <ul class="agent-list">
-              <li><strong>react-specialist</strong> — React components, TypeScript, modern patterns</li>
-              <li><strong>ui-designer</strong> — UI/UX design, layout, visual design</li>
-              <li><strong>ux-psychologist</strong> — User experience research, cognitive load analysis</li>
+              <li>
+                <strong>react-specialist</strong> — React components,
+                TypeScript, modern patterns
+              </li>
+              <li>
+                <strong>ui-designer</strong> — UI/UX design, layout, visual
+                design
+              </li>
+              <li>
+                <strong>ux-psychologist</strong> — User experience research,
+                cognitive load analysis
+              </li>
             </ul>
 
             <h4>Backend Workers</h4>
             <ul class="agent-list">
-              <li><strong>bun-runtime-master</strong> — Bun runtime, server-side TypeScript</li>
-              <li><strong>postgres-db-architect</strong> — PostgreSQL schema design, queries, optimization</li>
-              <li><strong>redis-state-guard</strong> — Redis caching, state management, pub/sub</li>
+              <li>
+                <strong>bun-runtime-master</strong> — Bun runtime, server-side
+                TypeScript
+              </li>
+              <li>
+                <strong>postgres-db-architect</strong> — PostgreSQL schema
+                design, queries, optimization
+              </li>
+              <li>
+                <strong>redis-state-guard</strong> — Redis caching, state
+                management, pub/sub
+              </li>
             </ul>
 
             <h4>Security Workers</h4>
             <ul class="agent-list">
               <li><strong>code-hardener</strong> — Code security hardening</li>
-              <li><strong>dependency-sentinel</strong> — Dependency auditing, supply chain security</li>
-              <li><strong>threat-architect</strong> — Threat modeling, security architecture</li>
-              <li><strong>vuln-hunter</strong> — Vulnerability discovery and exploitation</li>
+              <li>
+                <strong>dependency-sentinel</strong> — Dependency auditing,
+                supply chain security
+              </li>
+              <li>
+                <strong>threat-architect</strong> — Threat modeling, security
+                architecture
+              </li>
+              <li>
+                <strong>vuln-hunter</strong> — Vulnerability discovery and
+                exploitation
+              </li>
             </ul>
 
             <h4>Marketing Workers</h4>
             <ul class="agent-list">
               <li><strong>copywriter</strong> — Copy, content writing</li>
-              <li><strong>fomo-logic-engine</strong> — FOMO mechanics, conversion optimization</li>
+              <li>
+                <strong>fomo-logic-engine</strong> — FOMO mechanics, conversion
+                optimization
+              </li>
             </ul>
 
             <h4>Research Workers</h4>
             <ul class="agent-list">
-              <li><strong>market-analyst</strong> — Market research, competitive analysis</li>
-              <li><strong>ragx-indexer</strong> — RAG indexing, knowledge management</li>
+              <li>
+                <strong>market-analyst</strong> — Market research, competitive
+                analysis
+              </li>
+              <li>
+                <strong>ragx-indexer</strong> — RAG indexing, knowledge
+                management
+              </li>
             </ul>
 
             <h4>Tool Workers</h4>
             <ul class="agent-list">
               <li><strong>cli-wizard</strong> — CLI tool development</li>
-              <li><strong>playwright-tester</strong> — E2E testing with Playwright</li>
+              <li>
+                <strong>playwright-tester</strong> — E2E testing with Playwright
+              </li>
             </ul>
 
             <h4>MCP Workers</h4>
             <ul class="agent-list">
-              <li><strong>mcp-server-creator</strong> — MCP server development</li>
-              <li><strong>skill-logic-generator</strong> — Skill/logic generation</li>
+              <li>
+                <strong>mcp-server-creator</strong> — MCP server development
+              </li>
+              <li>
+                <strong>skill-logic-generator</strong> — Skill/logic generation
+              </li>
             </ul>
 
             <h4>Meta Workers</h4>
@@ -1259,7 +1376,10 @@
 
             <h4>Workflow Workers</h4>
             <ul class="agent-list">
-              <li><strong>script-automator</strong> — Script automation, workflow scripting</li>
+              <li>
+                <strong>script-automator</strong> — Script automation, workflow
+                scripting
+              </li>
             </ul>
           </section>
 
@@ -1269,12 +1389,18 @@
           <section id="infrastructure" class="reveal">
             <h3>Infrastructure Agents</h3>
             <p>
-              These agents manage the runtime itself — they are not routed tasks directly but operate
-              autonomously to keep the system healthy.
+              These agents manage the runtime itself — they are not routed tasks
+              directly but operate autonomously to keep the system healthy.
             </p>
             <ul class="agent-list">
-              <li><strong>forge-0</strong> — Agent Forge: dynamic agent spawning and retirement</li>
-              <li><strong>sentinel-0</strong> — System Sentinel: health monitoring, constitutional oversight</li>
+              <li>
+                <strong>forge-0</strong> — Agent Forge: dynamic agent spawning
+                and retirement
+              </li>
+              <li>
+                <strong>sentinel-0</strong> — System Sentinel: health
+                monitoring, constitutional oversight
+              </li>
             </ul>
           </section>
 
@@ -1284,14 +1410,27 @@
           <section id="external" class="reveal">
             <h3>External Agents</h3>
             <p>
-              Agents that interface with external services and tools outside the core LLM pipeline.
+              Agents that interface with external services and tools outside the
+              core LLM pipeline.
             </p>
             <ul class="agent-list">
-              <li><strong>local-comfyui</strong> — Local ComfyUI image generation</li>
-              <li><strong>mcp-filesystem</strong> — MCP filesystem operations</li>
-              <li><strong>nano-banana-pro</strong> — Banana.dev image generation</li>
-              <li><strong>remote-aether-images</strong> — Remote AETHER image generation</li>
-              <li><strong>replicate-sdxl</strong> — Replicate SDXL image generation</li>
+              <li>
+                <strong>local-comfyui</strong> — Local ComfyUI image generation
+              </li>
+              <li>
+                <strong>mcp-filesystem</strong> — MCP filesystem operations
+              </li>
+              <li>
+                <strong>nano-banana-pro</strong> — Banana.dev image generation
+              </li>
+              <li>
+                <strong>remote-aether-images</strong> — Remote AETHER image
+                generation
+              </li>
+              <li>
+                <strong>replicate-sdxl</strong> — Replicate SDXL image
+                generation
+              </li>
             </ul>
           </section>
 
@@ -1305,23 +1444,25 @@
             </p>
 
             <div class="frontmatter">
-              <div class="frontmatter-header">⬡ agents/workers/react-specialist.agent.md</div>
+              <div class="frontmatter-header">
+                ⬡ agents/workers/react-specialist.agent.md
+              </div>
               <div class="frontmatter-body">
-<span class="hl-comment">---</span>
-<span class="hl-key">id</span>: react-specialist
-<span class="hl-key">name</span>: React Specialist
-<span class="hl-key">tier</span>: worker
-<span class="hl-key">sections</span>: [FRONTEND]
-<span class="hl-key">capabilities</span>: [react, typescript, component-design]
-<span class="hl-key">dependencies</span>: [tailwind]
-<span class="hl-key">llmRequirement</span>: sonnet
-<span class="hl-key">format</span>: markdown
-<span class="hl-key">escalationTarget</span>: system-architect
-<span class="hl-comment">---</span>
+                <span class="hl-comment">---</span>
+                <span class="hl-key">id</span>: react-specialist
+                <span class="hl-key">name</span>: React Specialist
+                <span class="hl-key">tier</span>: worker
+                <span class="hl-key">sections</span>: [FRONTEND]
+                <span class="hl-key">capabilities</span>: [react, typescript,
+                component-design] <span class="hl-key">dependencies</span>:
+                [tailwind] <span class="hl-key">llmRequirement</span>: sonnet
+                <span class="hl-key">format</span>: markdown
+                <span class="hl-key">escalationTarget</span>: system-architect
+                <span class="hl-comment">---</span>
 
-You are a React specialist agent. Given a task, you build
-high-quality React components using TypeScript and modern
-patterns...
+                You are a React specialist agent. Given a task, you build
+                high-quality React components using TypeScript and modern
+                patterns...
               </div>
             </div>
 
@@ -1355,12 +1496,17 @@ patterns...
                   <tr>
                     <td><code>sections</code></td>
                     <td><strong>Yes</strong></td>
-                    <td>Domain buckets for coarse routing (e.g., FRONTEND, BACKEND)</td>
+                    <td>
+                      Domain buckets for coarse routing (e.g., FRONTEND,
+                      BACKEND)
+                    </td>
                   </tr>
                   <tr>
                     <td><code>capabilities</code></td>
                     <td><strong>Yes</strong></td>
-                    <td>Fine-grained skill descriptors for capability matching</td>
+                    <td>
+                      Fine-grained skill descriptors for capability matching
+                    </td>
                   </tr>
                   <tr>
                     <td><code>dependencies</code></td>
@@ -1390,13 +1536,16 @@ patterns...
             <h3 id="file-locations">Agent File Locations</h3>
             <p>Agents can be placed in:</p>
             <ul>
-              <li><code>agents/</code> — The main agents directory (with subdirectories)</li>
+              <li>
+                <code>agents/</code> — The main agents directory (with
+                subdirectories)
+              </li>
               <li><code>.aether/agents/</code> — Project-local agents</li>
               <li><code>.github/agents/</code> — GitHub-integrated agents</li>
             </ul>
             <div class="callout callout-tip">
-              <strong>Tip:</strong> Run <code>aether init</code> after adding new agent files
-              to discover and register them automatically.
+              <strong>Tip:</strong> Run <code>aether init</code> after adding
+              new agent files to discover and register them automatically.
             </div>
           </section>
 
@@ -1406,20 +1555,36 @@ patterns...
           <section id="routing" class="reveal">
             <h2>Routing &amp; Resolution</h2>
             <p>
-              When a task arrives, the AgentRouter uses 6 strategies to find the best agent:
+              When a task arrives, the AgentRouter uses 6 strategies to find the
+              best agent:
             </p>
             <ol>
-              <li><strong>Capability match</strong> — keyword matching against capabilities array</li>
+              <li>
+                <strong>Capability match</strong> — keyword matching against
+                capabilities array
+              </li>
               <li><strong>Section match</strong> — domain bucket filtering</li>
-              <li><strong>RAG semantic search</strong> — vector similarity across agent descriptions</li>
-              <li><strong>File ownership</strong> — file patterns mapped to specific agents</li>
-              <li><strong>Escalation chain</strong> — walk escalation targets upward</li>
-              <li><strong>Random fallback</strong> — pick any available agent</li>
+              <li>
+                <strong>RAG semantic search</strong> — vector similarity across
+                agent descriptions
+              </li>
+              <li>
+                <strong>File ownership</strong> — file patterns mapped to
+                specific agents
+              </li>
+              <li>
+                <strong>Escalation chain</strong> — walk escalation targets
+                upward
+              </li>
+              <li>
+                <strong>Random fallback</strong> — pick any available agent
+              </li>
             </ol>
             <div class="callout callout-info">
-              <strong>Confidence threshold:</strong> The router requires a minimum confidence
-              score (default <code>0.6</code>) before assigning a task. Below that threshold,
-              it falls through to the next strategy. Configure via
+              <strong>Confidence threshold:</strong> The router requires a
+              minimum confidence score (default <code>0.6</code>) before
+              assigning a task. Below that threshold, it falls through to the
+              next strategy. Configure via
               <code>routing.confidenceThreshold</code> in settings.
             </div>
           </section>
@@ -1430,7 +1595,8 @@ patterns...
           <section id="escalation" class="reveal">
             <h2>Escalation Flow</h2>
             <p>
-              When an agent fails a task, it escalates upward through the hierarchy:
+              When an agent fails a task, it escalates upward through the
+              hierarchy:
             </p>
 
             <div class="escalation-flow">
@@ -1444,14 +1610,16 @@ patterns...
             </div>
 
             <p>
-              The circuit breaker at the master tier prevents low-priority noise from overwhelming
-              the most expensive model. Each tier has its own failure budget.
+              The circuit breaker at the master tier prevents low-priority noise
+              from overwhelming the most expensive model. Each tier has its own
+              failure budget.
             </p>
             <div class="callout callout-warn">
               <strong>Circuit breaker:</strong> When the escalation threshold
-              (default <code>3</code> failures within <code>5 min</code>) is hit, further
-              escalations are blocked until the window resets. Configure via
-              <code>escalation.threshold</code> and <code>escalation.windowMs</code>.
+              (default <code>3</code> failures within <code>5 min</code>) is
+              hit, further escalations are blocked until the window resets.
+              Configure via <code>escalation.threshold</code> and
+              <code>escalation.windowMs</code>.
             </div>
           </section>
 
@@ -1489,9 +1657,7 @@ patterns...
                 <div class="card-title">
                   Changelog <span class="arrow">→</span>
                 </div>
-                <div class="card-desc">
-                  Version history and release notes.
-                </div>
+                <div class="card-desc">Version history and release notes.</div>
               </a>
             </div>
           </section>
@@ -1565,12 +1731,14 @@ patterns...
         sidebarLinks.forEach((link) => {
           link.classList.toggle(
             "active",
-            link.getAttribute("href") === "#" + current
+            link.getAttribute("href") === "#" + current,
           );
         });
       }
 
-      window.addEventListener("scroll", updateActiveSidebarLink, { passive: true });
+      window.addEventListener("scroll", updateActiveSidebarLink, {
+        passive: true,
+      });
       updateActiveSidebarLink();
 
       /* ── Reveal on Scroll ─────────────────────────── */
@@ -1584,7 +1752,7 @@ patterns...
             }
           });
         },
-        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
       );
 
       reveals.forEach((el) => revealObserver.observe(el));

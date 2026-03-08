@@ -102,6 +102,46 @@
     },
     "commands": [
       {
+        "command": "aether.dashboard",
+        "title": "AETHER: Open Dashboard",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "aether.dashboard.overview",
+        "title": "AETHER: Dashboard — Overview",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "aether.dashboard.agents",
+        "title": "AETHER: Dashboard — Agents",
+        "icon": "$(organization)"
+      },
+      {
+        "command": "aether.dashboard.tasks",
+        "title": "AETHER: Dashboard — Tasks",
+        "icon": "$(tasklist)"
+      },
+      {
+        "command": "aether.dashboard.chat",
+        "title": "AETHER: Dashboard — Chat",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "aether.dashboard.approvals",
+        "title": "AETHER: Dashboard — Approvals",
+        "icon": "$(check-all)"
+      },
+      {
+        "command": "aether.dashboard.memory",
+        "title": "AETHER: Dashboard — Memory",
+        "icon": "$(database)"
+      },
+      {
+        "command": "aether.dashboard.settings",
+        "title": "AETHER: Dashboard — Settings",
+        "icon": "$(gear)"
+      },
+      {
         "command": "aether.runTask",
         "title": "AETHER: Run Task",
         "icon": "$(play)"
@@ -241,6 +281,13 @@
         "scopeName": "source.synapse",
         "path": "./language/synapse.tmLanguage.json"
       }
+    ],
+    "keybindings": [
+      {
+        "command": "aether.dashboard",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      }
     ]
   },
   "scripts": {
@@ -252,11 +299,22 @@
     "package": "vsce package"
   },
   "devDependencies": {
-    "@types/vscode": "^1.93.0",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.0.0",
+    "@types/prismjs": "^1.26.6",
+    "@types/vscode": "^1.93.0",
     "@vscode/vsce": "^3.0.0",
+    "autoprefixer": "^10.4.27",
     "esbuild": "^0.24.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
     "typescript": "^5.6.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "markdown-it": "^14.1.1",
+    "preact": "^10.28.4",
+    "prismjs": "^1.30.0",
+    "zustand": "^5.0.11"
+  }
 }

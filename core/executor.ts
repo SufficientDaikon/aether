@@ -217,15 +217,21 @@ export class AgentExecutor {
     if (subsystems.guardrails) this.guardrails = subsystems.guardrails;
     if (subsystems.router) this.router = subsystems.router;
     if (subsystems.entityMemory) this.entityMemory = subsystems.entityMemory;
-    if (subsystems.conversationManager) this.conversationManager = subsystems.conversationManager;
-    if (subsystems.progressTracker) this.progressTracker = subsystems.progressTracker;
-    if (subsystems.handoffManager) this.handoffManager = subsystems.handoffManager;
-    if (subsystems.pluginRegistry) this.pluginRegistry = subsystems.pluginRegistry;
-    if (subsystems.schemaValidator) this.schemaValidator = subsystems.schemaValidator;
+    if (subsystems.conversationManager)
+      this.conversationManager = subsystems.conversationManager;
+    if (subsystems.progressTracker)
+      this.progressTracker = subsystems.progressTracker;
+    if (subsystems.handoffManager)
+      this.handoffManager = subsystems.handoffManager;
+    if (subsystems.pluginRegistry)
+      this.pluginRegistry = subsystems.pluginRegistry;
+    if (subsystems.schemaValidator)
+      this.schemaValidator = subsystems.schemaValidator;
 
     // Phase 8 subsystems (ACP, Structured Logging, Shared State)
     if (subsystems.acpBus) this.acpBus = subsystems.acpBus;
-    if (subsystems.structuredLogger) this.structuredLogger = subsystems.structuredLogger;
+    if (subsystems.structuredLogger)
+      this.structuredLogger = subsystems.structuredLogger;
     if (subsystems.sharedState) this.sharedState = subsystems.sharedState;
 
     // Auto-enable interaction net if both net + scheduler provided
@@ -426,7 +432,9 @@ export class AgentExecutor {
       taskExecutor: async (taskPayload) => {
         const request = taskPayload.context?.request as TaskRequest | undefined;
         if (!request) {
-          return { error: `No request in task payload ${taskPayload.description}` };
+          return {
+            error: `No request in task payload ${taskPayload.description}`,
+          };
         }
 
         const result = await this.execute(request);
@@ -692,7 +700,9 @@ export class AgentExecutor {
     // Use the context-aware router when available
     if (this.router) {
       try {
-        const allAgents = this.registry.getAll().filter((a) => a.status !== "offline");
+        const allAgents = this.registry
+          .getAll()
+          .filter((a) => a.status !== "offline");
         const decision = await this.router.resolve(target, allAgents, {
           targetId: target,
         });
@@ -1170,7 +1180,14 @@ export class AgentExecutor {
 
   /** Check if Phase 2 subsystems are loaded */
   hasSubsystems(): boolean {
-    return !!(this.interactionNet || this.highway || this.ragIndex || this.guardrails || this.router || this.entityMemory);
+    return !!(
+      this.interactionNet ||
+      this.highway ||
+      this.ragIndex ||
+      this.guardrails ||
+      this.router ||
+      this.entityMemory
+    );
   }
 
   /** Get loaded subsystem names */

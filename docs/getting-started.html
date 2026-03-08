@@ -445,13 +445,28 @@
       }
 
       /* Syntax highlights */
-      .hl-comment { color: #5a5a72; font-style: italic; }
-      .hl-string  { color: #4de094; }
-      .hl-key     { color: var(--accent); }
-      .hl-number  { color: var(--accent-warm); }
-      .hl-kw      { color: var(--accent-2); }
-      .hl-flag    { color: var(--accent-warm); }
-      .hl-cmd     { color: var(--text-bright); }
+      .hl-comment {
+        color: #5a5a72;
+        font-style: italic;
+      }
+      .hl-string {
+        color: #4de094;
+      }
+      .hl-key {
+        color: var(--accent);
+      }
+      .hl-number {
+        color: var(--accent-warm);
+      }
+      .hl-kw {
+        color: var(--accent-2);
+      }
+      .hl-flag {
+        color: var(--accent-warm);
+      }
+      .hl-cmd {
+        color: var(--text-bright);
+      }
 
       /* ── Tables ─────────────────────────────────────── */
       .table-wrap {
@@ -549,7 +564,12 @@
       .section-divider {
         border: none;
         height: 1px;
-        background: linear-gradient(90deg, transparent, var(--border), transparent);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border),
+          transparent
+        );
         margin: 3rem 0;
       }
 
@@ -640,7 +660,11 @@
         left: -10%;
         width: 50%;
         height: 50%;
-        background: radial-gradient(circle, rgba(0, 228, 255, 0.035) 0%, transparent 65%);
+        background: radial-gradient(
+          circle,
+          rgba(0, 228, 255, 0.035) 0%,
+          transparent 65%
+        );
       }
 
       .ambient::after {
@@ -650,7 +674,11 @@
         right: -10%;
         width: 45%;
         height: 45%;
-        background: radial-gradient(circle, rgba(123, 97, 255, 0.03) 0%, transparent 65%);
+        background: radial-gradient(
+          circle,
+          rgba(123, 97, 255, 0.03) 0%,
+          transparent 65%
+        );
       }
 
       /* ── Footer ─────────────────────────────────────── */
@@ -849,7 +877,9 @@
         <li><a href="./agents.html">Agents</a></li>
         <li><a href="./changelog.html">Changelog</a></li>
         <li>
-          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta">GitHub →</a>
+          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta"
+            >GitHub →</a
+          >
         </li>
       </ul>
       <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
@@ -884,7 +914,13 @@
         </ul>
       </aside>
 
-      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+      <button
+        class="sidebar-toggle"
+        id="sidebarToggle"
+        aria-label="Toggle sidebar"
+      >
+        ☰
+      </button>
 
       <!-- Main Content -->
       <main class="main-content">
@@ -894,8 +930,9 @@
             <div class="badge">Documentation</div>
             <h1>Getting Started</h1>
             <p>
-              Set up the AETHER multi-agent orchestration framework, configure your LLM providers,
-              and run your first autonomous task in under five minutes.
+              Set up the AETHER multi-agent orchestration framework, configure
+              your LLM providers, and run your first autonomous task in under
+              five minutes.
             </p>
           </header>
 
@@ -904,17 +941,26 @@
             <h2>Prerequisites</h2>
             <ul>
               <li>
-                <strong><a href="https://bun.sh" target="_blank" rel="noopener">Bun</a> v1.0+</strong>
+                <strong
+                  ><a href="https://bun.sh" target="_blank" rel="noopener"
+                    >Bun</a
+                  >
+                  v1.0+</strong
+                >
                 — JavaScript runtime and package manager
               </li>
               <li>
-                <strong>One or more LLM API keys</strong> — Google Gemini, Anthropic Claude, OpenAI,
-                or <a href="https://ollama.ai" target="_blank" rel="noopener">Ollama</a> running locally
+                <strong>One or more LLM API keys</strong> — Google Gemini,
+                Anthropic Claude, OpenAI, or
+                <a href="https://ollama.ai" target="_blank" rel="noopener"
+                  >Ollama</a
+                >
+                running locally
               </li>
             </ul>
             <div class="callout callout-tip">
-              <strong>Tip:</strong> Google Gemini offers a free tier — it's the fastest way to try AETHER
-              without spending anything.
+              <strong>Tip:</strong> Google Gemini offers a free tier — it's the
+              fastest way to try AETHER without spending anything.
             </div>
           </section>
 
@@ -943,17 +989,28 @@
           <section id="quick-start" class="reveal">
             <h2>Quick Start</h2>
 
-            <h3 id="step-init"><span class="step-num">1</span> Initialize your workspace</h3>
+            <h3 id="step-init">
+              <span class="step-num">1</span> Initialize your workspace
+            </h3>
             <pre><code><span class="hl-cmd">bun run</span> bin/aether.ts <span class="hl-flag">init</span></code><span class="lang-tag">bash</span></pre>
             <p>This command:</p>
             <ul>
               <li>Scans your project and detects the tech stack</li>
-              <li>Detects available LLM providers from environment variables</li>
-              <li>Creates the <code>.aether/</code> directory with <code>config.json</code> and <code>settings.json</code></li>
-              <li>Discovers any <code>.agent.md</code> files in your workspace</li>
+              <li>
+                Detects available LLM providers from environment variables
+              </li>
+              <li>
+                Creates the <code>.aether/</code> directory with
+                <code>config.json</code> and <code>settings.json</code>
+              </li>
+              <li>
+                Discovers any <code>.agent.md</code> files in your workspace
+              </li>
             </ul>
 
-            <h3 id="step-keys"><span class="step-num">2</span> Set up API keys</h3>
+            <h3 id="step-keys">
+              <span class="step-num">2</span> Set up API keys
+            </h3>
             <p>Set environment variables for your LLM providers:</p>
             <pre><code><span class="hl-comment"># Google Gemini (recommended — free tier available)</span>
 <span class="hl-kw">export</span> <span class="hl-key">GOOGLE_AI_KEY</span>=<span class="hl-string">"your-key-here"</span>
@@ -967,31 +1024,40 @@
 <span class="hl-comment"># Ollama (no key needed — runs locally)</span>
 <span class="hl-comment"># Just install and run: ollama serve</span></code><span class="lang-tag">bash</span></pre>
             <div class="callout callout-info">
-              <strong>Auto-detection:</strong> AETHER detects available providers on
-              <code>init</code> and maps them to agent tiers automatically — master, manager, and
-              worker agents each get assigned the best available model.
+              <strong>Auto-detection:</strong> AETHER detects available
+              providers on <code>init</code> and maps them to agent tiers
+              automatically — master, manager, and worker agents each get
+              assigned the best available model.
             </div>
 
-            <h3 id="step-run"><span class="step-num">3</span> Run your first task</h3>
+            <h3 id="step-run">
+              <span class="step-num">3</span> Run your first task
+            </h3>
             <pre><code><span class="hl-cmd">bun run</span> bin/aether.ts <span class="hl-flag">run</span> <span class="hl-string">"explain the project structure"</span></code><span class="lang-tag">bash</span></pre>
             <p>
-              AETHER routes your task through the agent hierarchy — <strong>cortex-0</strong>
-              decomposes it, managers coordinate, and workers execute. You'll see the result
-              streamed back to your terminal.
+              AETHER routes your task through the agent hierarchy —
+              <strong>cortex-0</strong>
+              decomposes it, managers coordinate, and workers execute. You'll
+              see the result streamed back to your terminal.
             </p>
 
-            <h3 id="step-link"><span class="step-num">4</span> Start the WebSocket server</h3>
+            <h3 id="step-link">
+              <span class="step-num">4</span> Start the WebSocket server
+            </h3>
             <pre><code><span class="hl-cmd">bun run</span> bin/aether.ts <span class="hl-flag">link</span></code><span class="lang-tag">bash</span></pre>
             <p>
-              Starts <strong>Aether-Link</strong> on port <code>9999</code> with the BAP-02 binary
-              protocol. Use this for real-time integration with editors and external tools.
+              Starts <strong>Aether-Link</strong> on port <code>9999</code> with
+              the BAP-02 binary protocol. Use this for real-time integration
+              with editors and external tools.
             </p>
 
-            <h3 id="step-registry"><span class="step-num">5</span> View registered agents</h3>
+            <h3 id="step-registry">
+              <span class="step-num">5</span> View registered agents
+            </h3>
             <pre><code><span class="hl-cmd">bun run</span> bin/aether.ts <span class="hl-flag">registry</span></code><span class="lang-tag">bash</span></pre>
             <p>
-              Prints an ASCII table of all 34 registered agents with their tier, section, and
-              status.
+              Prints an ASCII table of all 34 registered agents with their tier,
+              section, and status.
             </p>
           </section>
 
@@ -1001,11 +1067,21 @@
           <section id="configuration" class="reveal">
             <h2>Configuration</h2>
             <p>
-              After <code>aether init</code>, two config files live in <code>.aether/</code>:
+              After <code>aether init</code>, two config files live in
+              <code>.aether/</code>:
             </p>
 
-            <h3 id="config-json">.aether/config.json
-              <span style="font-size: 0.72rem; font-weight: 400; color: var(--text-dim); margin-left: 0.75rem;">auto-generated</span>
+            <h3 id="config-json">
+              .aether/config.json
+              <span
+                style="
+                  font-size: 0.72rem;
+                  font-weight: 400;
+                  color: var(--text-dim);
+                  margin-left: 0.75rem;
+                "
+                >auto-generated</span
+              >
             </h3>
             <pre><code>{
   <span class="hl-key">"version"</span>: <span class="hl-string">"0.2.0"</span>,
@@ -1017,8 +1093,17 @@
   <span class="hl-key">"server"</span>: { <span class="hl-key">"port"</span>: <span class="hl-number">9999</span>, <span class="hl-key">"host"</span>: <span class="hl-string">"localhost"</span> }
 }</code><span class="lang-tag">json</span></pre>
 
-            <h3 id="settings-json">.aether/settings.json
-              <span style="font-size: 0.72rem; font-weight: 400; color: var(--text-dim); margin-left: 0.75rem;">user-editable</span>
+            <h3 id="settings-json">
+              .aether/settings.json
+              <span
+                style="
+                  font-size: 0.72rem;
+                  font-weight: 400;
+                  color: var(--text-dim);
+                  margin-left: 0.75rem;
+                "
+                >user-editable</span
+              >
             </h3>
             <pre><code>{
   <span class="hl-key">"methodology"</span>: { <span class="hl-key">"mode"</span>: <span class="hl-string">"tdd"</span>, <span class="hl-key">"testCommand"</span>: <span class="hl-string">"bun test"</span> },
@@ -1046,26 +1131,29 @@
             </p>
 
             <div class="frontmatter">
-              <div class="frontmatter-header">⬡ agents/workers/my-agent.agent.md</div>
+              <div class="frontmatter-header">
+                ⬡ agents/workers/my-agent.agent.md
+              </div>
               <div class="frontmatter-body">
-<span class="hl-comment">---</span>
-<span class="hl-key">id</span>: my-agent
-<span class="hl-key">name</span>: My Custom Agent
-<span class="hl-key">tier</span>: worker
-<span class="hl-key">sections</span>: [TOOLS]
-<span class="hl-key">capabilities</span>: [my-task, my-domain]
-<span class="hl-key">escalationTarget</span>: system-architect
-<span class="hl-key">llmRequirement</span>: haiku
-<span class="hl-key">format</span>: markdown
-<span class="hl-comment">---</span>
+                <span class="hl-comment">---</span>
+                <span class="hl-key">id</span>: my-agent
+                <span class="hl-key">name</span>: My Custom Agent
+                <span class="hl-key">tier</span>: worker
+                <span class="hl-key">sections</span>: [TOOLS]
+                <span class="hl-key">capabilities</span>: [my-task, my-domain]
+                <span class="hl-key">escalationTarget</span>: system-architect
+                <span class="hl-key">llmRequirement</span>: haiku
+                <span class="hl-key">format</span>: markdown
+                <span class="hl-comment">---</span>
 
-You are a specialized worker agent. Given a task, you...
+                You are a specialized worker agent. Given a task, you...
               </div>
             </div>
 
             <p>
-              Then run <code>aether init</code> to discover it, or restart the runtime. Your agent
-              will appear in the registry and participate in task routing.
+              Then run <code>aether init</code> to discover it, or restart the
+              runtime. Your agent will appear in the registry and participate in
+              task routing.
             </p>
           </section>
 
@@ -1086,7 +1174,9 @@ You are a specialized worker agent. Given a task, you...
                 <tbody>
                   <tr>
                     <td><strong>Google Gemini</strong></td>
-                    <td><code>GOOGLE_AI_KEY</code> or <code>GEMINI_API_KEY</code></td>
+                    <td>
+                      <code>GOOGLE_AI_KEY</code> or <code>GEMINI_API_KEY</code>
+                    </td>
                     <td>Free tier available</td>
                   </tr>
                   <tr>
@@ -1101,7 +1191,9 @@ You are a specialized worker agent. Given a task, you...
                   </tr>
                   <tr>
                     <td><strong>Ollama</strong></td>
-                    <td><em style="color: var(--text-dim);">(none needed)</em></td>
+                    <td>
+                      <em style="color: var(--text-dim)">(none needed)</em>
+                    </td>
                     <td>Local inference</td>
                   </tr>
                 </tbody>
@@ -1143,9 +1235,7 @@ You are a specialized worker agent. Given a task, you...
                 <div class="card-title">
                   Changelog <span class="arrow">→</span>
                 </div>
-                <div class="card-desc">
-                  Version history and release notes.
-                </div>
+                <div class="card-desc">Version history and release notes.</div>
               </a>
             </div>
           </section>
@@ -1219,12 +1309,14 @@ You are a specialized worker agent. Given a task, you...
         sidebarLinks.forEach((link) => {
           link.classList.toggle(
             "active",
-            link.getAttribute("href") === "#" + current
+            link.getAttribute("href") === "#" + current,
           );
         });
       }
 
-      window.addEventListener("scroll", updateActiveSidebarLink, { passive: true });
+      window.addEventListener("scroll", updateActiveSidebarLink, {
+        passive: true,
+      });
       updateActiveSidebarLink();
 
       /* ── Reveal on Scroll ─────────────────────────── */
@@ -1238,7 +1330,7 @@ You are a specialized worker agent. Given a task, you...
             }
           });
         },
-        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
       );
 
       reveals.forEach((el) => revealObserver.observe(el));

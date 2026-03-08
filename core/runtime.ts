@@ -184,8 +184,11 @@ export class AetherRuntime {
     // and rebuild tier mapping if the saved config references unconfigured providers
     try {
       const detected = await ProviderManager.detectProviders();
-      const savedPrimary = this.aetherConfig.providers.tiers?.master?.provider
-        ?? this.aetherConfig.providers.tiers?.[Object.keys(this.aetherConfig.providers.tiers ?? {})[0]]?.provider;
+      const savedPrimary =
+        this.aetherConfig.providers.tiers?.master?.provider ??
+        this.aetherConfig.providers.tiers?.[
+          Object.keys(this.aetherConfig.providers.tiers ?? {})[0]
+        ]?.provider;
       const primaryAvailable = detected.includes(savedPrimary as LLMProvider);
 
       if (primaryAvailable) {
@@ -249,7 +252,12 @@ export class AetherRuntime {
     if (this.store) {
       try {
         this.embedder = new Embedder(this.logger);
-        this.ragIndex = new RAGIndex(this.embedder, this.logger, {}, this.store);
+        this.ragIndex = new RAGIndex(
+          this.embedder,
+          this.logger,
+          {},
+          this.store,
+        );
         await this.ragIndex.initialize();
         this.logger.info("Runtime", "Embedder + RAGIndex initialized");
 
@@ -265,7 +273,10 @@ export class AetherRuntime {
           }
         }
         if (indexed > 0) {
-          this.logger.info("Runtime", `Indexed ${indexed}/${allAgents.length} agents into RAGIndex`);
+          this.logger.info(
+            "Runtime",
+            `Indexed ${indexed}/${allAgents.length} agents into RAGIndex`,
+          );
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
@@ -280,7 +291,10 @@ export class AetherRuntime {
       this.guardrails = createDefaultGuardrails();
       this.schemaValidator = new SchemaValidator();
       this.pluginRegistry = new PluginRegistry(this.rootPath);
-      this.logger.info("Runtime", "Guardrails, SchemaValidator, PluginRegistry initialized");
+      this.logger.info(
+        "Runtime",
+        "Guardrails, SchemaValidator, PluginRegistry initialized",
+      );
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       this.logger.warn("Runtime", `Non-store subsystem init warning: ${msg}`);
@@ -288,7 +302,11 @@ export class AetherRuntime {
 
     if (this.store) {
       try {
-        this.agentRouter = new AgentRouter(this.store, this.settings.routing.confidenceThreshold, this.ragIndex);
+        this.agentRouter = new AgentRouter(
+          this.store,
+          this.settings.routing.confidenceThreshold,
+          this.ragIndex,
+        );
         this.agentRouter.configureContexts({
           activeContext: this.settings.routing.activeContext,
           contexts: this.settings.routing.contexts,
@@ -296,16 +314,28 @@ export class AetherRuntime {
         });
         this.agentRouter.configureCache(this.settings.routing.cache);
         this.entityMemory = new EntityMemory(this.store);
-        this.conversationManager = new ConversationManager(this.store, this.settings.conversation.maxMessages);
-        this.progressTracker = new ProgressTracker(this.store, this.settings.progress);
-        this.handoffManager = new HandoffManager(this.store, this.settings.handoff.maxChainLength);
+        this.conversationManager = new ConversationManager(
+          this.store,
+          this.settings.conversation.maxMessages,
+        );
+        this.progressTracker = new ProgressTracker(
+          this.store,
+          this.settings.progress,
+        );
+        this.handoffManager = new HandoffManager(
+          this.store,
+          this.settings.handoff.maxChainLength,
+        );
         this.logger.info(
           "Runtime",
           "Router, EntityMemory, ConversationManager, ProgressTracker, HandoffManager initialized",
         );
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        this.logger.warn("Runtime", `Store-backed subsystem init warning: ${msg}`);
+        this.logger.warn(
+          "Runtime",
+          `Store-backed subsystem init warning: ${msg}`,
+        );
       }
 
       // Check for incomplete durable workflows from previous runs
@@ -326,7 +356,12 @@ export class AetherRuntime {
     try {
       this.structuredLogger = new StructuredLogger(this.logger, {
         auditLogPath: join(this.rootPath, ".aether", "logs", "audit.jsonl"),
-        structuredLogPath: join(this.rootPath, ".aether", "logs", "structured.jsonl"),
+        structuredLogPath: join(
+          this.rootPath,
+          ".aether",
+          "logs",
+          "structured.jsonl",
+        ),
         maxRetainedEntries: this.settings.logging.maxRetainedEntries,
         forwardToSynapse: this.settings.logging.forwardToSynapse,
       });
@@ -535,14 +570,22 @@ export class AetherRuntime {
       ...(this.guardrails ? { guardrails: this.guardrails } : {}),
       ...(this.agentRouter ? { router: this.agentRouter } : {}),
       ...(this.entityMemory ? { entityMemory: this.entityMemory } : {}),
-      ...(this.conversationManager ? { conversationManager: this.conversationManager } : {}),
-      ...(this.progressTracker ? { progressTracker: this.progressTracker } : {}),
+      ...(this.conversationManager
+        ? { conversationManager: this.conversationManager }
+        : {}),
+      ...(this.progressTracker
+        ? { progressTracker: this.progressTracker }
+        : {}),
       ...(this.handoffManager ? { handoffManager: this.handoffManager } : {}),
       ...(this.pluginRegistry ? { pluginRegistry: this.pluginRegistry } : {}),
-      ...(this.schemaValidator ? { schemaValidator: this.schemaValidator } : {}),
+      ...(this.schemaValidator
+        ? { schemaValidator: this.schemaValidator }
+        : {}),
       // Phase 8 subsystems
       ...(this.acpBus ? { acpBus: this.acpBus } : {}),
-      ...(this.structuredLogger ? { structuredLogger: this.structuredLogger } : {}),
+      ...(this.structuredLogger
+        ? { structuredLogger: this.structuredLogger }
+        : {}),
       ...(this.sharedStateBus ? { sharedState: this.sharedStateBus } : {}),
     });
 
@@ -1325,14 +1368,35 @@ export class AetherRuntime {
     detected: LLMProvider[],
   ): import("./types.ts").ProviderConfig {
     // Model defaults per provider — best balance of quality/cost per tier
-    const modelDefaults: Record<
-      string,
-      Record<string, string>
-    > = {
-      claude: { sentinel: "opus", forge: "opus", master: "opus", manager: "sonnet", worker: "haiku" },
-      openai: { sentinel: "gpt4o", forge: "gpt4o", master: "gpt4o", manager: "gpt4o", worker: "gpt4o-mini" },
-      gemini: { sentinel: "gemini-pro", forge: "gemini-pro", master: "gemini-pro", manager: "gemini-pro", worker: "gemini-flash" },
-      ollama: { sentinel: "local", forge: "local", master: "local", manager: "local", worker: "local" },
+    const modelDefaults: Record<string, Record<string, string>> = {
+      claude: {
+        sentinel: "opus",
+        forge: "opus",
+        master: "opus",
+        manager: "sonnet",
+        worker: "haiku",
+      },
+      openai: {
+        sentinel: "gpt4o",
+        forge: "gpt4o",
+        master: "gpt4o",
+        manager: "gpt4o",
+        worker: "gpt4o-mini",
+      },
+      gemini: {
+        sentinel: "gemini-pro",
+        forge: "gemini-pro",
+        master: "gemini-pro",
+        manager: "gemini-pro",
+        worker: "gemini-flash",
+      },
+      ollama: {
+        sentinel: "local",
+        forge: "local",
+        master: "local",
+        manager: "local",
+        worker: "local",
+      },
     };
 
     const primary = detected[0];

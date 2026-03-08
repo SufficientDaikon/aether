@@ -445,13 +445,28 @@
       }
 
       /* Syntax highlights */
-      .hl-comment { color: #5a5a72; font-style: italic; }
-      .hl-string  { color: #4de094; }
-      .hl-key     { color: var(--accent); }
-      .hl-number  { color: var(--accent-warm); }
-      .hl-kw      { color: var(--accent-2); }
-      .hl-flag    { color: var(--accent-warm); }
-      .hl-cmd     { color: var(--text-bright); }
+      .hl-comment {
+        color: #5a5a72;
+        font-style: italic;
+      }
+      .hl-string {
+        color: #4de094;
+      }
+      .hl-key {
+        color: var(--accent);
+      }
+      .hl-number {
+        color: var(--accent-warm);
+      }
+      .hl-kw {
+        color: var(--accent-2);
+      }
+      .hl-flag {
+        color: var(--accent-warm);
+      }
+      .hl-cmd {
+        color: var(--text-bright);
+      }
 
       /* ── Tables ─────────────────────────────────────── */
       .table-wrap {
@@ -531,7 +546,12 @@
       .section-divider {
         border: none;
         height: 1px;
-        background: linear-gradient(90deg, transparent, var(--border), transparent);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border),
+          transparent
+        );
         margin: 3rem 0;
       }
 
@@ -622,7 +642,11 @@
         left: -10%;
         width: 50%;
         height: 50%;
-        background: radial-gradient(circle, rgba(0, 228, 255, 0.035) 0%, transparent 65%);
+        background: radial-gradient(
+          circle,
+          rgba(0, 228, 255, 0.035) 0%,
+          transparent 65%
+        );
       }
 
       .ambient::after {
@@ -632,7 +656,11 @@
         right: -10%;
         width: 45%;
         height: 45%;
-        background: radial-gradient(circle, rgba(123, 97, 255, 0.03) 0%, transparent 65%);
+        background: radial-gradient(
+          circle,
+          rgba(123, 97, 255, 0.03) 0%,
+          transparent 65%
+        );
       }
 
       /* ── Footer ─────────────────────────────────────── */
@@ -800,7 +828,9 @@
         <li><a href="./agents.html">Agents</a></li>
         <li><a href="./changelog.html">Changelog</a></li>
         <li>
-          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta">GitHub →</a>
+          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta"
+            >GitHub →</a
+          >
         </li>
       </ul>
       <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
@@ -834,7 +864,13 @@
         </ul>
       </aside>
 
-      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+      <button
+        class="sidebar-toggle"
+        id="sidebarToggle"
+        aria-label="Toggle sidebar"
+      >
+        ☰
+      </button>
 
       <!-- Main Content -->
       <main class="main-content">
@@ -844,8 +880,9 @@
             <div class="badge">Reference</div>
             <h1>CLI Reference</h1>
             <p>
-              AETHER's command-line interface is the primary way to interact with the framework.
-              Every command, flag, and option documented below.
+              AETHER's command-line interface is the primary way to interact
+              with the framework. Every command, flag, and option documented
+              below.
             </p>
           </header>
 
@@ -864,9 +901,9 @@
             <!-- run -->
             <h3 id="cmd-run"><code>run</code></h3>
             <p>
-              Execute a task — routes to the best-fit agent automatically. The orchestrator
-              (<strong>cortex-0</strong>) decomposes complex tasks, managers coordinate, and
-              workers execute.
+              Execute a task — routes to the best-fit agent automatically. The
+              orchestrator (<strong>cortex-0</strong>) decomposes complex tasks,
+              managers coordinate, and workers execute.
             </p>
             <pre><code><span class="hl-cmd">aether run</span> <span class="hl-string">"your task description"</span>
 <span class="hl-cmd">aether run</span> <span class="hl-flag">-p</span> gemini <span class="hl-flag">-m</span> gemini-2.0-flash <span class="hl-string">"explain recursion"</span>
@@ -903,60 +940,65 @@
             <!-- init -->
             <h3 id="cmd-init"><code>init</code></h3>
             <p>
-              Scan the workspace, detect tech stack, discover agents, create <code>.aether/</code> config.
+              Scan the workspace, detect tech stack, discover agents, create
+              <code>.aether/</code> config.
             </p>
             <pre><code><span class="hl-cmd">aether init</span></code><span class="lang-tag">bash</span></pre>
             <p>Creates:</p>
             <ul>
-              <li><code>.aether/config.json</code> — auto-generated provider &amp; server config</li>
-              <li><code>.aether/settings.json</code> — user-editable runtime settings</li>
-              <li><code>.aether/aether.db</code> — local SQLite database for memory &amp; metrics</li>
+              <li>
+                <code>.aether/config.json</code> — auto-generated provider &amp;
+                server config
+              </li>
+              <li>
+                <code>.aether/settings.json</code> — user-editable runtime
+                settings
+              </li>
+              <li>
+                <code>.aether/aether.db</code> — local SQLite database for
+                memory &amp; metrics
+              </li>
             </ul>
 
             <!-- link -->
             <h3 id="cmd-link"><code>link</code></h3>
-            <p>
-              Start the Aether-Link WebSocket server.
-            </p>
+            <p>Start the Aether-Link WebSocket server.</p>
             <pre><code><span class="hl-cmd">aether link</span></code><span class="lang-tag">bash</span></pre>
             <p>
-              Runs on port <code>9999</code> by default. Uses the BAP-02 binary protocol.
-              Supports token-based auth, origin validation, and rate limiting.
+              Runs on port <code>9999</code> by default. Uses the BAP-02 binary
+              protocol. Supports token-based auth, origin validation, and rate
+              limiting.
             </p>
 
             <!-- status -->
             <h3 id="cmd-status"><code>status</code></h3>
             <p>
-              Show runtime status — agent counts, server health, provider status.
+              Show runtime status — agent counts, server health, provider
+              status.
             </p>
             <pre><code><span class="hl-cmd">aether status</span></code><span class="lang-tag">bash</span></pre>
 
             <!-- registry -->
             <h3 id="cmd-registry"><code>registry</code></h3>
             <p>
-              Display all registered agents in an ASCII table with tiers, sections, and status.
+              Display all registered agents in an ASCII table with tiers,
+              sections, and status.
             </p>
             <pre><code><span class="hl-cmd">aether registry</span></code><span class="lang-tag">bash</span></pre>
 
             <!-- spawn -->
             <h3 id="cmd-spawn"><code>spawn</code></h3>
-            <p>
-              Activate a specific agent by ID.
-            </p>
+            <p>Activate a specific agent by ID.</p>
             <pre><code><span class="hl-cmd">aether spawn</span> <span class="hl-string">react-specialist</span></code><span class="lang-tag">bash</span></pre>
 
             <!-- scan -->
             <h3 id="cmd-scan"><code>scan</code></h3>
-            <p>
-              Scan workspace and display detected tech stack.
-            </p>
+            <p>Scan workspace and display detected tech stack.</p>
             <pre><code><span class="hl-cmd">aether scan</span></code><span class="lang-tag">bash</span></pre>
 
             <!-- config -->
             <h3 id="cmd-config"><code>config</code></h3>
-            <p>
-              View and manage settings. Supports multiple sub-commands:
-            </p>
+            <p>View and manage settings. Supports multiple sub-commands:</p>
             <pre><code><span class="hl-cmd">aether config</span>                        <span class="hl-comment"># Show all settings</span>
 <span class="hl-cmd">aether config get</span> <span class="hl-flag">&lt;path&gt;</span>             <span class="hl-comment"># Get setting (dot-path)</span>
 <span class="hl-cmd">aether config set</span> <span class="hl-flag">&lt;path&gt;</span> <span class="hl-flag">&lt;value&gt;</span>     <span class="hl-comment"># Set a setting</span>
@@ -973,9 +1015,7 @@
 
             <!-- context -->
             <h3 id="cmd-context"><code>context</code></h3>
-            <p>
-              Manage agent namespace contexts.
-            </p>
+            <p>Manage agent namespace contexts.</p>
             <pre><code><span class="hl-cmd">aether context list</span>                  <span class="hl-comment"># List all contexts</span>
 <span class="hl-cmd">aether context switch</span> <span class="hl-flag">&lt;name&gt;</span>         <span class="hl-comment"># Switch active context</span></code><span class="lang-tag">bash</span></pre>
           </section>
@@ -986,7 +1026,8 @@
           <section id="mcp-server" class="reveal">
             <h2>MCP Server</h2>
             <p>
-              AETHER includes an MCP (Model Context Protocol) server for AI assistant integration:
+              AETHER includes an MCP (Model Context Protocol) server for AI
+              assistant integration:
             </p>
             <pre><code><span class="hl-cmd">bun run</span> bin/aether-mcp.ts <span class="hl-flag">--workspace</span> <span class="hl-string">/path/to/project</span></code><span class="lang-tag">bash</span></pre>
 
@@ -1065,7 +1106,8 @@
           <section id="synapse-dsl" class="reveal">
             <h2>Synapse DSL</h2>
             <p>
-              Define workflows in <code>.syn</code> files using the Synapse domain-specific language:
+              Define workflows in <code>.syn</code> files using the Synapse
+              domain-specific language:
             </p>
             <pre><code><span class="hl-kw">@workflow</span> <span class="hl-string">data-pipeline</span>
   <span class="hl-kw">@trigger</span> <span class="hl-cmd">on_commit</span>(<span class="hl-string">"main"</span>)
@@ -1114,9 +1156,7 @@
                 <div class="card-title">
                   Changelog <span class="arrow">→</span>
                 </div>
-                <div class="card-desc">
-                  Version history and release notes.
-                </div>
+                <div class="card-desc">Version history and release notes.</div>
               </a>
             </div>
           </section>
@@ -1190,12 +1230,14 @@
         sidebarLinks.forEach((link) => {
           link.classList.toggle(
             "active",
-            link.getAttribute("href") === "#" + current
+            link.getAttribute("href") === "#" + current,
           );
         });
       }
 
-      window.addEventListener("scroll", updateActiveSidebarLink, { passive: true });
+      window.addEventListener("scroll", updateActiveSidebarLink, {
+        passive: true,
+      });
       updateActiveSidebarLink();
 
       /* ── Reveal on Scroll ─────────────────────────── */
@@ -1209,7 +1251,7 @@
             }
           });
         },
-        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
       );
 
       reveals.forEach((el) => revealObserver.observe(el));

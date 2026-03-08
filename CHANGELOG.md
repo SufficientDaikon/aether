@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [0.2.0] — 2026-03-08
 
 ### Added
+
 - **SQLite persistence** — 19-table database (`.aether/aether.db`) with WAL mode, sqlite-vec for vector embeddings, and FTS5 for full-text search. All runtime state persists across restarts.
 - **28 subsystems** — Registry, Escalation, MemoryHighway, RAGIndex, InteractionNet, Aether-Link, AgentRouter, GuardrailsPipeline, SchemaValidator, ConversationManager, EntityMemory, HandoffManager, GroupChat, StateGraph, ProgressTracker, DurableWorkflow, ACPBus, ConflictResolver, SharedStateBus, StructuredLogger, PluginRegistry, ReactionEngine, SettingsManager, and more.
 - **Synapse DSL** — Define workflows in `.syn` files with lexer, parser, and transpiler.
@@ -18,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **CI/CD** — GitHub Actions for type checking, unit tests, npm publishing, and VS Code extension builds.
 
 ### Fixed
+
 - **Rate limiter** now accepts configurable `rateLimitMax` and `rateLimitWindow` via constructor options (was hardcoded at 100).
 - **CLITransport** tests now work cross-platform (Windows + Unix).
 - **35 TypeScript errors** resolved across core modules:
@@ -32,11 +34,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - Eval test files annotated with explicit types to eliminate implicit `any`.
 
 ### Resolved
+
 - **PERSIST-01** — All runtime state now persists in SQLite. Issue closed.
 
 ## [0.1.0] — 2026-02-21
 
 ### Added
+
 - Initial framework with 3-tier agent hierarchy (Master/Manager/Worker).
 - Agent definition via `.agent.md` files with YAML frontmatter.
 - CLI with `init`, `run`, `link`, `status`, `registry`, `spawn`, `config`, `scan` commands.

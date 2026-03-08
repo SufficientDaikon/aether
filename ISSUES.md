@@ -22,5 +22,5 @@ SQLite persistence layer fully implemented and integrated:
 
 ---
 
-*Created: 2026-02-21*  
-*Last Updated: 2026-03-08*
+_Created: 2026-02-21_  
+_Last Updated: 2026-03-08_

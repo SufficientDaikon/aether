@@ -291,7 +291,9 @@ export class AgentForge {
     for (const agent of agents) {
       // Get recent tasks from store and filter for this agent
       const recentTasks = this.store.getRecentTasks(1000);
-      const agentTasks = recentTasks.filter((t: any) => t.executor === agent.id);
+      const agentTasks = recentTasks.filter(
+        (t: any) => t.executor === agent.id,
+      );
 
       if (agentTasks.length === 0) {
         scores.push({

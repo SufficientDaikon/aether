@@ -20,6 +20,7 @@ import { OrchestratorPanel } from "./panels/orchestrator";
 import { CostDashboardPanel } from "./panels/task-history";
 import { MemoryExplorerPanel } from "./panels/memory-explorer";
 import { SettingsEditorPanel } from "./panels/settings-editor";
+import { DashboardPanelManager } from "./panels/dashboard-panel-manager";
 
 let bridge: AetherBridge | null = null;
 
@@ -98,6 +99,44 @@ export async function activate(context: vscode.ExtensionContext) {
   // ── Chat Participant ─────────────────────────────────────
 
   registerChatParticipant(context, bridge);
+
+  // ── Dashboard ──────────────────────────────────────────────
+
+  const dashboardManager = new DashboardPanelManager(context, bridge!);
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("aether.dashboard", () => {
+      dashboardManager.show();
+    }),
+    vscode.commands.registerCommand("aether.dashboard.overview", () => {
+      dashboardManager.show("overview");
+    }),
+    vscode.commands.registerCommand("aether.dashboard.agents", () => {
+      dashboardManager.show("agents");
+    }),
+    vscode.commands.registerCommand("aether.dashboard.tasks", () => {
+      dashboardManager.show("tasks");
+    }),
+    vscode.commands.registerCommand("aether.dashboard.chat", () => {
+      dashboardManager.show("chat");
+    }),
+    vscode.commands.registerCommand("aether.dashboard.approvals", () => {
+      dashboardManager.show("approvals");
+    }),
+    vscode.commands.registerCommand("aether.dashboard.memory", () => {
+      dashboardManager.show("memory");
+    }),
+    vscode.commands.registerCommand("aether.dashboard.settings", () => {
+      dashboardManager.show("settings");
+    }),
+  );
+
+  // Register serializer for dashboard persistence
+  vscode.window.registerWebviewPanelSerializer("aether.dashboard", {
+    async deserializeWebviewPanel(panel: vscode.WebviewPanel, state: any) {
+      dashboardManager.restore(panel, state);
+    },
+  });
 
   // ── Commands ─────────────────────────────────────────────
 
