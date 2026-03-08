@@ -34,7 +34,7 @@ Thumbs.db
 *.swo
 *~
 
-# Testing
+# Testing artifacts
 .nyc_output/
 coverage/
 **/.pipeline-tmp*/
@@ -43,7 +43,12 @@ coverage/
 **/.recovery-tmp*/
 **/.degradation-tmp*/
 **/.health-tmp*/
+**/.bench-embed-logs/
 aether.db
+
+# Eval generated outputs
+eval/results/
+eval/.config-backup/
 
 # macOS
 ._*
@@ -63,6 +68,3 @@ nul
 
 # Claude session artifacts
 .claude/
-
-# Python test artifacts
-docs/_test_*.py
