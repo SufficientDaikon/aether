@@ -43,7 +43,7 @@ export function Button({
     <button
       class={clsx(base, variants[variant], sizes[size], className)}
       disabled={disabled || loading}
-      onClick={onClick}
+      onClick={disabled || loading ? undefined : onClick}
       title={title}
     >
       {loading && (
