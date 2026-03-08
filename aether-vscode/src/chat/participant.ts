@@ -13,6 +13,9 @@ export function registerChatParticipant(
   context: vscode.ExtensionContext,
   bridge: AetherBridge,
 ): void {
+  if (!vscode.chat?.createChatParticipant) {
+    throw new Error("vscode.chat API not available");
+  }
   const participant = vscode.chat.createChatParticipant(
     "aether.chat",
     async (

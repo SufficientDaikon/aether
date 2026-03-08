@@ -98,7 +98,14 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // ── Chat Participant ─────────────────────────────────────
 
-  registerChatParticipant(context, bridge);
+  try {
+    registerChatParticipant(context, bridge);
+  } catch (err) {
+    // vscode.chat may be unavailable if Copilot Chat extension is not active
+    outputChannel.appendLine(
+      `Chat participant unavailable: ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
 
   // ── Dashboard ──────────────────────────────────────────────
 
