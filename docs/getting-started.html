@@ -1,0 +1,1247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Get Started — AETHER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ── Reset ──────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #06060b;
+        --bg-surface: #0c0c14;
+        --bg-card: #10101a;
+        --border: #1a1a2e;
+        --text: #b8b8cc;
+        --text-dim: #5a5a72;
+        --text-bright: #eeeef6;
+        --accent: #00e4ff;
+        --accent-2: #7b61ff;
+        --accent-3: #ff6b6b;
+        --accent-warm: #ffb347;
+        --glow-cyan: rgba(0, 228, 255, 0.12);
+        --glow-purple: rgba(123, 97, 255, 0.12);
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Space Grotesk", system-ui, sans-serif;
+        --serif: "Instrument Serif", Georgia, serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        overflow-x: hidden;
+      }
+
+      body {
+        background: var(--bg);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      ::selection {
+        background: rgba(0, 228, 255, 0.25);
+        color: #fff;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      /* ── Navigation ────────────────────────────────── */
+      nav#nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 1.25rem 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(6, 6, 11, 0.6);
+        backdrop-filter: blur(20px) saturate(1.5);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        transition: all 0.4s ease;
+      }
+
+      nav#nav.scrolled {
+        padding: 0.8rem 2.5rem;
+        background: rgba(6, 6, 11, 0.92);
+        border-bottom-color: rgba(0, 228, 255, 0.08);
+      }
+
+      .nav-logo {
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 1.15rem;
+        letter-spacing: 0.2em;
+        color: var(--text-bright);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+      }
+      .nav-logo:hover {
+        text-decoration: none;
+      }
+
+      .nav-logo .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow:
+          0 0 12px var(--accent),
+          0 0 30px rgba(0, 228, 255, 0.3);
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.6;
+          transform: scale(0.85);
+        }
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        color: var(--text-dim);
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .nav-links a.active {
+        color: var(--accent);
+      }
+
+      .nav-cta {
+        padding: 0.5rem 1.25rem;
+        border: 1px solid rgba(0, 228, 255, 0.3);
+        border-radius: 6px;
+        color: var(--accent) !important;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        transition: all 0.3s;
+      }
+
+      .nav-cta:hover {
+        background: rgba(0, 228, 255, 0.08);
+        border-color: var(--accent);
+        box-shadow: 0 0 20px rgba(0, 228, 255, 0.15);
+      }
+
+      .mobile-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+      }
+      .mobile-toggle span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--text-dim);
+        border-radius: 2px;
+        transition: all 0.3s;
+      }
+
+      /* ── Page Layout ────────────────────────────────── */
+      .page-wrapper {
+        display: flex;
+        padding-top: 72px;
+        min-height: 100vh;
+      }
+
+      /* ── Sidebar ────────────────────────────────────── */
+      .sidebar {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        width: 240px;
+        height: calc(100vh - 72px);
+        overflow-y: auto;
+        padding: 2rem 1.25rem 3rem 1.5rem;
+        border-right: 1px solid var(--border);
+        background: rgba(6, 6, 11, 0.85);
+        backdrop-filter: blur(12px);
+        z-index: 50;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      .sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      .sidebar-label {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 1rem;
+        padding-left: 0.5rem;
+      }
+
+      .sidebar-nav {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .sidebar-nav a {
+        display: block;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.82rem;
+        font-weight: 400;
+        color: var(--text-dim);
+        border-radius: 6px;
+        border-left: 2px solid transparent;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        line-height: 1.4;
+      }
+
+      .sidebar-nav a:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.03);
+        text-decoration: none;
+      }
+
+      .sidebar-nav a.active {
+        color: var(--accent);
+        background: rgba(0, 228, 255, 0.05);
+        border-left-color: var(--accent);
+        font-weight: 500;
+      }
+
+      .sidebar-nav .sub {
+        padding-left: 1.25rem;
+        font-size: 0.78rem;
+      }
+
+      /* ── Main Content ───────────────────────────────── */
+      .main-content {
+        margin-left: 240px;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        padding: 3rem 2.5rem 6rem;
+      }
+
+      .content {
+        max-width: 780px;
+        width: 100%;
+      }
+
+      /* ── Page Header ────────────────────────────────── */
+      .page-header {
+        margin-bottom: 3.5rem;
+        padding-bottom: 2.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .page-header .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        background: rgba(0, 228, 255, 0.06);
+        border: 1px solid rgba(0, 228, 255, 0.15);
+        padding: 0.35rem 0.9rem;
+        border-radius: 100px;
+        margin-bottom: 1.5rem;
+      }
+
+      .page-header .badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent);
+      }
+
+      .page-header h1 {
+        font-family: var(--sans);
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin-bottom: 1rem;
+      }
+
+      .page-header p {
+        font-size: 1.1rem;
+        color: var(--text-dim);
+        line-height: 1.7;
+        max-width: 600px;
+      }
+
+      /* ── Typography ─────────────────────────────────── */
+      h2 {
+        font-family: var(--sans);
+        font-size: 1.65rem;
+        font-weight: 600;
+        color: var(--text-bright);
+        letter-spacing: -0.02em;
+        margin-top: 3.5rem;
+        margin-bottom: 1.25rem;
+        padding-top: 1rem;
+      }
+
+      h3 {
+        font-family: var(--sans);
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--text-bright);
+        margin-top: 2.25rem;
+        margin-bottom: 0.85rem;
+      }
+
+      h4 {
+        font-family: var(--mono);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+        margin-top: 1.75rem;
+        margin-bottom: 0.65rem;
+      }
+
+      p {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: var(--text);
+        margin-bottom: 1rem;
+      }
+
+      ul,
+      ol {
+        margin-bottom: 1rem;
+        padding-left: 1.25rem;
+      }
+
+      li {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: var(--text);
+        margin-bottom: 0.35rem;
+      }
+
+      li a {
+        text-decoration: none;
+      }
+      li a:hover {
+        text-decoration: underline;
+      }
+
+      strong {
+        color: var(--text-bright);
+        font-weight: 600;
+      }
+
+      /* ── Inline Code ────────────────────────────────── */
+      code {
+        font-family: var(--mono);
+        font-size: 0.82em;
+        color: var(--accent);
+        background: rgba(0, 228, 255, 0.07);
+        padding: 0.15em 0.45em;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 228, 255, 0.1);
+      }
+
+      /* ── Code Blocks ────────────────────────────────── */
+      pre {
+        position: relative;
+        margin: 1.25rem 0 1.75rem;
+        padding: 1.35rem 1.5rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow-x: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        color: var(--text);
+        font-size: 0.82rem;
+        line-height: 1.75;
+      }
+
+      pre .lang-tag {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.8rem;
+        font-family: var(--mono);
+        font-size: 0.6rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      /* Syntax highlights */
+      .hl-comment { color: #5a5a72; font-style: italic; }
+      .hl-string  { color: #4de094; }
+      .hl-key     { color: var(--accent); }
+      .hl-number  { color: var(--accent-warm); }
+      .hl-kw      { color: var(--accent-2); }
+      .hl-flag    { color: var(--accent-warm); }
+      .hl-cmd     { color: var(--text-bright); }
+
+      /* ── Tables ─────────────────────────────────────── */
+      .table-wrap {
+        margin: 1.25rem 0 1.75rem;
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+
+      thead {
+        background: rgba(0, 228, 255, 0.04);
+      }
+
+      th {
+        text-align: left;
+        padding: 0.85rem 1.15rem;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        border-bottom: 1px solid var(--border);
+      }
+
+      td {
+        padding: 0.75rem 1.15rem;
+        color: var(--text);
+        border-bottom: 1px solid rgba(26, 26, 46, 0.5);
+        vertical-align: top;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tbody tr:hover {
+        background: rgba(0, 228, 255, 0.02);
+      }
+
+      /* ── Callout Boxes ──────────────────────────────── */
+      .callout {
+        margin: 1.5rem 0;
+        padding: 1.15rem 1.35rem;
+        border-radius: 10px;
+        border-left: 3px solid;
+        font-size: 0.9rem;
+        line-height: 1.7;
+      }
+
+      .callout-info {
+        background: rgba(0, 228, 255, 0.04);
+        border-left-color: var(--accent);
+        color: var(--text);
+      }
+
+      .callout-info strong {
+        color: var(--accent);
+      }
+
+      .callout-tip {
+        background: rgba(77, 224, 148, 0.04);
+        border-left-color: #4de094;
+      }
+
+      .callout-tip strong {
+        color: #4de094;
+      }
+
+      /* ── Step Numbers ───────────────────────────────── */
+      .step-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: rgba(0, 228, 255, 0.1);
+        border: 1px solid rgba(0, 228, 255, 0.25);
+        color: var(--accent);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-right: 0.65rem;
+        flex-shrink: 0;
+      }
+
+      /* ── Section Divider ────────────────────────────── */
+      .section-divider {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--border), transparent);
+        margin: 3rem 0;
+      }
+
+      /* ── What's Next Cards ──────────────────────────── */
+      .next-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .next-card {
+        display: block;
+        padding: 1.25rem 1.35rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .next-card:hover {
+        border-color: rgba(0, 228, 255, 0.2);
+        background: rgba(0, 228, 255, 0.03);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        text-decoration: none;
+      }
+
+      .next-card .card-title {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: var(--text-bright);
+        margin-bottom: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .next-card .card-title .arrow {
+        color: var(--accent);
+        font-size: 0.85rem;
+        opacity: 0;
+        transition: all 0.3s;
+        transform: translateX(-4px);
+      }
+
+      .next-card:hover .card-title .arrow {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .next-card .card-desc {
+        font-size: 0.82rem;
+        color: var(--text-dim);
+        line-height: 1.5;
+      }
+
+      /* ── Reveal Animation ───────────────────────────── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ── Ambient Glow ───────────────────────────────── */
+      .ambient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .ambient::before {
+        content: "";
+        position: absolute;
+        top: -20%;
+        left: -10%;
+        width: 50%;
+        height: 50%;
+        background: radial-gradient(circle, rgba(0, 228, 255, 0.035) 0%, transparent 65%);
+      }
+
+      .ambient::after {
+        content: "";
+        position: absolute;
+        bottom: -10%;
+        right: -10%;
+        width: 45%;
+        height: 45%;
+        background: radial-gradient(circle, rgba(123, 97, 255, 0.03) 0%, transparent 65%);
+      }
+
+      /* ── Footer ─────────────────────────────────────── */
+      .footer {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+        text-align: center;
+      }
+
+      .footer p {
+        font-size: 0.78rem;
+        color: var(--text-dim);
+      }
+
+      .footer a {
+        color: var(--text-dim);
+        transition: color 0.3s;
+      }
+      .footer a:hover {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      /* ── Responsive ─────────────────────────────────── */
+      @media (max-width: 1024px) {
+        .main-content {
+          padding: 2.5rem 2rem 5rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        nav#nav {
+          padding: 1rem 1.25rem;
+        }
+        nav#nav.scrolled {
+          padding: 0.7rem 1.25rem;
+        }
+
+        .nav-links {
+          position: fixed;
+          top: 0;
+          right: 0;
+          height: 100vh;
+          width: 260px;
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 5rem 2rem 2rem;
+          gap: 1.25rem;
+          background: rgba(6, 6, 11, 0.97);
+          backdrop-filter: blur(20px);
+          border-left: 1px solid var(--border);
+          transform: translateX(100%);
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+          z-index: 200;
+        }
+
+        .nav-links.open {
+          transform: translateX(0);
+        }
+
+        .mobile-toggle {
+          display: flex;
+          z-index: 210;
+        }
+
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 280px;
+          height: 100vh;
+          padding-top: 5rem;
+          transform: translateX(-100%);
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+          z-index: 90;
+          background: rgba(6, 6, 11, 0.97);
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .sidebar-toggle {
+          display: flex;
+        }
+
+        .main-content {
+          margin-left: 0;
+          padding: 2rem 1.25rem 4rem;
+        }
+
+        .page-header h1 {
+          font-size: 2rem;
+        }
+
+        h2 {
+          font-size: 1.35rem;
+        }
+
+        .next-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (min-width: 769px) {
+        .sidebar-toggle {
+          display: none;
+        }
+      }
+
+      .sidebar-toggle {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 85;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .sidebar-toggle:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ── Overlay ────────────────────────────────────── */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 80;
+      }
+
+      .overlay.active {
+        display: block;
+      }
+
+      /* ── Frontmatter block ──────────────────────────── */
+      .frontmatter {
+        margin: 1.25rem 0 1.75rem;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .frontmatter-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1.15rem;
+        background: rgba(123, 97, 255, 0.06);
+        border-bottom: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        color: var(--accent-2);
+      }
+
+      .frontmatter-body {
+        padding: 1.15rem 1.35rem;
+        background: var(--bg-surface);
+        font-family: var(--mono);
+        font-size: 0.82rem;
+        line-height: 1.75;
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ambient"></div>
+
+    <!-- ── Navigation ──────────────────────────────── -->
+    <nav id="nav">
+      <a href="./index.html" class="nav-logo">
+        <span class="dot"></span>
+        AETHER
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./getting-started.html" class="active">Get Started</a></li>
+        <li><a href="./architecture.html">Architecture</a></li>
+        <li><a href="./cli.html">CLI</a></li>
+        <li><a href="./agents.html">Agents</a></li>
+        <li><a href="./changelog.html">Changelog</a></li>
+        <li>
+          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta">GitHub →</a>
+        </li>
+      </ul>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ── Page Layout ─────────────────────────────── -->
+    <div class="page-wrapper">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-label">On this page</div>
+        <ul class="sidebar-nav" id="sidebarNav">
+          <li><a href="#prerequisites">Prerequisites</a></li>
+          <li><a href="#installation">Installation</a></li>
+          <li><a href="#installation-npm" class="sub">From npm</a></li>
+          <li><a href="#installation-source" class="sub">From source</a></li>
+          <li><a href="#quick-start">Quick Start</a></li>
+          <li><a href="#step-init" class="sub">Initialize workspace</a></li>
+          <li><a href="#step-keys" class="sub">Set up API keys</a></li>
+          <li><a href="#step-run" class="sub">Run your first task</a></li>
+          <li><a href="#step-link" class="sub">Start WebSocket server</a></li>
+          <li><a href="#step-registry" class="sub">View agents</a></li>
+          <li><a href="#configuration">Configuration</a></li>
+          <li><a href="#config-json" class="sub">config.json</a></li>
+          <li><a href="#settings-json" class="sub">settings.json</a></li>
+          <li><a href="#first-agent">Creating Your First Agent</a></li>
+          <li><a href="#providers">Provider Setup</a></li>
+          <li><a href="#whats-next">What's Next?</a></li>
+        </ul>
+      </aside>
+
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="content">
+          <!-- Page Header -->
+          <header class="page-header reveal">
+            <div class="badge">Documentation</div>
+            <h1>Getting Started</h1>
+            <p>
+              Set up the AETHER multi-agent orchestration framework, configure your LLM providers,
+              and run your first autonomous task in under five minutes.
+            </p>
+          </header>
+
+          <!-- Prerequisites -->
+          <section id="prerequisites" class="reveal">
+            <h2>Prerequisites</h2>
+            <ul>
+              <li>
+                <strong><a href="https://bun.sh" target="_blank" rel="noopener">Bun</a> v1.0+</strong>
+                — JavaScript runtime and package manager
+              </li>
+              <li>
+                <strong>One or more LLM API keys</strong> — Google Gemini, Anthropic Claude, OpenAI,
+                or <a href="https://ollama.ai" target="_blank" rel="noopener">Ollama</a> running locally
+              </li>
+            </ul>
+            <div class="callout callout-tip">
+              <strong>Tip:</strong> Google Gemini offers a free tier — it's the fastest way to try AETHER
+              without spending anything.
+            </div>
+          </section>
+
+          <hr class="section-divider" />
+
+          <!-- Installation -->
+          <section id="installation" class="reveal">
+            <h2>Installation</h2>
+
+            <h3 id="installation-npm">From npm</h3>
+            <pre><code><span class="hl-comment"># Install with Bun (recommended)</span>
+<span class="hl-cmd">bun add</span> <span class="hl-string">@ahmedtaha/aether</span>
+
+<span class="hl-comment"># Or with npm</span>
+<span class="hl-cmd">npm install</span> <span class="hl-string">@ahmedtaha/aether</span></code><span class="lang-tag">bash</span></pre>
+
+            <h3 id="installation-source">From source</h3>
+            <pre><code><span class="hl-cmd">git clone</span> <span class="hl-string">https://github.com/SufficientDaikon/aether.git</span>
+<span class="hl-cmd">cd</span> aether
+<span class="hl-cmd">bun install</span></code><span class="lang-tag">bash</span></pre>
+          </section>
+
+          <hr class="section-divider" />
+
+          <!-- Quick Start -->
+          <section id="quick-start" class="reveal">
+            <h2>Quick Start</h2>
+
+            <h3 id="step-init"><span class="step-num">1</span> Initialize your workspace</h3>
+            <pre><code><span class="hl-cmd">bun run</span> bin/aether.ts <span class="hl-flag">init</span></code><span class="lang-tag">bash</span></pre>
+            <p>This command:</p>
+            <ul>
+              <li>Scans your project and detects the tech stack</li>
+              <li>Detects available LLM providers from environment variables</li>
+              <li>Creates the <code>.aether/</code> directory with <code>config.json</code> and <code>settings.json</code></li>
+              <li>Discovers any <code>.agent.md</code> files in your workspace</li>
+            </ul>
+
+            <h3 id="step-keys"><span class="step-num">2</span> Set up API keys</h3>
+            <p>Set environment variables for your LLM providers:</p>
+            <pre><code><span class="hl-comment"># Google Gemini (recommended — free tier available)</span>
+<span class="hl-kw">export</span> <span class="hl-key">GOOGLE_AI_KEY</span>=<span class="hl-string">"your-key-here"</span>
+
+<span class="hl-comment"># Anthropic Claude</span>
+<span class="hl-kw">export</span> <span class="hl-key">ANTHROPIC_API_KEY</span>=<span class="hl-string">"your-key-here"</span>
+
+<span class="hl-comment"># OpenAI</span>
+<span class="hl-kw">export</span> <span class="hl-key">OPENAI_API_KEY</span>=<span class="hl-string">"your-key-here"</span>
+
+<span class="hl-comment"># Ollama (no key needed — runs locally)</span>
+<span class="hl-comment"># Just install and run: ollama serve</span></code><span class="lang-tag">bash</span></pre>
+            <div class="callout callout-info">
+              <strong>Auto-detection:</strong> AETHER detects available providers on
+              <code>init</code> and maps them to agent tiers automatically — master, manager, and
+              worker agents each get assigned the best available model.
+            </div>
+
+            <h3 id="step-run"><span class="step-num">3</span> Run your first task</h3>
+            <pre><code><span class="hl-cmd">bun run</span> bin/aether.ts <span class="hl-flag">run</span> <span class="hl-string">"explain the project structure"</span></code><span class="lang-tag">bash</span></pre>
+            <p>
+              AETHER routes your task through the agent hierarchy — <strong>cortex-0</strong>
+              decomposes it, managers coordinate, and workers execute. You'll see the result
+              streamed back to your terminal.
+            </p>
+
+            <h3 id="step-link"><span class="step-num">4</span> Start the WebSocket server</h3>
+            <pre><code><span class="hl-cmd">bun run</span> bin/aether.ts <span class="hl-flag">link</span></code><span class="lang-tag">bash</span></pre>
+            <p>
+              Starts <strong>Aether-Link</strong> on port <code>9999</code> with the BAP-02 binary
+              protocol. Use this for real-time integration with editors and external tools.
+            </p>
+
+            <h3 id="step-registry"><span class="step-num">5</span> View registered agents</h3>
+            <pre><code><span class="hl-cmd">bun run</span> bin/aether.ts <span class="hl-flag">registry</span></code><span class="lang-tag">bash</span></pre>
+            <p>
+              Prints an ASCII table of all 34 registered agents with their tier, section, and
+              status.
+            </p>
+          </section>
+
+          <hr class="section-divider" />
+
+          <!-- Configuration -->
+          <section id="configuration" class="reveal">
+            <h2>Configuration</h2>
+            <p>
+              After <code>aether init</code>, two config files live in <code>.aether/</code>:
+            </p>
+
+            <h3 id="config-json">.aether/config.json
+              <span style="font-size: 0.72rem; font-weight: 400; color: var(--text-dim); margin-left: 0.75rem;">auto-generated</span>
+            </h3>
+            <pre><code>{
+  <span class="hl-key">"version"</span>: <span class="hl-string">"0.2.0"</span>,
+  <span class="hl-key">"providers"</span>: {
+    <span class="hl-key">"master"</span>:  { <span class="hl-key">"provider"</span>: <span class="hl-string">"gemini"</span>, <span class="hl-key">"model"</span>: <span class="hl-string">"gemini-pro"</span> },
+    <span class="hl-key">"manager"</span>: { <span class="hl-key">"provider"</span>: <span class="hl-string">"gemini"</span>, <span class="hl-key">"model"</span>: <span class="hl-string">"gemini-pro"</span> },
+    <span class="hl-key">"worker"</span>:  { <span class="hl-key">"provider"</span>: <span class="hl-string">"gemini"</span>, <span class="hl-key">"model"</span>: <span class="hl-string">"gemini-flash"</span> }
+  },
+  <span class="hl-key">"server"</span>: { <span class="hl-key">"port"</span>: <span class="hl-number">9999</span>, <span class="hl-key">"host"</span>: <span class="hl-string">"localhost"</span> }
+}</code><span class="lang-tag">json</span></pre>
+
+            <h3 id="settings-json">.aether/settings.json
+              <span style="font-size: 0.72rem; font-weight: 400; color: var(--text-dim); margin-left: 0.75rem;">user-editable</span>
+            </h3>
+            <pre><code>{
+  <span class="hl-key">"methodology"</span>: { <span class="hl-key">"mode"</span>: <span class="hl-string">"tdd"</span>, <span class="hl-key">"testCommand"</span>: <span class="hl-string">"bun test"</span> },
+  <span class="hl-key">"agents"</span>: { <span class="hl-key">"maxConcurrent"</span>: <span class="hl-number">10</span> },
+  <span class="hl-key">"execution"</span>: { <span class="hl-key">"maxDepth"</span>: <span class="hl-number">3</span>, <span class="hl-key">"temperature"</span>: <span class="hl-number">0.7</span> },
+  <span class="hl-key">"escalation"</span>: { <span class="hl-key">"threshold"</span>: <span class="hl-number">3</span>, <span class="hl-key">"windowMs"</span>: <span class="hl-number">300000</span> },
+  <span class="hl-key">"routing"</span>: { <span class="hl-key">"confidenceThreshold"</span>: <span class="hl-number">0.6</span> }
+}</code><span class="lang-tag">json</span></pre>
+
+            <p>Manage settings from the CLI:</p>
+            <pre><code><span class="hl-comment"># Read a value</span>
+<span class="hl-cmd">aether config get</span> <span class="hl-flag">execution.maxDepth</span>
+
+<span class="hl-comment"># Update a value</span>
+<span class="hl-cmd">aether config set</span> <span class="hl-flag">execution.maxDepth</span> <span class="hl-number">5</span></code><span class="lang-tag">bash</span></pre>
+          </section>
+
+          <hr class="section-divider" />
+
+          <!-- Creating Your First Agent -->
+          <section id="first-agent" class="reveal">
+            <h2>Creating Your First Agent</h2>
+            <p>
+              Create a file at <code>agents/workers/my-agent.agent.md</code>:
+            </p>
+
+            <div class="frontmatter">
+              <div class="frontmatter-header">⬡ agents/workers/my-agent.agent.md</div>
+              <div class="frontmatter-body">
+<span class="hl-comment">---</span>
+<span class="hl-key">id</span>: my-agent
+<span class="hl-key">name</span>: My Custom Agent
+<span class="hl-key">tier</span>: worker
+<span class="hl-key">sections</span>: [TOOLS]
+<span class="hl-key">capabilities</span>: [my-task, my-domain]
+<span class="hl-key">escalationTarget</span>: system-architect
+<span class="hl-key">llmRequirement</span>: haiku
+<span class="hl-key">format</span>: markdown
+<span class="hl-comment">---</span>
+
+You are a specialized worker agent. Given a task, you...
+              </div>
+            </div>
+
+            <p>
+              Then run <code>aether init</code> to discover it, or restart the runtime. Your agent
+              will appear in the registry and participate in task routing.
+            </p>
+          </section>
+
+          <hr class="section-divider" />
+
+          <!-- Provider Setup Table -->
+          <section id="providers" class="reveal">
+            <h2>Provider Setup</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Provider</th>
+                    <th>Environment Variable</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Google Gemini</strong></td>
+                    <td><code>GOOGLE_AI_KEY</code> or <code>GEMINI_API_KEY</code></td>
+                    <td>Free tier available</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Anthropic Claude</strong></td>
+                    <td><code>ANTHROPIC_API_KEY</code></td>
+                    <td>Opus, Sonnet, Haiku</td>
+                  </tr>
+                  <tr>
+                    <td><strong>OpenAI</strong></td>
+                    <td><code>OPENAI_API_KEY</code></td>
+                    <td>GPT-4, GPT-3.5</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Ollama</strong></td>
+                    <td><em style="color: var(--text-dim);">(none needed)</em></td>
+                    <td>Local inference</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <hr class="section-divider" />
+
+          <!-- What's Next -->
+          <section id="whats-next" class="reveal">
+            <h2>What's Next?</h2>
+            <div class="next-grid">
+              <a href="./cli.html" class="next-card">
+                <div class="card-title">
+                  CLI Reference <span class="arrow">→</span>
+                </div>
+                <div class="card-desc">
+                  All available commands, flags, and usage examples.
+                </div>
+              </a>
+              <a href="./architecture.html" class="next-card">
+                <div class="card-title">
+                  Architecture <span class="arrow">→</span>
+                </div>
+                <div class="card-desc">
+                  Deep-dive into the 28 subsystems powering AETHER.
+                </div>
+              </a>
+              <a href="./agents.html" class="next-card">
+                <div class="card-title">
+                  Agent Guide <span class="arrow">→</span>
+                </div>
+                <div class="card-desc">
+                  Understand the 3-tier hierarchy and agent lifecycle.
+                </div>
+              </a>
+              <a href="./changelog.html" class="next-card">
+                <div class="card-title">
+                  Changelog <span class="arrow">→</span>
+                </div>
+                <div class="card-desc">
+                  Version history and release notes.
+                </div>
+              </a>
+            </div>
+          </section>
+
+          <!-- Footer -->
+          <footer class="footer reveal">
+            <p>
+              AETHER — Multi-Agent LLM Orchestration ·
+              <a href="https://github.com/SufficientDaikon/aether">GitHub</a> ·
+              <a href="./index.html">Home</a>
+            </p>
+          </footer>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      /* ── Nav Scroll Effect ────────────────────────── */
+      const nav = document.getElementById("nav");
+      window.addEventListener("scroll", () => {
+        nav.classList.toggle("scrolled", window.scrollY > 30);
+      });
+
+      /* ── Mobile Nav Toggle ────────────────────────── */
+      const mobileToggle = document.getElementById("mobileToggle");
+      const navLinks = document.getElementById("navLinks");
+      const overlay = document.getElementById("overlay");
+
+      function closeMenus() {
+        navLinks.classList.remove("open");
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+      }
+
+      mobileToggle.addEventListener("click", () => {
+        const isOpen = navLinks.classList.toggle("open");
+        overlay.classList.toggle("active", isOpen);
+      });
+
+      overlay.addEventListener("click", closeMenus);
+
+      /* ── Sidebar Toggle (Mobile) ──────────────────── */
+      const sidebar = document.getElementById("sidebar");
+      const sidebarToggle = document.getElementById("sidebarToggle");
+
+      sidebarToggle.addEventListener("click", () => {
+        const isOpen = sidebar.classList.toggle("open");
+        overlay.classList.toggle("active", isOpen);
+      });
+
+      /* Close sidebar on link click (mobile) */
+      document.querySelectorAll(".sidebar-nav a").forEach((a) => {
+        a.addEventListener("click", () => {
+          if (window.innerWidth <= 768) closeMenus();
+        });
+      });
+
+      /* ── Active Sidebar Link ──────────────────────── */
+      const sections = document.querySelectorAll("section[id], h3[id]");
+      const sidebarLinks = document.querySelectorAll(".sidebar-nav a");
+
+      function updateActiveSidebarLink() {
+        let current = "";
+        const offset = 120;
+
+        sections.forEach((section) => {
+          const top = section.getBoundingClientRect().top;
+          if (top <= offset) current = section.id;
+        });
+
+        sidebarLinks.forEach((link) => {
+          link.classList.toggle(
+            "active",
+            link.getAttribute("href") === "#" + current
+          );
+        });
+      }
+
+      window.addEventListener("scroll", updateActiveSidebarLink, { passive: true });
+      updateActiveSidebarLink();
+
+      /* ── Reveal on Scroll ─────────────────────────── */
+      const reveals = document.querySelectorAll(".reveal");
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+      );
+
+      reveals.forEach((el) => revealObserver.observe(el));
+    </script>
+  </body>
+</html>
