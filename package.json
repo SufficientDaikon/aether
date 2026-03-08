@@ -1,5 +1,5 @@
 {
-  "name": "@aether/core",
+  "name": "@ahmedtaha/aether",
   "version": "0.2.0",
   "description": "AETHER — Autonomous Agent Orchestration Framework",
   "type": "module",
