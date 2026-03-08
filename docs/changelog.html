@@ -448,13 +448,28 @@
       }
 
       /* Syntax highlights */
-      .hl-comment { color: #5a5a72; font-style: italic; }
-      .hl-string  { color: #4de094; }
-      .hl-key     { color: var(--accent); }
-      .hl-number  { color: var(--accent-warm); }
-      .hl-kw      { color: var(--accent-2); }
-      .hl-flag    { color: var(--accent-warm); }
-      .hl-cmd     { color: var(--text-bright); }
+      .hl-comment {
+        color: #5a5a72;
+        font-style: italic;
+      }
+      .hl-string {
+        color: #4de094;
+      }
+      .hl-key {
+        color: var(--accent);
+      }
+      .hl-number {
+        color: var(--accent-warm);
+      }
+      .hl-kw {
+        color: var(--accent-2);
+      }
+      .hl-flag {
+        color: var(--accent-warm);
+      }
+      .hl-cmd {
+        color: var(--text-bright);
+      }
 
       /* ── Callout Boxes ──────────────────────────────── */
       .callout {
@@ -489,7 +504,12 @@
       .section-divider {
         border: none;
         height: 1px;
-        background: linear-gradient(90deg, transparent, var(--border), transparent);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border),
+          transparent
+        );
         margin: 3rem 0;
       }
 
@@ -525,7 +545,11 @@
         left: -10%;
         width: 50%;
         height: 50%;
-        background: radial-gradient(circle, rgba(0, 228, 255, 0.035) 0%, transparent 65%);
+        background: radial-gradient(
+          circle,
+          rgba(0, 228, 255, 0.035) 0%,
+          transparent 65%
+        );
       }
 
       .ambient::after {
@@ -535,7 +559,11 @@
         right: -10%;
         width: 45%;
         height: 45%;
-        background: radial-gradient(circle, rgba(123, 97, 255, 0.03) 0%, transparent 65%);
+        background: radial-gradient(
+          circle,
+          rgba(123, 97, 255, 0.03) 0%,
+          transparent 65%
+        );
       }
 
       /* ── Footer ─────────────────────────────────────── */
@@ -607,7 +635,12 @@
         left: 7px;
         bottom: 0;
         width: 2px;
-        background: linear-gradient(180deg, var(--accent), var(--accent-2), var(--border));
+        background: linear-gradient(
+          180deg,
+          var(--accent),
+          var(--accent-2),
+          var(--border)
+        );
         border-radius: 2px;
       }
 
@@ -968,7 +1001,9 @@
         <li><a href="./agents.html">Agents</a></li>
         <li><a href="./changelog.html" class="active">Changelog</a></li>
         <li>
-          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta">GitHub →</a>
+          <a href="https://github.com/SufficientDaikon/aether" class="nav-cta"
+            >GitHub →</a
+          >
         </li>
       </ul>
       <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
@@ -993,7 +1028,13 @@
         </ul>
       </aside>
 
-      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+      <button
+        class="sidebar-toggle"
+        id="sidebarToggle"
+        aria-label="Toggle sidebar"
+      >
+        ☰
+      </button>
 
       <!-- Main Content -->
       <main class="main-content">
@@ -1003,14 +1044,24 @@
             <div class="badge">Changelog</div>
             <h1>Changelog</h1>
             <p>
-              All notable changes to AETHER are documented here.
-              Format based on <a href="https://keepachangelog.com" target="_blank" rel="noopener">Keep a Changelog</a>.
+              All notable changes to AETHER are documented here. Format based on
+              <a
+                href="https://keepachangelog.com"
+                target="_blank"
+                rel="noopener"
+                >Keep a Changelog</a
+              >.
             </p>
           </header>
 
           <!-- npm badge -->
           <div class="reveal">
-            <a href="https://www.npmjs.com/package/@ahmedtaha/aether" class="npm-badge" target="_blank" rel="noopener">
+            <a
+              href="https://www.npmjs.com/package/@ahmedtaha/aether"
+              class="npm-badge"
+              target="_blank"
+              rel="noopener"
+            >
               <span class="npm-icon">npm</span>
               <span>@ahmedtaha/aether</span>
               <span class="npm-ver">v0.2.0</span>
@@ -1019,7 +1070,6 @@
 
           <!-- Timeline -->
           <div class="timeline">
-
             <!-- ── v0.2.0 ──────────────────────────────── -->
             <section id="v0.2.0" class="version-card reveal">
               <div class="version-header">
@@ -1031,15 +1081,51 @@
               <div id="v0.2.0-added" class="change-category">
                 <div class="category-label category-added">Added</div>
                 <ul class="change-list change-added">
-                  <li><strong>SQLite persistence</strong> — 19-table database (<code>.aether/aether.db</code>) with WAL mode, sqlite-vec for vector embeddings, and FTS5 for full-text search. All runtime state persists across restarts.</li>
-                  <li><strong>28 subsystems</strong> — Registry, Escalation, MemoryHighway, RAGIndex, InteractionNet, Aether-Link, AgentRouter, GuardrailsPipeline, SchemaValidator, ConversationManager, EntityMemory, HandoffManager, GroupChat, StateGraph, ProgressTracker, DurableWorkflow, ACPBus, ConflictResolver, SharedStateBus, StructuredLogger, PluginRegistry, ReactionEngine, SettingsManager, and more.</li>
-                  <li><strong>Synapse DSL</strong> — Define workflows in <code>.syn</code> files with lexer, parser, and transpiler.</li>
-                  <li><strong>MCP server</strong> — Model Context Protocol server for AI assistant integration with 6 tools and 4 resources.</li>
-                  <li><strong>VS Code extension</strong> — Language support and integration (aether-vscode v0.1.0).</li>
-                  <li><strong>Eval suite</strong> — 17-phase evaluation framework covering subsystems, protocol, DSL, integration, quality, and production readiness.</li>
-                  <li><strong>726 tests</strong> across 101 test files with full coverage of core subsystems.</li>
-                  <li><strong>Multi-provider support</strong> — Claude, OpenAI, Gemini, and Ollama with automatic tier mapping and fallback chains.</li>
-                  <li><strong>CI/CD</strong> — GitHub Actions for type checking, unit tests, npm publishing, and VS Code extension builds.</li>
+                  <li>
+                    <strong>SQLite persistence</strong> — 19-table database
+                    (<code>.aether/aether.db</code>) with WAL mode, sqlite-vec
+                    for vector embeddings, and FTS5 for full-text search. All
+                    runtime state persists across restarts.
+                  </li>
+                  <li>
+                    <strong>28 subsystems</strong> — Registry, Escalation,
+                    MemoryHighway, RAGIndex, InteractionNet, Aether-Link,
+                    AgentRouter, GuardrailsPipeline, SchemaValidator,
+                    ConversationManager, EntityMemory, HandoffManager,
+                    GroupChat, StateGraph, ProgressTracker, DurableWorkflow,
+                    ACPBus, ConflictResolver, SharedStateBus, StructuredLogger,
+                    PluginRegistry, ReactionEngine, SettingsManager, and more.
+                  </li>
+                  <li>
+                    <strong>Synapse DSL</strong> — Define workflows in
+                    <code>.syn</code> files with lexer, parser, and transpiler.
+                  </li>
+                  <li>
+                    <strong>MCP server</strong> — Model Context Protocol server
+                    for AI assistant integration with 6 tools and 4 resources.
+                  </li>
+                  <li>
+                    <strong>VS Code extension</strong> — Language support and
+                    integration (aether-vscode v0.1.0).
+                  </li>
+                  <li>
+                    <strong>Eval suite</strong> — 17-phase evaluation framework
+                    covering subsystems, protocol, DSL, integration, quality,
+                    and production readiness.
+                  </li>
+                  <li>
+                    <strong>726 tests</strong> across 101 test files with full
+                    coverage of core subsystems.
+                  </li>
+                  <li>
+                    <strong>Multi-provider support</strong> — Claude, OpenAI,
+                    Gemini, and Ollama with automatic tier mapping and fallback
+                    chains.
+                  </li>
+                  <li>
+                    <strong>CI/CD</strong> — GitHub Actions for type checking,
+                    unit tests, npm publishing, and VS Code extension builds.
+                  </li>
                 </ul>
               </div>
 
@@ -1047,18 +1133,41 @@
               <div id="v0.2.0-fixed" class="change-category">
                 <div class="category-label category-fixed">Fixed</div>
                 <ul class="change-list change-fixed">
-                  <li>Rate limiter now accepts configurable <code>rateLimitMax</code> and <code>rateLimitWindow</code> via constructor options (was hardcoded at 100).</li>
-                  <li>CLITransport tests now work cross-platform (Windows + Unix).</li>
-                  <li>35 TypeScript errors resolved across core modules:
+                  <li>
+                    Rate limiter now accepts configurable
+                    <code>rateLimitMax</code> and
+                    <code>rateLimitWindow</code> via constructor options (was
+                    hardcoded at 100).
+                  </li>
+                  <li>
+                    CLITransport tests now work cross-platform (Windows + Unix).
+                  </li>
+                  <li>
+                    35 TypeScript errors resolved across core modules:
                     <ul class="sub-list">
-                      <li>ProviderConfig type aligned with tiers record structure.</li>
-                      <li>DurableWorkflow async status checks no longer produce unreachable-code errors.</li>
+                      <li>
+                        ProviderConfig type aligned with tiers record structure.
+                      </li>
+                      <li>
+                        DurableWorkflow async status checks no longer produce
+                        unreachable-code errors.
+                      </li>
                       <li>RAGIndex metadata spread order fixed.</li>
                       <li>AgentRouter.query() call signature corrected.</li>
-                      <li>Embedder constructor called with required logger argument.</li>
-                      <li>SettingsManager type casts use <code>unknown</code> intermediate for safety.</li>
+                      <li>
+                        Embedder constructor called with required logger
+                        argument.
+                      </li>
+                      <li>
+                        SettingsManager type casts use
+                        <code>unknown</code> intermediate for safety.
+                      </li>
                       <li>MCPPool stdio stream type narrowing added.</li>
-                      <li>Forge agent scoring uses <code>getRecentTasks()</code> instead of non-existent property.</li>
+                      <li>
+                        Forge agent scoring uses
+                        <code>getRecentTasks()</code> instead of non-existent
+                        property.
+                      </li>
                       <li>Eval test files annotated with explicit types.</li>
                     </ul>
                   </li>
@@ -1069,7 +1178,10 @@
               <div id="v0.2.0-resolved" class="change-category">
                 <div class="category-label category-resolved">Resolved</div>
                 <ul class="change-list change-resolved">
-                  <li><strong>PERSIST-01</strong> — All runtime state now persists in SQLite. Issue closed.</li>
+                  <li>
+                    <strong>PERSIST-01</strong> — All runtime state now persists
+                    in SQLite. Issue closed.
+                  </li>
                 </ul>
               </div>
             </section>
@@ -1085,16 +1197,32 @@
               <div id="v0.1.0-added" class="change-category">
                 <div class="category-label category-added">Added</div>
                 <ul class="change-list change-added">
-                  <li>Initial framework with 3-tier agent hierarchy (Master / Manager / Worker).</li>
-                  <li>Agent definition via <code>.agent.md</code> files with YAML frontmatter.</li>
-                  <li>CLI with <code>init</code>, <code>run</code>, <code>link</code>, <code>status</code>, <code>registry</code>, <code>spawn</code>, <code>config</code>, <code>scan</code> commands.</li>
-                  <li>WebSocket server (Aether-Link) with BAP-02 binary protocol.</li>
-                  <li>Provider abstraction for Claude, OpenAI, Gemini, Ollama.</li>
-                  <li>In-memory agent registry, escalation, and task execution.</li>
+                  <li>
+                    Initial framework with 3-tier agent hierarchy (Master /
+                    Manager / Worker).
+                  </li>
+                  <li>
+                    Agent definition via <code>.agent.md</code> files with YAML
+                    frontmatter.
+                  </li>
+                  <li>
+                    CLI with <code>init</code>, <code>run</code>,
+                    <code>link</code>, <code>status</code>,
+                    <code>registry</code>, <code>spawn</code>,
+                    <code>config</code>, <code>scan</code> commands.
+                  </li>
+                  <li>
+                    WebSocket server (Aether-Link) with BAP-02 binary protocol.
+                  </li>
+                  <li>
+                    Provider abstraction for Claude, OpenAI, Gemini, Ollama.
+                  </li>
+                  <li>
+                    In-memory agent registry, escalation, and task execution.
+                  </li>
                 </ul>
               </div>
             </section>
-
           </div>
           <!-- end .timeline -->
 
@@ -1167,12 +1295,14 @@
         sidebarLinks.forEach((link) => {
           link.classList.toggle(
             "active",
-            link.getAttribute("href") === "#" + current
+            link.getAttribute("href") === "#" + current,
           );
         });
       }
 
-      window.addEventListener("scroll", updateActiveSidebarLink, { passive: true });
+      window.addEventListener("scroll", updateActiveSidebarLink, {
+        passive: true,
+      });
       updateActiveSidebarLink();
 
       /* ── Reveal on Scroll ─────────────────────────── */
@@ -1186,7 +1316,7 @@
             }
           });
         },
-        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
       );
 
       reveals.forEach((el) => revealObserver.observe(el));

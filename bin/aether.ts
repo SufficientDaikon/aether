@@ -638,7 +638,7 @@ async function handleConfig(configArgs: string[]): Promise<void> {
       const path = configArgs[1];
       if (!path) {
         console.error("Usage: aether config get <path>");
-        console.error('  e.g. aether config get execution.maxDepth');
+        console.error("  e.g. aether config get execution.maxDepth");
         process.exit(1);
       }
       sm.load();
@@ -660,7 +660,7 @@ async function handleConfig(configArgs: string[]): Promise<void> {
       const rawValue = configArgs[2];
       if (!path || rawValue === undefined) {
         console.error("Usage: aether config set <path> <value>");
-        console.error('  e.g. aether config set execution.maxDepth 5');
+        console.error("  e.g. aether config set execution.maxDepth 5");
         process.exit(1);
       }
 
@@ -745,16 +745,18 @@ async function handleConfig(configArgs: string[]): Promise<void> {
       console.log("  (none)              Show all current settings");
       console.log("  get <path>          Get a specific setting");
       console.log("  set <path> <value>  Set a specific setting");
-      console.log("  reset [section]     Reset to defaults (all or specific section)");
+      console.log(
+        "  reset [section]     Reset to defaults (all or specific section)",
+      );
       console.log("  path                Print path to settings.json");
       console.log("  edit                Open settings.json in $EDITOR");
       console.log("  validate            Validate current settings");
       console.log("");
       console.log("Examples:");
-      console.log('  aether config get execution.maxDepth');
-      console.log('  aether config set execution.maxDepth 5');
-      console.log('  aether config set methodology.mode sdd');
-      console.log('  aether config reset execution');
+      console.log("  aether config get execution.maxDepth");
+      console.log("  aether config set execution.maxDepth 5");
+      console.log("  aether config set methodology.mode sdd");
+      console.log("  aether config reset execution");
       process.exit(1);
   }
 }
@@ -809,7 +811,9 @@ async function handleContext(contextArgs: string[]): Promise<void> {
         process.exit(1);
       }
       if (!settings.routing.contexts[name]) {
-        console.error(`Context "${name}" does not exist. Use 'aether context list' to see available contexts.`);
+        console.error(
+          `Context "${name}" does not exist. Use 'aether context list' to see available contexts.`,
+        );
         process.exit(1);
       }
       settingsManager.set("routing.activeContext", name);
@@ -821,17 +825,24 @@ async function handleContext(contextArgs: string[]): Promise<void> {
       const name = contextArgs[1];
       const agentList = contextArgs[2];
       if (!name || !agentList) {
-        console.error("Usage: aether context create <name> <agent1,agent2,...>");
+        console.error(
+          "Usage: aether context create <name> <agent1,agent2,...>",
+        );
         process.exit(1);
       }
-      const agentIds = agentList.split(",").map((s) => s.trim()).filter(Boolean);
+      const agentIds = agentList
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
       if (agentIds.length === 0) {
         console.error("Agent list must contain at least one agent ID.");
         process.exit(1);
       }
       const contexts = { ...settings.routing.contexts, [name]: agentIds };
       settingsManager.set("routing.contexts", contexts);
-      console.log(`Created context "${name}" with agents: ${agentIds.join(", ")}`);
+      console.log(
+        `Created context "${name}" with agents: ${agentIds.join(", ")}`,
+      );
       break;
     }
 
@@ -855,7 +866,9 @@ async function handleContext(contextArgs: string[]): Promise<void> {
       // If the deleted context was active, switch back to default
       if (settings.routing.activeContext === name) {
         settingsManager.set("routing.activeContext", "default");
-        console.log(`Deleted context "${name}". Active context switched to "default".`);
+        console.log(
+          `Deleted context "${name}". Active context switched to "default".`,
+        );
       } else {
         console.log(`Deleted context "${name}".`);
       }

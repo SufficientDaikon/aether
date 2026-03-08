@@ -87,7 +87,13 @@ class RoutingCache {
     this.entries.clear();
   }
 
-  getStats(): { size: number; maxSize: number; hits: number; misses: number; hitRate: number } {
+  getStats(): {
+    size: number;
+    maxSize: number;
+    hits: number;
+    misses: number;
+    hitRate: number;
+  } {
     const total = this.hits + this.misses;
     return {
       size: this.entries.size,
@@ -185,7 +191,11 @@ export class AgentRouter {
   // ── Cache configuration ──────────────────────────────────────
 
   /** Configure routing cache from AetherSettings.routing.cache */
-  configureCache(config: { enabled: boolean; maxSize: number; ttlMs: number }): void {
+  configureCache(config: {
+    enabled: boolean;
+    maxSize: number;
+    ttlMs: number;
+  }): void {
     this.cacheEnabled = config.enabled;
     if (config.enabled) {
       this.cache = new RoutingCache(config.maxSize, config.ttlMs);
@@ -205,7 +215,13 @@ export class AgentRouter {
   }
 
   /** Get cache statistics */
-  getCacheStats(): { size: number; maxSize: number; hits: number; misses: number; hitRate: number } | null {
+  getCacheStats(): {
+    size: number;
+    maxSize: number;
+    hits: number;
+    misses: number;
+    hitRate: number;
+  } | null {
     return this.cache?.getStats() ?? null;
   }
 
@@ -256,7 +272,10 @@ export class AgentRouter {
       const cached = this.cache.get(cacheKey);
       if (cached) {
         // Verify agent is still available (not offline/error)
-        if (cached.agent.status !== "offline" && cached.agent.status !== "error") {
+        if (
+          cached.agent.status !== "offline" &&
+          cached.agent.status !== "error"
+        ) {
           return {
             ...cached,
             strategy: cached.strategy + " (cached)",
@@ -268,10 +287,18 @@ export class AgentRouter {
     }
 
     // Run strategies on context-filtered agents
-    let result = await this.runStrategies(taskDescription, contextAgents, options);
+    let result = await this.runStrategies(
+      taskDescription,
+      contextAgents,
+      options,
+    );
 
     // Context fallback: if no match in active context, try all agents
-    if (!result && this.contextFallback && contextAgents.length < agents.length) {
+    if (
+      !result &&
+      this.contextFallback &&
+      contextAgents.length < agents.length
+    ) {
       result = await this.runStrategies(taskDescription, agents, options);
     }
 
@@ -294,7 +321,11 @@ export class AgentRouter {
     options?: {
       targetId?: string;
       filePaths?: string[];
-      queryRAG?: (query: string, namespace: string, topK: number) => VectorResult[];
+      queryRAG?: (
+        query: string,
+        namespace: string,
+        topK: number,
+      ) => VectorResult[];
     },
   ): Promise<RoutingDecision | null> {
     if (agents.length === 0) return null;
@@ -428,7 +459,10 @@ export class AgentRouter {
       const availableIds = new Set(agents.map((a) => a.id));
 
       // Query the "agents" vector namespace
-      const results = await this.ragIndex.query(taskDescription, { namespace: "agents", topK: 10 });
+      const results = await this.ragIndex.query(taskDescription, {
+        namespace: "agents",
+        topK: 10,
+      });
       if (!results || results.length === 0) return null;
 
       // Find the best match that's in our available agents list
