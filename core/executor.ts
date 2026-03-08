@@ -426,7 +426,7 @@ export class AgentExecutor {
       taskExecutor: async (taskPayload) => {
         const request = taskPayload.context?.request as TaskRequest | undefined;
         if (!request) {
-          return { error: `No request in task payload ${taskPayload.taskId}` };
+          return { error: `No request in task payload ${taskPayload.description}` };
         }
 
         const result = await this.execute(request);

@@ -704,7 +704,10 @@ export class SQLiteStore implements AetherStore {
 
     return rows.map((r) => ({
       id: r.id,
-      score: 1 - r.distance, // Convert distance to similarity
+      // sqlite-vec vec0 uses L2 (Euclidean) distance by default.
+      // For L2-normalized vectors: L2² = 2·(1 − cos_sim),
+      // so cos_sim = 1 − L2²/2.
+      score: 1 - (r.distance * r.distance) / 2,
       namespace,
       sourceId: r.source_id,
       contentType: r.content_type,
@@ -1092,7 +1095,9 @@ export class SQLiteStore implements AetherStore {
     updatedAt: string;
   }> {
     const rows = this.db
-      .query("SELECT * FROM conversations WHERE status = ? ORDER BY updated_at DESC")
+      .query(
+        "SELECT * FROM conversations WHERE status = ? ORDER BY updated_at DESC",
+      )
       .all(status) as any[];
     return rows.map((r) => ({
       id: r.id,
@@ -1122,7 +1127,13 @@ export class SQLiteStore implements AetherStore {
     this.db.run(
       `INSERT OR REPLACE INTO entities (id, name, type, first_seen, last_updated)
        VALUES (?, ?, ?, ?, ?)`,
-      [entity.id, entity.name, entity.type, entity.firstSeen, entity.lastUpdated],
+      [
+        entity.id,
+        entity.name,
+        entity.type,
+        entity.firstSeen,
+        entity.lastUpdated,
+      ],
     );
   }
 
@@ -1175,13 +1186,22 @@ export class SQLiteStore implements AetherStore {
     this.db.run(
       `INSERT OR REPLACE INTO entity_facts (id, entity_id, fact, source_task, confidence, created_at)
        VALUES (?, ?, ?, ?, ?, ?)`,
-      [fact.id, fact.entityId, fact.fact, fact.sourceTask ?? null, fact.confidence, fact.createdAt],
+      [
+        fact.id,
+        fact.entityId,
+        fact.fact,
+        fact.sourceTask ?? null,
+        fact.confidence,
+        fact.createdAt,
+      ],
     );
   }
 
   getEntityFacts(entityId: string): EntityFact[] {
     const rows = this.db
-      .query("SELECT * FROM entity_facts WHERE entity_id = ? ORDER BY created_at DESC")
+      .query(
+        "SELECT * FROM entity_facts WHERE entity_id = ? ORDER BY created_at DESC",
+      )
       .all(entityId) as any[];
     return rows.map((r) => ({
       id: r.id,
@@ -1258,7 +1278,9 @@ export class SQLiteStore implements AetherStore {
   }
 
   deleteCheckpoints(workflowId: string): void {
-    this.db.run("DELETE FROM workflow_checkpoints WHERE workflow_id = ?", [workflowId]);
+    this.db.run("DELETE FROM workflow_checkpoints WHERE workflow_id = ?", [
+      workflowId,
+    ]);
   }
 
   getIncompleteWorkflowIds(): string[] {
@@ -1298,9 +1320,7 @@ export class SQLiteStore implements AetherStore {
 
   findOwners(filePath: string): FileOwnershipRule[] {
     // Fetch all rules and match against the file path using glob-like matching
-    const rows = this.db
-      .query("SELECT * FROM file_ownership")
-      .all() as any[];
+    const rows = this.db.query("SELECT * FROM file_ownership").all() as any[];
     return rows
       .filter((r) => this.matchGlob(r.pattern, filePath))
       .map((r) => ({
@@ -1382,7 +1402,9 @@ export class SQLiteStore implements AetherStore {
   }
 
   deleteProgressEvents(workflowId: string): void {
-    this.db.run("DELETE FROM progress_events WHERE workflow_id = ?", [workflowId]);
+    this.db.run("DELETE FROM progress_events WHERE workflow_id = ?", [
+      workflowId,
+    ]);
   }
 
   // ── V3 Migration ──────────────────────────────────────────────
@@ -1422,8 +1444,12 @@ export class SQLiteStore implements AetherStore {
     this.db.run(`DROP TABLE agents`);
     this.db.run(`ALTER TABLE agents_v4 RENAME TO agents`);
     this.db.run("CREATE INDEX IF NOT EXISTS idx_agents_tier ON agents(tier)");
-    this.db.run("CREATE INDEX IF NOT EXISTS idx_agents_status ON agents(status)");
-    this.db.run("CREATE INDEX IF NOT EXISTS idx_agents_filepath ON agents(file_path)");
+    this.db.run(
+      "CREATE INDEX IF NOT EXISTS idx_agents_status ON agents(status)",
+    );
+    this.db.run(
+      "CREATE INDEX IF NOT EXISTS idx_agents_filepath ON agents(file_path)",
+    );
   }
 
   // ── Agent Mtime Tracking (V3) ────────────────────────────────────
@@ -1459,9 +1485,15 @@ export class SQLiteStore implements AetherStore {
     return row?.file_mtime ?? null;
   }
 
-  getAllAgentFileMtimes(): Array<{ id: string; filePath: string; mtime: number }> {
+  getAllAgentFileMtimes(): Array<{
+    id: string;
+    filePath: string;
+    mtime: number;
+  }> {
     const rows = this.db
-      .query("SELECT id, file_path, file_mtime FROM agents WHERE file_path != ''")
+      .query(
+        "SELECT id, file_path, file_mtime FROM agents WHERE file_path != ''",
+      )
       .all() as any[];
     return rows.map((r) => ({
       id: r.id,

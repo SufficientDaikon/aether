@@ -1,0 +1,46 @@
+{
+  "version": "0.1.0",
+  "workspace": {
+    "packageManager": "bun",
+    "frameworks": [],
+    "languages": [
+      "typescript",
+      "javascript"
+    ],
+    "database": [],
+    "testFramework": [
+      "bun-test"
+    ],
+    "ide": [],
+    "llmKeys": [],
+    "rootPath": "H:\\aether"
+  },
+  "providers": {
+    "master": {
+      "provider": "gemini",
+      "model": "gemini-2.5-pro"
+    },
+    "manager": {
+      "provider": "gemini",
+      "model": "gemini-2.5-pro"
+    },
+    "worker": {
+      "provider": "gemini",
+      "model": "gemini-2.5-flash"
+    },
+    "fallbackChain": [
+      {
+        "provider": "gemini",
+        "model": "gemini-2.5-flash"
+      }
+    ]
+  },
+  "server": {
+    "port": 9999,
+    "host": "localhost"
+  },
+  "logging": {
+    "level": "info",
+    "file": "H:\\aether\\.aether\\logs\\synapse.log"
+  }
+}

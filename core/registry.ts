@@ -142,10 +142,20 @@ export class AgentRegistry {
 
   // ───────────────── Lookups ─────────────────
 
-  /** Get agent by exact ID. */
+  /** Get agent by ID. Tries exact match first, then suffix match (e.g. "db-architect" finds "postgres-db-architect"). */
   get(id: string): AgentDefinition | undefined {
+    // Exact match
     const agent = this.agents.get(id);
-    return agent ? { ...agent } : undefined;
+    if (agent) return { ...agent };
+
+    // Fallback: suffix match — find an agent whose ID ends with "-{id}"
+    for (const [registeredId, registeredAgent] of this.agents) {
+      if (registeredId.endsWith(`-${id}`)) {
+        return { ...registeredAgent };
+      }
+    }
+
+    return undefined;
   }
 
   /** Find all agents registered under a given section. */
@@ -312,7 +322,11 @@ export class AgentRegistry {
     // This preserves expensive high-authority tiers for when they're truly needed.
     // Known tiers: worker(4) > manager(3) > master(2) > forge(1) > sentinel(0)
     const defaultTierRank: Record<string, number> = {
-      worker: 4, manager: 3, master: 2, forge: 1, sentinel: 0,
+      worker: 4,
+      manager: 3,
+      master: 2,
+      forge: 1,
+      sentinel: 0,
     };
 
     const sorted = matches

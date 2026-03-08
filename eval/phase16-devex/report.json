@@ -1,0 +1,174 @@
+{
+  "phase": "Phase 16: Developer Experience",
+  "startedAt": "2026-03-07T22:59:39.727Z",
+  "completedAt": "2026-03-07T22:59:41.633Z",
+  "totalTests": 16,
+  "passed": 16,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 160,
+  "maxPossibleScore": 160,
+  "results": [
+    {
+      "id": "16.01.1",
+      "name": "Onboarding — aether init creates .aether/",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 315,
+      "score": 10,
+      "maxScore": 10,
+      "details": ".aether/ created: true"
+    },
+    {
+      "id": "16.01.2",
+      "name": "Onboarding — aether scan returns workspace profile",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 619,
+      "score": 10,
+      "maxScore": 10,
+      "details": "scan output length=506 hasBun=true hasTs=true"
+    },
+    {
+      "id": "16.01.3",
+      "name": "Onboarding — aether status shows info",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 670,
+      "score": 10,
+      "maxScore": 10,
+      "details": "status output relevant: true"
+    },
+    {
+      "id": "16.02.1",
+      "name": "Errors — unknown agent ID gives clear error",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "error=\"AgentRegistry: agent \"nonexistent-agent\" not found.\" actionable=true"
+    },
+    {
+      "id": "16.02.2",
+      "name": "Errors — duplicate agent gives clear error",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "error=\"AgentRegistry: duplicate agent ID \"err-test\". Unregister the existing agent first.\" actionable=true"
+    },
+    {
+      "id": "16.02.3",
+      "name": "Errors — CLI unknown command shows help",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 285,
+      "score": 10,
+      "maxScore": 10,
+      "details": "shows helpful message: true"
+    },
+    {
+      "id": "16.02.4",
+      "name": "Errors — loadFromStore without store gives clear error",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "error=\"AgentRegistry.loadFromStore: no store configured. Pass an AetherStore to the constructor.\" actionable=true"
+    },
+    {
+      "id": "16.02.5",
+      "name": "Errors — SchemaValidator handles malformed JSON gracefully",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "graceful rejection: valid=false"
+    },
+    {
+      "id": "16.03.1",
+      "name": "Settings — defaults loaded when no file",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "defaults loaded: logging=true routing=true"
+    },
+    {
+      "id": "16.03.2",
+      "name": "Settings — save and load round-trip",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 10,
+      "maxScore": 10,
+      "details": "round-trip match: true"
+    },
+    {
+      "id": "16.03.3",
+      "name": "Settings — dot-path get and set",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "get logging.level = info"
+    },
+    {
+      "id": "16.03.4",
+      "name": "Settings — corrupt JSON uses defaults",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "recovered from corrupt JSON: true"
+    },
+    {
+      "id": "16.04.1",
+      "name": "Plugin — register and list",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "plugins registered: 1"
+    },
+    {
+      "id": "16.04.2",
+      "name": "Plugin — executeHooks fires in order",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "execution order: [p1, p2]"
+    },
+    {
+      "id": "16.04.3",
+      "name": "Plugin — abort stops chain",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "executed=[abort] (expected only abort)"
+    },
+    {
+      "id": "16.04.4",
+      "name": "Plugin — destroyAll cleans up",
+      "phase": "Phase 16: Developer Experience",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "destroy called: true"
+    }
+  ]
+}

@@ -1,0 +1,784 @@
+{
+  "phase": "Phase 2: Subsystem Unit Tests",
+  "startedAt": "2026-03-07T22:57:06.715Z",
+  "completedAt": "2026-03-07T22:57:08.663Z",
+  "totalTests": 77,
+  "passed": 77,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 675,
+  "maxPossibleScore": 685,
+  "results": [
+    {
+      "id": "2.1.1",
+      "name": "SQLiteStore — Agent CRUD",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 45,
+      "score": 10,
+      "maxScore": 10,
+      "details": "saveAgent succeeded; getAgent returned correct agent; getAllAgents returned 1 agent(s); updateAgentStatus changed status to busy; getAgent returns null/undefined for missing agent"
+    },
+    {
+      "id": "2.1.2",
+      "name": "SQLiteStore — Task CRUD",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 49,
+      "score": 10,
+      "maxScore": 10,
+      "details": "saveTaskResult succeeded; getTaskResult returned correct task; Task metrics: totalTasks=1; getTaskResult handles missing task gracefully"
+    },
+    {
+      "id": "2.1.3",
+      "name": "SQLiteStore — KV Operations",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 43,
+      "score": 10,
+      "maxScore": 10,
+      "details": "kvSet succeeded; kvGet returned correct value; kvDelete removed the key; kvSet with TTL stored value; kvGet returns null for missing key"
+    },
+    {
+      "id": "2.1.4",
+      "name": "SQLiteStore — FTS5 Search",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 39,
+      "score": 10,
+      "maxScore": 10,
+      "details": "ftsUpsert succeeded for 3 documents; ftsQuery('React') returned 2 results; ftsQuery returns empty for non-matching query"
+    },
+    {
+      "id": "2.1.5",
+      "name": "SQLiteStore — Vector Operations (sqlite-vec)",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 68,
+      "score": 10,
+      "maxScore": 10,
+      "details": "vectorUpsert succeeded; Second vectorUpsert succeeded; vectorQuery returned 2 result(s); Closest match is correct (vec-doc-1); vectorCount('docs') = 2"
+    },
+    {
+      "id": "2.2.1",
+      "name": "AgentRegistry — Register all fixture agents",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 5,
+      "maxScore": 5,
+      "details": "Registered all 10 fixture agents"
+    },
+    {
+      "id": "2.2.2",
+      "name": "AgentRegistry — findBySection",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 5,
+      "maxScore": 5,
+      "details": "findBySection('FRONTEND') returned 3 agent(s); react-specialist found in FRONTEND section; findBySection('META') returned 3 agent(s)"
+    },
+    {
+      "id": "2.2.3",
+      "name": "AgentRegistry — findByCapability",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 5,
+      "maxScore": 5,
+      "details": "findByCapability('react') returned 1 agent(s); findByCapability('sql') returned 1 agent(s) (fuzzy match)"
+    },
+    {
+      "id": "2.2.4",
+      "name": "AgentRegistry — findByTier",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 5,
+      "maxScore": 5,
+      "details": "findByTier('worker') returned 6 worker(s); findByTier('master') returned 1 master(s); More workers than masters (correct hierarchy)"
+    },
+    {
+      "id": "2.2.5",
+      "name": "AgentRegistry — resolve prefers idle agents",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 5,
+      "maxScore": 5,
+      "details": "resolve('react-components') returned react-specialist; Resolved agent is idle; After making react-specialist busy, resolve returned react-specialist"
+    },
+    {
+      "id": "2.2.6",
+      "name": "AgentRegistry — Escalation chain (worker -> manager -> master)",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 5,
+      "maxScore": 5,
+      "details": "Escalation chain from react-specialist has 2 step(s); Chain includes system-architect (manager); Chain includes cortex-0 (master); Chain order correct: manager before master"
+    },
+    {
+      "id": "2.2.7",
+      "name": "AgentRegistry — Duplicate ID rejection",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 3,
+      "maxScore": 3,
+      "details": "First registration succeeded; Duplicate registration correctly threw error"
+    },
+    {
+      "id": "2.2.8",
+      "name": "AgentRegistry — Unregister removes from all indexes",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 2,
+      "maxScore": 2,
+      "details": "unregister returned true; Agent fully removed from all indexes"
+    },
+    {
+      "id": "2.3.1",
+      "name": "InteractionNet — Add nodes, wires, check ports",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Created 2 task nodes: task-1-mmgxb4pt, task-2-mmgxb4pt; Both nodes retrievable by ID; Node ports correctly structured (principal=0, aux1=1, aux2=2); Wire created: w-3-mmgxb4pt; getWiresForPort returned 1 wire(s); nodeCount = 2"
+    },
+    {
+      "id": "2.3.2",
+      "name": "InteractionNet — Active pair detection",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Found 1 active pair(s); Active pair contains the correct nodes; getReadyPairs returned 1 pair(s)"
+    },
+    {
+      "id": "2.3.3",
+      "name": "InteractionNet — Checkpoint/restore round-trip",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 42,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Net built with 3 nodes; Checkpoint saved; Restore returned true; Restored node count matches: 3"
+    },
+    {
+      "id": "2.3.4",
+      "name": "InteractionNet — Factory methods (buildParallelDAG, buildPipeline, createFanOut)",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "buildParallelDAG: created 3 task nodes + 1 join; buildPipeline: created 2 sequential nodes; createFanOut: created duplicator node"
+    },
+    {
+      "id": "2.4.1",
+      "name": "NetScheduler — Create and run with constructor-eraser pair",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 9,
+      "score": 15,
+      "maxScore": 15,
+      "details": "Created constructor-eraser active pair; Active pairs before: 1; runToCompletion finished; Metrics: totalReductions=1, successful=1; At least 1 reduction occurred"
+    },
+    {
+      "id": "2.4.2",
+      "name": "NetScheduler — Metrics tracking",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 15,
+      "maxScore": 15,
+      "details": "Initial totalReductions = 0; Final metrics: total=1, successful=1, failed=0; Reductions occurred; averageReductionMs = 0.07; Drained 0 effect(s)"
+    },
+    {
+      "id": "2.5.1",
+      "name": "WorkerPool — Create pool with mock executor, submit tasks",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 7,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Pool started; Pool is running; submit(5) returned 10 (correct); submitAll returned 3 results: [2,4,6]; All results correct; totalTasksProcessed = 4; Pool stopped"
+    },
+    {
+      "id": "2.5.2",
+      "name": "WorkerPool — Priority ordering",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 56,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Pool started with 1 worker; Completion order: [1,2,3]; All 3 tasks completed; Higher priority task (5) completed before lower (3) from queue"
+    },
+    {
+      "id": "2.6.1",
+      "name": "MemoryHighway — Subscribe to channel, publish message, verify delivery",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 11,
+      "score": 6,
+      "maxScore": 6,
+      "details": "Subscribed to test-channel; Published message: msg-1-mmgxb4tk; Message delivered to subscriber; Message content correct; After unsubscribe, no delivery"
+    },
+    {
+      "id": "2.6.2",
+      "name": "MemoryHighway — Channel isolation",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 6,
+      "maxScore": 6,
+      "details": "Channel A received exactly 2 messages; Channel B received exactly 1 message"
+    },
+    {
+      "id": "2.6.3",
+      "name": "MemoryHighway — Wildcard subscriber receives all",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 6,
+      "maxScore": 6,
+      "details": "Wildcard subscriber received all 3 messages across channels"
+    },
+    {
+      "id": "2.6.4",
+      "name": "MemoryHighway — Broadcast message",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 4,
+      "maxScore": 4,
+      "details": "Broadcast sent to wildcard channel; Broadcast received by wildcard subscriber"
+    },
+    {
+      "id": "2.6.5",
+      "name": "MemoryHighway — KV set/get",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 7,
+      "score": 4,
+      "maxScore": 4,
+      "details": "KV set/get works correctly; has() returns true for existing key; del() removes the key"
+    },
+    {
+      "id": "2.6.6",
+      "name": "MemoryHighway — Deduplication",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 4,
+      "maxScore": 4,
+      "details": "Deduplication blocked duplicate message; duplicatesBlocked = 1"
+    },
+    {
+      "id": "2.7.1",
+      "name": "RAGIndex — Initialize, index a document, query, verify results",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 104,
+      "score": 15,
+      "maxScore": 15,
+      "details": "RAGIndex initialized; Indexed doc 1: docs-1772924227183-cigv9c; Indexed doc 2: docs-1772924227198-p4lwbi; Query returned 1 result(s); Top result contains 'react'; Top result score: 0.179"
+    },
+    {
+      "id": "2.7.2",
+      "name": "RAGIndex — Namespace isolation",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 103,
+      "score": 15,
+      "maxScore": 15,
+      "details": "Indexed in 'agents' namespace; Indexed in 'code' namespace; Agents namespace query returned 1 result(s), all from 'agents'; Code namespace query returned 1 result(s), all from 'code'"
+    },
+    {
+      "id": "2.8.1",
+      "name": "RAGMetaIndex — 3-tier query acceleration (hot cache, bloom, full)",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 71,
+      "score": 10,
+      "maxScore": 10,
+      "details": "RAGMetaIndex created; First query tier: full; First query returned 1 result(s); Second query tier: hot; Hot cache hit on repeat query; Metrics: totalQueries=2, hotHits=1; smartQuery returned 1 result(s)"
+    },
+    {
+      "id": "2.8.2",
+      "name": "RAGMetaIndex — Cache invalidation and clear",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 44,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Cache warmed with repeat query; invalidateNamespace('docs') called; clear() called; cacheHitRate=0.000, bloomHitRate=0.500"
+    },
+    {
+      "id": "2.9.1",
+      "name": "Embedder — Embed text produces 384-dim vector",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 4,
+      "score": 8,
+      "maxScore": 8,
+      "details": "Embedding returned vector of length 384; Vector dimension is 384 (correct); Mode is tfidf; Reported dimension is 384; Latency: 0.11ms"
+    },
+    {
+      "id": "2.9.2",
+      "name": "Embedder — L2 normalization (norm close to 1)",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 6,
+      "maxScore": 6,
+      "details": "L2 norm = 1.000000; Norm is within 0.01 of 1.0 (well normalized)"
+    },
+    {
+      "id": "2.9.3",
+      "name": "Embedder — Caching (same text returns cached result)",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 6,
+      "maxScore": 6,
+      "details": "First call: not cached; Second call: cached=true; Cached vector is identical to original; cacheHits = 1"
+    },
+    {
+      "id": "2.10.1",
+      "name": "EscalationManager — Escalation from worker to manager",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 15,
+      "maxScore": 15,
+      "details": "EscalationManager created with threshold=5; Escalation result: target=system-architect, circuitBroken=false; Escalation target: system-architect (tier: manager); Correctly escalated to system-architect (manager); Circuit breaker not tripped (correct for first escalation); Recommendation: Escalated from \"react-specialist\" to \"system-architect\" (manager). Reason: Canno"
+    },
+    {
+      "id": "2.10.2",
+      "name": "EscalationManager — Circuit breaker trips after threshold",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 15,
+      "maxScore": 15,
+      "details": "Escalation 1: succeeded, circuit not broken; Escalation 2: succeeded, circuit not broken; Escalation 3: circuit breaker TRIPPED; Escalation 4: blocked by open circuit breaker; isCircuitBroken returns true; resetCircuit successfully re-closes the circuit"
+    },
+    {
+      "id": "2.11.1",
+      "name": "GuardrailsPipeline — Injection detection patterns",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Pipeline created with PromptInjectionGuard; Blocked 5/5 injection attempts; Safe prompt correctly allowed"
+    },
+    {
+      "id": "2.11.2",
+      "name": "GuardrailsPipeline — Sensitive data detection",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 8,
+      "maxScore": 10,
+      "details": "Pipeline created with SensitiveDataGuard; AWS key detected and blocked; GitHub token NOT detected; Private key detected and blocked; Safe content correctly allowed"
+    },
+    {
+      "id": "2.11.3",
+      "name": "GuardrailsPipeline — Code safety patterns",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 5,
+      "maxScore": 10,
+      "details": "Pipeline created with CodeSafetyGuard (post-guard); Warned on 0/5 dangerous patterns; Safe code passed without warnings"
+    },
+    {
+      "id": "2.12.1",
+      "name": "ConversationManager — Create, add messages, get history",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 43,
+      "score": 10,
+      "maxScore": 10,
+      "details": "ConversationManager created; Created conversation: conv-1772924227507-iezez1g3; Added 3 messages successfully; getHistory returned 3 messages; get() returned conversation with 2 participants; getHistory with limit=2 returned 2 message(s)"
+    },
+    {
+      "id": "2.12.2",
+      "name": "ConversationManager — Auto-trim when exceeding max messages",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 39,
+      "score": 7,
+      "maxScore": 10,
+      "details": "Created conversation with maxMessages=5; Added 8 messages (exceeds max of 5); After trim, history has 8 messages; History NOT trimmed: 8 > 5; Most recent message preserved after trim"
+    },
+    {
+      "id": "2.13.1",
+      "name": "EntityMemory — Extract entities from text",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 39,
+      "score": 10,
+      "maxScore": 10,
+      "details": "EntityMemory created; Extracted 5 entities; Files: src/auth/handler.ts; Modules: express; APIs: /api/users; Configs: DATABASE_URL, JWT_SECRET"
+    },
+    {
+      "id": "2.13.2",
+      "name": "EntityMemory — Save/get entities and facts",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 37,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Added fact for auth-module; Retrieved entity: auth-module (type: module); Retrieved 1 fact(s) for entity; Fact content is correct; Fact confidence preserved; processTaskOutput: found 2 entities, added 2 facts"
+    },
+    {
+      "id": "2.14.1",
+      "name": "HandoffManager — Successful handoff A -> B",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 47,
+      "score": 10,
+      "maxScore": 10,
+      "details": "HandoffManager created; Handoff succeeded; fromAgent correct; toAgent correct; Conversation created: conv-1772924227676-wmq3mpgl; Handoff chain: [react-specialist]; Conversation has 1 message(s) after handoff"
+    },
+    {
+      "id": "2.14.2",
+      "name": "HandoffManager — Cycle detection",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 50,
+      "score": 10,
+      "maxScore": 10,
+      "details": "First handoff succeeded: conv=conv-1772924227726-9ilyf02e; Second handoff succeeded: B -> C; Cycle correctly detected and blocked: C -> A; Reason mentions cycle: \"Handoff cycle detected: react-specialist already handled this conversation\""
+    },
+    {
+      "id": "2.15.1",
+      "name": "StateGraph — Build, compile, execute linear graph",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 4,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Graph built with 3 nodes and 2 edges; Graph compiled successfully; Compiled graph has correct nodes; Compiled graph has correct edge count; All nodes executed in order; Trace: start -> process -> end; Exit node correct"
+    },
+    {
+      "id": "2.15.2",
+      "name": "StateGraph — Conditional branching",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Conditional graph compiled; valid=true routed to success; Trace correct for success path; valid=false routed to failure; Trace correct for failure path"
+    },
+    {
+      "id": "2.16.1",
+      "name": "WorkflowBuilder — Sequential chain",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 7,
+      "maxScore": 7,
+      "details": "Workflow built: test-sequential, 3 steps; Correct step count; First step has no dependencies; Second step depends on first; Third step depends on second; Entry and exit steps identified correctly"
+    },
+    {
+      "id": "2.16.2",
+      "name": "WorkflowBuilder — Parallel fan-out",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 6,
+      "maxScore": 6,
+      "details": "Parallel workflow built: 3 steps; All steps are parallel type; All steps in group: parallel-0; parallelGroups has correct structure"
+    },
+    {
+      "id": "2.16.3",
+      "name": "WorkflowBuilder — Conditional + describe()",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 7,
+      "maxScore": 7,
+      "details": "Conditional workflow: 4 steps; Correct total step count (4); 2 conditional steps found; 1 aggregate step found; describe() output contains workflow structure"
+    },
+    {
+      "id": "2.17.1",
+      "name": "DurableWorkflow — Run 3-step workflow to completion",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 44,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Workflow built: 3 steps; Workflow completed; All 3 steps completed; Steps executed in order: [step-0, step-1, step-2]; Initial state preserved; 3 checkpoint(s) saved"
+    },
+    {
+      "id": "2.17.2",
+      "name": "DurableWorkflow — Checkpoint and resume",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 34,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Workflow paused after step 1; Completed 1 step(s) before pause; Workflow resumed and completed; 2 step(s) executed on resume; Checkpoints cleaned up"
+    },
+    {
+      "id": "2.18.1",
+      "name": "ConflictResolver — Analyze overlapping/contradicting outputs",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 4,
+      "score": 8,
+      "maxScore": 8,
+      "details": "ConflictResolver created; Analysis complete; Agreements found: 2; Contradictions found: 0; Unique contributions: 3; Total findings: 5"
+    },
+    {
+      "id": "2.18.2",
+      "name": "ConflictResolver — majority-vote, weighted-by-tier, merge strategies",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 12,
+      "maxScore": 12,
+      "details": "majority-vote produced output; Strategy correctly reported as majority-vote; All 3 agents participated; weighted-by-tier produced output; weighted-by-tier selected manager's output (higher tier); merge produced output; merge includes conflict report"
+    },
+    {
+      "id": "2.19.1",
+      "name": "ProgressTracker — Track execution events and summary",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 36,
+      "score": 10,
+      "maxScore": 10,
+      "details": "ProgressTracker created; 3 execution events tracked; Summary reports 3 total steps; Total tokens: 4500 (correct); Unique agents: 3; Average duration: 6000ms; Budget estimation correct"
+    },
+    {
+      "id": "2.19.2",
+      "name": "ProgressTracker — Detect loop from identical outputs",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 37,
+      "score": 10,
+      "maxScore": 10,
+      "details": "4 identical events tracked for same agent; Loop detected: Loop detected: agent stuck-agent produced identical output 4 times consecutively; Correct agent identified in loop warning; Consecutive count: 4; shouldAbort: true — Loop detected: agent stuck-agent produced identical output 4 times consecutively"
+    },
+    {
+      "id": "2.20.1",
+      "name": "ACPBus — Send and receive messages",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 70,
+      "score": 10,
+      "maxScore": 10,
+      "details": "ACPBus started; Agent-b subscribed; Message sent: 51ec5015-91fb-4202-ad75-26b6ff8beee2; Agent-b received 1 message(s); Metrics: sent=1; Comm graph has 1 edge(s); Acknowledge processed"
+    },
+    {
+      "id": "2.20.2",
+      "name": "ACPBus — Request-response with timeout",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 125,
+      "score": 10,
+      "maxScore": 10,
+      "details": "ACPBus started for request-response test; Request-response succeeded; Response content correct; Request correctly timed out"
+    },
+    {
+      "id": "2.20.3",
+      "name": "ACPBus — Dead letter queue",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 78,
+      "score": 10,
+      "maxScore": 10,
+      "details": "ACPBus started for dead letter test; Dead letters: 1; Dead letter has correct error reason; Dead letter envelope preserved; Dead-lettered count: 1"
+    },
+    {
+      "id": "2.21.1",
+      "name": "SharedStateBus — Session lifecycle and versioning",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 4,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Session created; Initial version is 0; Goal set correctly; Version incremented to 1 after first update; Patches applied correctly; Active role set; Version incremented to 2 after second update; Step count: 2; getState returns current state; 2 transitions recorded"
+    },
+    {
+      "id": "2.21.2",
+      "name": "SharedStateBus — Multiple sessions and edge tracking",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 10,
+      "maxScore": 10,
+      "details": "2 sessions created; hasSession works; 2 unique comm edges recorded; Edge count incremented on repeat; Adjacency list correct; getValue returns correct value; Session closed successfully"
+    },
+    {
+      "id": "2.22.1",
+      "name": "PluginRegistry — Register and execute hooks",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 10,
+      "maxScore": 10,
+      "details": "PluginRegistry created; Plugin registered; init() was called during registration; Registry size: 1; pre-execution hook executed and returned handled=true; execute log includes pre-execution; post-execution hook also executed; No results for unregistered slot"
+    },
+    {
+      "id": "2.22.2",
+      "name": "PluginRegistry — Execution order and abort propagation",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Registered 3 plugins; Plugins A and B executed; Plugin C correctly skipped after abort; shouldAbort returns abort=true; Abort reason preserved; Plugin B unregistered"
+    },
+    {
+      "id": "2.23.1",
+      "name": "ReactionEngine — Rule trigger and action execution",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 137,
+      "score": 10,
+      "maxScore": 10,
+      "details": "ReactionEngine created; 1 rule registered; Engine started; Action fired: ruleId=rule-on-task, channel=tasks; Reaction log: 1 fired; Non-matching channel correctly ignored; Engine stopped"
+    },
+    {
+      "id": "2.23.2",
+      "name": "ReactionEngine — Cooldown and maxFires limits",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 140,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Engine started with maxFires=2 rule; maxFires=2 correctly limited to 2 fires; Skipped entries in log: 1; Rule disabled; After reset, rule fires again"
+    },
+    {
+      "id": "2.24.1",
+      "name": "TierRegistry — Register and rank ordering",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "TierRegistry created; 3 tiers registered; Rank ordering correct: supreme > commander > operative; supreme is higher than commander; commander is higher than operative; operative is NOT higher than supreme; supreme rank: 0"
+    },
+    {
+      "id": "2.24.2",
+      "name": "TierRegistry — Escalation gate policies",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 5,
+      "maxScore": 5,
+      "details": "Builtin tiers loaded: 5 tiers; worker -> manager: allowed (open); manager -> master: blocked at priority 2 (needs 4); manager -> master: allowed at priority 4; worker -> sentinel: blocked (not in targets)"
+    },
+    {
+      "id": "2.24.3",
+      "name": "TierRegistry — builtinTiers and classicTiers factories",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 5,
+      "maxScore": 5,
+      "details": "builtinTiers: 5 tiers; All 5 builtin tier names present; classicTiers: 3 tiers; Classic tiers: master, manager, worker; Builtin tiers validate without errors"
+    },
+    {
+      "id": "2.25.1",
+      "name": "AgentForge — Spawn agent (creates file + registers)",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 117,
+      "score": 10,
+      "maxScore": 10,
+      "details": "AgentForge created; Agent spawned: auto-tester-1; Agent tier: worker; Agent file created on disk; Agent found in registry; Spawn log recorded; Tracked as ephemeral"
+    },
+    {
+      "id": "2.25.2",
+      "name": "AgentForge — Retire agent",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 35,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Agent spawned for retire test; retireAgent called; Agent removed from registry; Agent file deleted from disk; Correctly throws on non-existent agent"
+    },
+    {
+      "id": "2.26.1",
+      "name": "SystemSentinel — Swarm health and health check",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 5,
+      "score": 10,
+      "maxScore": 10,
+      "details": "SystemSentinel created; Agent count: 10; Tiers: {\"master\":1,\"manager\":1,\"worker\":6,\"forge\":1,\"sentinel\":1}; Statuses: {\"idle\":10}; Health score: 100; Healthy: true; Check score: 100; Issues: 0, Recommendations: 1"
+    },
+    {
+      "id": "2.26.2",
+      "name": "SystemSentinel — Force kill, pause, and resume",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 5,
+      "score": 10,
+      "maxScore": 10,
+      "details": "react-specialist force-killed to error state; Facts ledger has 1 entry(ies); Swarm paused; Non-sentinel agents set to offline; Swarm resumed; Some workers restored to idle"
+    },
+    {
+      "id": "2.27.1",
+      "name": "PreflightChecker — All agents present (should pass)",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "PreflightChecker created; Preflight PASSED (all agents present); No errors; All agents reported healthy; Budget within limits"
+    },
+    {
+      "id": "2.27.2",
+      "name": "PreflightChecker — Missing agents (should fail)",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Preflight correctly FAILED (missing agent); Errors: Agent not found: non-existent-agent; Missing agent correctly identified in errors; Missing agent health: offline"
+    },
+    {
+      "id": "2.28.1",
+      "name": "SettingsManager — Defaults and save/load round-trip",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 8,
+      "score": 10,
+      "maxScore": 10,
+      "details": "SettingsManager created; Settings file does not exist initially; Default methodology.mode: tdd; Default execution.maxDepth: 3; Default server.port: 9999; Settings file saved; Round-trip save/load matches; Modified setting persisted: maxDepth=5"
+    },
+    {
+      "id": "2.28.2",
+      "name": "SettingsManager — Dot-path get and set",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 5,
+      "maxScore": 5,
+      "details": "get('execution.maxDepth'): 3; get('methodology.mode'): tdd; set/get('execution.temperature'): 0.5; set() persisted and reloaded correctly"
+    },
+    {
+      "id": "2.28.3",
+      "name": "SettingsManager — Validate settings",
+      "phase": "Phase 2: Subsystem Unit Tests",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 5,
+      "maxScore": 5,
+      "details": "Defaults validate successfully; Invalid settings correctly rejected; Validation errors: 3; Errors reference specific fields"
+    }
+  ]
+}

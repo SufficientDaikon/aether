@@ -1,0 +1,605 @@
+<!-- CHUNK 2: Sidebar + Hero + Summary + Phase Results -->
+<button id="hamburger" aria-label="Toggle menu">&#9776;</button>
+
+<!-- ==================== SIDEBAR NAV ==================== -->
+<nav id="sidebar">
+  <div class="sidebar-logo"><strong>AETHER</strong> <small>EVAL</small></div>
+  <a href="#hero"> <span class="nav-dot"></span> Overview </a>
+  <a href="#summary"> <span class="nav-dot"></span> Summary </a>
+  <a href="#phases"> <span class="nav-dot"></span> Phases </a>
+  <a href="#dimensions"> <span class="nav-dot"></span> Dimensions </a>
+  <a href="#features"> <span class="nav-dot"></span> Features </a>
+  <a href="#bugs"> <span class="nav-dot"></span> Bugs </a>
+  <a href="#architecture"> <span class="nav-dot"></span> Architecture </a>
+  <a href="#lifecycle"> <span class="nav-dot"></span> Lifecycle </a>
+  <a href="#commands"> <span class="nav-dot"></span> Commands </a>
+  <a href="#cost"> <span class="nav-dot"></span> Cost </a>
+</nav>
+
+<!-- ==================== HERO SECTION ==================== -->
+<section id="hero" class="section">
+  <div class="hero-bg"></div>
+  <div class="grade-badge">A</div>
+  <div class="hero-score">
+    <span class="counter" data-target="919">0</span>
+    <span class="score-divider">/</span> 10.0
+  </div>
+  <p class="hero-subtitle">Exceptional &mdash; AETHER Framework Evaluation</p>
+  <p class="hero-date">March 5, 2026</p>
+  <div class="metric-pills">
+    <span class="pill">184 Total Tests</span>
+    <span class="pill">92.4% Pass Rate</span>
+    <span class="pill">28 Subsystems</span>
+    <span class="pill">$0.0007 API Cost</span>
+  </div>
+</section>
+
+<!-- ==================== EXECUTIVE SUMMARY ==================== -->
+<section id="summary" class="section">
+  <h2 class="section-heading">Executive Summary</h2>
+  <div class="summary-cards">
+    <!-- Card 1: Total Tests -->
+    <div class="stat-card animate-in">
+      <svg class="progress-ring" viewBox="0 0 100 100">
+        <circle class="progress-ring-bg" cx="50" cy="50" r="40" />
+        <circle
+          class="progress-ring-fill"
+          cx="50"
+          cy="50"
+          r="40"
+          data-pct="100"
+        />
+      </svg>
+      <div class="stat-value">184</div>
+      <div class="stat-label">Total Tests</div>
+    </div>
+
+    <!-- Card 2: Passed -->
+    <div class="stat-card accent-green animate-in">
+      <svg class="progress-ring" viewBox="0 0 100 100">
+        <circle class="progress-ring-bg" cx="50" cy="50" r="40" />
+        <circle
+          class="progress-ring-fill"
+          cx="50"
+          cy="50"
+          r="40"
+          data-pct="92"
+        />
+      </svg>
+      <div class="stat-value">170</div>
+      <div class="stat-label">Passed</div>
+    </div>
+
+    <!-- Card 3: Failed -->
+    <div class="stat-card accent-amber animate-in">
+      <svg class="progress-ring" viewBox="0 0 100 100">
+        <circle class="progress-ring-bg" cx="50" cy="50" r="40" />
+        <circle
+          class="progress-ring-fill"
+          cx="50"
+          cy="50"
+          r="40"
+          data-pct="7"
+        />
+      </svg>
+      <div class="stat-value">12</div>
+      <div class="stat-label">Failed</div>
+    </div>
+
+    <!-- Card 4: Errors -->
+    <div class="stat-card accent-red animate-in">
+      <svg class="progress-ring" viewBox="0 0 100 100">
+        <circle class="progress-ring-bg" cx="50" cy="50" r="40" />
+        <circle
+          class="progress-ring-fill"
+          cx="50"
+          cy="50"
+          r="40"
+          data-pct="1"
+        />
+      </svg>
+      <div class="stat-value">2</div>
+      <div class="stat-label">Errors</div>
+    </div>
+
+    <!-- Card 5: Score -->
+    <div class="stat-card accent-blue animate-in">
+      <svg class="progress-ring" viewBox="0 0 100 100">
+        <circle class="progress-ring-bg" cx="50" cy="50" r="40" />
+        <circle
+          class="progress-ring-fill"
+          cx="50"
+          cy="50"
+          r="40"
+          data-pct="96"
+        />
+      </svg>
+      <div class="stat-value">96.4%</div>
+      <div class="stat-label">Score</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PHASE RESULTS ==================== -->
+<section id="phases" class="section">
+  <h2 class="section-heading">Phase Results</h2>
+
+  <!-- Phase Timeline -->
+  <div class="phase-timeline">
+    <svg
+      viewBox="0 0 900 80"
+      preserveAspectRatio="xMidYMid meet"
+      width="100%"
+      aria-label="Phase timeline showing 7 evaluation phases"
+    >
+      <!-- Connecting line -->
+      <line
+        x1="80"
+        y1="40"
+        x2="820"
+        y2="40"
+        stroke="#334155"
+        stroke-width="2"
+      />
+
+      <!-- Phase 1 -->
+      <circle cx="80" cy="40" r="16" fill="#3b82f6" />
+      <text
+        x="80"
+        y="44"
+        text-anchor="middle"
+        fill="#fff"
+        font-size="11"
+        font-weight="600"
+      >
+        P1
+      </text>
+      <text x="80" y="72" text-anchor="middle" fill="#94a3b8" font-size="10">
+        Baseline
+      </text>
+
+      <!-- Phase 2 -->
+      <circle cx="200" cy="40" r="16" fill="#10b981" />
+      <text
+        x="200"
+        y="44"
+        text-anchor="middle"
+        fill="#fff"
+        font-size="11"
+        font-weight="600"
+      >
+        P2
+      </text>
+      <text x="200" y="72" text-anchor="middle" fill="#94a3b8" font-size="10">
+        Subsystems
+      </text>
+
+      <!-- Phase 3 -->
+      <circle cx="320" cy="40" r="16" fill="#10b981" />
+      <text
+        x="320"
+        y="44"
+        text-anchor="middle"
+        fill="#fff"
+        font-size="11"
+        font-weight="600"
+      >
+        P3
+      </text>
+      <text x="320" y="72" text-anchor="middle" fill="#94a3b8" font-size="10">
+        Protocol
+      </text>
+
+      <!-- Phase 4 -->
+      <circle cx="440" cy="40" r="16" fill="#10b981" />
+      <text
+        x="440"
+        y="44"
+        text-anchor="middle"
+        fill="#fff"
+        font-size="11"
+        font-weight="600"
+      >
+        P4
+      </text>
+      <text x="440" y="72" text-anchor="middle" fill="#94a3b8" font-size="10">
+        DSL
+      </text>
+
+      <!-- Phase 5 -->
+      <circle cx="560" cy="40" r="16" fill="#3b82f6" />
+      <text
+        x="560"
+        y="44"
+        text-anchor="middle"
+        fill="#fff"
+        font-size="11"
+        font-weight="600"
+      >
+        P5
+      </text>
+      <text x="560" y="72" text-anchor="middle" fill="#94a3b8" font-size="10">
+        Gemini
+      </text>
+
+      <!-- Phase 6 -->
+      <circle cx="680" cy="40" r="16" fill="#f59e0b" />
+      <text
+        x="680"
+        y="44"
+        text-anchor="middle"
+        fill="#fff"
+        font-size="11"
+        font-weight="600"
+      >
+        P6
+      </text>
+      <text x="680" y="72" text-anchor="middle" fill="#94a3b8" font-size="10">
+        Stress
+      </text>
+
+      <!-- Phase 7 -->
+      <circle cx="800" cy="40" r="16" fill="#10b981" />
+      <text
+        x="800"
+        y="44"
+        text-anchor="middle"
+        fill="#fff"
+        font-size="11"
+        font-weight="600"
+      >
+        P7
+      </text>
+      <text x="800" y="72" text-anchor="middle" fill="#94a3b8" font-size="10">
+        Report
+      </text>
+    </svg>
+  </div>
+
+  <!-- Phase Cards -->
+  <div class="phase-cards">
+    <!-- ===== Phase 1: Baseline Environment ===== -->
+    <div class="phase-card animate-in" data-phase="1">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info">
+          <span class="phase-num">Phase 1</span>
+          <span class="phase-name">Baseline Environment</span>
+        </div>
+        <div class="phase-stats">
+          <span class="badge badge-pass">6 passed</span>
+          <span class="badge badge-error">2 errors</span>
+          <span class="phase-score">760/760</span>
+          <div class="score-bar">
+            <div class="score-bar-fill" style="--fill-pct: 100%"></div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body">
+        <table class="test-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Test</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>Duration</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="phase-1-tests">
+            <!-- JS will populate this from DATA -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Phase 2: Subsystem Unit Tests ===== -->
+    <div class="phase-card animate-in" data-phase="2">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info">
+          <span class="phase-num">Phase 2</span>
+          <span class="phase-name">Subsystem Unit Tests</span>
+        </div>
+        <div class="phase-stats">
+          <span class="badge badge-pass">73 passed</span>
+          <span class="badge badge-fail">4 failed</span>
+          <span class="phase-score">643/685</span>
+          <div class="score-bar">
+            <div class="score-bar-fill" style="--fill-pct: 93.9%"></div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body">
+        <table class="test-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Test</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>Duration</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="phase-2-tests">
+            <!-- JS will populate this from DATA -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Phase 3: Protocol & Transport ===== -->
+    <div class="phase-card animate-in" data-phase="3">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info">
+          <span class="phase-num">Phase 3</span>
+          <span class="phase-name">Protocol &amp; Transport</span>
+        </div>
+        <div class="phase-stats">
+          <span class="badge badge-pass">13 passed</span>
+          <span class="phase-score">81/84</span>
+          <div class="score-bar">
+            <div class="score-bar-fill" style="--fill-pct: 96.4%"></div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body">
+        <table class="test-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Test</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>Duration</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="phase-3-tests">
+            <!-- JS will populate this from DATA -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Phase 4: DSL (Lexer/Parser/Transpiler) ===== -->
+    <div class="phase-card animate-in" data-phase="4">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info">
+          <span class="phase-num">Phase 4</span>
+          <span class="phase-name">DSL (Lexer/Parser/Transpiler)</span>
+        </div>
+        <div class="phase-stats">
+          <span class="badge badge-pass">18 passed</span>
+          <span class="phase-score">80/80</span>
+          <div class="score-bar">
+            <div class="score-bar-fill" style="--fill-pct: 100%"></div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body">
+        <table class="test-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Test</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>Duration</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="phase-4-tests">
+            <!-- JS will populate this from DATA -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Phase 5: Functional (Live Gemini) ===== -->
+    <div class="phase-card animate-in" data-phase="5">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info">
+          <span class="phase-num">Phase 5</span>
+          <span class="phase-name">Functional (Live Gemini)</span>
+          <span class="badge badge-live">LIVE API</span>
+        </div>
+        <div class="phase-stats">
+          <span class="badge badge-pass">7 passed</span>
+          <span class="badge badge-fail">1 failed</span>
+          <span class="phase-score">72/80</span>
+          <div class="score-bar">
+            <div class="score-bar-fill" style="--fill-pct: 90%"></div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body">
+        <table class="test-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Test</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>Duration</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="phase-5-tests">
+            <!-- JS will populate this from DATA -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Phase 6: Stress Tests ===== -->
+    <div class="phase-card animate-in" data-phase="6">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info">
+          <span class="phase-num">Phase 6</span>
+          <span class="phase-name">Stress Tests</span>
+        </div>
+        <div class="phase-stats">
+          <span class="badge badge-pass">7 passed</span>
+          <span class="badge badge-fail">1 failed</span>
+          <span class="phase-score">69/80</span>
+          <div class="score-bar">
+            <div class="score-bar-fill" style="--fill-pct: 86.3%"></div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body">
+        <table class="test-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Test</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>Duration</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="phase-6-tests">
+            <!-- JS will populate this from DATA -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Phase 7: Feature Matrix & Report ===== -->
+    <div class="phase-card animate-in" data-phase="7">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info">
+          <span class="phase-num">Phase 7</span>
+          <span class="phase-name">Feature Matrix &amp; Report</span>
+        </div>
+        <div class="phase-stats">
+          <span class="badge badge-pass">46 passed</span>
+          <span class="badge badge-fail">6 failed</span>
+          <span class="phase-score">92/100</span>
+          <div class="score-bar">
+            <div class="score-bar-fill" style="--fill-pct: 92%"></div>
+          </div>
+        </div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body">
+        <table class="test-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Test</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>Duration</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="phase-7-tests">
+            <!-- JS will populate this from DATA -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Phases 8-17: Expansion Tracks ===== -->
+    <div class="phase-card animate-in" data-phase="8">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 8</span><span class="phase-name">Extended Coverage</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p8-pass">33</span><span class="phase-score" id="p8-score">321/326</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">33 tests — MCP, CLI, SchemaValidator, Constitutional Rules, Structured Logger, Config, Group Chat, Agent Definitions</p></div>
+    </div>
+
+    <div class="phase-card animate-in" data-phase="9">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 9</span><span class="phase-name">Multi-Provider Support</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p9-pass">14</span><span class="phase-score" id="p9-score">140/140</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">14 tests — Provider construction, ProviderManager, Model aliases</p></div>
+    </div>
+
+    <div class="phase-card animate-in" data-phase="10">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 10</span><span class="phase-name">Performance Profiling</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p10-pass">16</span><span class="phase-score" id="p10-score">160/160</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">16 tests — SQLite bench, Embedder bench, Codec bench, MemoryHighway bench, Registry bench</p></div>
+    </div>
+
+    <div class="phase-card animate-in" data-phase="11">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 11</span><span class="phase-name">Integration Testing</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p11-pass">19</span><span class="phase-score" id="p11-score">190/190</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">19 tests — Runtime lifecycle, Task pipeline, Escalation chain, MCP bridge, WebSocket roundtrip</p></div>
+    </div>
+
+    <div class="phase-card animate-in" data-phase="12">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 12</span><span class="phase-name">Quality Benchmarks</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p12-pass">15</span><span class="phase-score" id="p12-score">~144/150</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">15 tests — Routing accuracy, Guardrail precision (F1), Workflow quality, Conflict resolution</p></div>
+    </div>
+
+    <div class="phase-card animate-in" data-phase="13">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 13</span><span class="phase-name">Extension Validation</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p13-pass">15</span><span class="phase-score" id="p13-score">147/150</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">15 tests — VS Code packaging, MCP bridge protocol, gh-aether commands, Contract validation</p></div>
+    </div>
+
+    <div class="phase-card animate-in" data-phase="14">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 14</span><span class="phase-name">Security &amp; Adversarial</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p14-pass">24</span><span class="phase-score" id="p14-score">240/240</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">24 tests — Prompt injection, Sensitive data guard, Constitutional stress, Input boundaries, Tier enforcement</p></div>
+    </div>
+
+    <div class="phase-card animate-in" data-phase="15">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 15</span><span class="phase-name">Federation &amp; Distributed</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p15-pass">10</span><span class="phase-score" id="p15-score">100/100</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">10 tests — Federation transport, Dual-instance, Federation security &amp; auth</p></div>
+    </div>
+
+    <div class="phase-card animate-in" data-phase="16">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 16</span><span class="phase-name">Developer Experience</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p16-pass">16</span><span class="phase-score" id="p16-score">160/160</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">16 tests — Onboarding flow, Error messages, Settings validation, Plugin lifecycle</p></div>
+    </div>
+
+    <div class="phase-card animate-in" data-phase="17">
+      <div class="phase-card-header" onclick="togglePhase(this)">
+        <div class="phase-info"><span class="phase-num">Phase 17</span><span class="phase-name">Production Readiness</span></div>
+        <div class="phase-stats"><span class="badge badge-pass" id="p17-pass">14</span><span class="phase-score" id="p17-score">137/140</span></div>
+        <span class="expand-icon">&#9660;</span>
+      </div>
+      <div class="phase-card-body"><p style="padding:12px;color:var(--text-secondary);">14 tests — Graceful degradation, Health monitoring, Resource limits, Recovery mechanisms</p></div>
+    </div>
+
+  </div>
+</section>
+<!-- End Phase Results -->

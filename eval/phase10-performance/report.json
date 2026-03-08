@@ -1,0 +1,237 @@
+{
+  "phase": "Phase 10: Performance Profiling",
+  "startedAt": "2026-03-07T22:58:53.795Z",
+  "completedAt": "2026-03-07T22:58:54.464Z",
+  "totalTests": 16,
+  "passed": 16,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 160,
+  "maxPossibleScore": 160,
+  "results": [
+    {
+      "id": "10.01.1",
+      "name": "SQLite — write 1000 agents (ops/sec)",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 203,
+      "score": 10,
+      "maxScore": 10,
+      "details": "6168 ops/sec (162.1ms for 1000 writes)",
+      "metadata": {
+        "opsPerSec": 6168,
+        "elapsedMs": 162.12630000000354
+      }
+    },
+    {
+      "id": "10.01.2",
+      "name": "SQLite — read 1000 agents (ops/sec)",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 205,
+      "score": 10,
+      "maxScore": 10,
+      "details": "146116 ops/sec (6.8ms for 1000 reads)",
+      "metadata": {
+        "opsPerSec": 146116,
+        "elapsedMs": 6.843900000007125
+      }
+    },
+    {
+      "id": "10.01.3",
+      "name": "SQLite — FTS5 search latency",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 101,
+      "score": 10,
+      "maxScore": 10,
+      "details": "p50=0.04ms p95=0.26ms over 20 queries",
+      "metadata": {
+        "p50": 0.03539999999338761,
+        "p95": 0.2599000000045635,
+        "count": 20
+      }
+    },
+    {
+      "id": "10.02.1",
+      "name": "Embedder — single doc latency (100 iterations)",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 6,
+      "score": 10,
+      "maxScore": 10,
+      "details": "p50=0.024ms p95=0.051ms",
+      "metadata": {
+        "p50": 0.0239000000001397,
+        "p95": 0.05140000002575107
+      }
+    },
+    {
+      "id": "10.02.2",
+      "name": "Embedder — batch 100 docs throughput",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 4,
+      "score": 10,
+      "maxScore": 10,
+      "details": "100 docs in 2.5ms (40660 docs/sec)",
+      "metadata": {
+        "elapsedMs": 2.4593999999924563
+      }
+    },
+    {
+      "id": "10.02.3",
+      "name": "Embedder — output dimensionality = 384",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "dim=384 (expected 384)"
+    },
+    {
+      "id": "10.03.1",
+      "name": "BAPCodec — small message 1000 roundtrips",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 22,
+      "score": 10,
+      "maxScore": 10,
+      "details": "45399 roundtrips/sec (22.0ms)",
+      "metadata": {
+        "opsPerSec": 45399,
+        "elapsedMs": 22.02699999997276
+      }
+    },
+    {
+      "id": "10.03.2",
+      "name": "BAPCodec — 10KB message 500 roundtrips",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 20,
+      "score": 10,
+      "maxScore": 10,
+      "details": "24821 roundtrips/sec (20.1ms)",
+      "metadata": {
+        "opsPerSec": 24821,
+        "elapsedMs": 20.143899999995483
+      }
+    },
+    {
+      "id": "10.03.3",
+      "name": "BAPCodec — 100KB message 100 roundtrips",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 22,
+      "score": 10,
+      "maxScore": 10,
+      "details": "4760 roundtrips/sec (21.0ms)",
+      "metadata": {
+        "opsPerSec": 4760,
+        "elapsedMs": 21.008800000010524
+      }
+    },
+    {
+      "id": "10.03.4",
+      "name": "BAPCodec — compression ratio",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "raw=12151B compressed=149B ratio=81.55x",
+      "metadata": {
+        "rawSize": 12151,
+        "compressedSize": 149,
+        "ratio": 81.5503355704698
+      }
+    },
+    {
+      "id": "10.04.1",
+      "name": "MemoryHighway — 1000 messages single subscriber",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 22,
+      "score": 10,
+      "maxScore": 10,
+      "details": "159,893 msg/sec (6.3ms, received=1000)",
+      "metadata": {
+        "msgsPerSec": 159893,
+        "elapsedMs": 6.254200000024866,
+        "received": 1000
+      }
+    },
+    {
+      "id": "10.04.2",
+      "name": "MemoryHighway — 10 subscribers fan-out",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 5,
+      "score": 10,
+      "maxScore": 10,
+      "details": "1,184,694 deliveries/sec (500 msgs x 10 subs = 5000 in 4.2ms)",
+      "metadata": {
+        "deliveriesPerSec": 1184694,
+        "elapsedMs": 4.220499999995809,
+        "totalReceived": 5000
+      }
+    },
+    {
+      "id": "10.04.3",
+      "name": "MemoryHighway — publish latency p50/p95",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 4,
+      "score": 10,
+      "maxScore": 10,
+      "details": "p50=0.0028ms p95=0.0081ms p99=0.0144ms",
+      "metadata": {
+        "p50": 0.002800000016577542,
+        "p95": 0.00810000000637956,
+        "p99": 0.014400000014575198
+      }
+    },
+    {
+      "id": "10.05.1",
+      "name": "Registry — register 1000 agents",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 4,
+      "score": 10,
+      "maxScore": 10,
+      "details": "1000 agents in 3.9ms",
+      "metadata": {
+        "elapsedMs": 3.92249999998603
+      }
+    },
+    {
+      "id": "10.05.2",
+      "name": "Registry — findByCapability latency",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 30,
+      "score": 10,
+      "maxScore": 10,
+      "details": "p50=0.2421ms p95=0.4161ms over 100 queries",
+      "metadata": {
+        "p50": 0.24210000000311993,
+        "p95": 0.4161000000021886
+      }
+    },
+    {
+      "id": "10.05.3",
+      "name": "Registry — findBySection latency",
+      "phase": "Phase 10: Performance Profiling",
+      "status": "pass",
+      "durationMs": 12,
+      "score": 10,
+      "maxScore": 10,
+      "details": "p50=0.0147ms p95=0.1053ms over 100 queries",
+      "metadata": {
+        "p50": 0.014699999999720603,
+        "p95": 0.10529999999562278
+      }
+    }
+  ]
+}

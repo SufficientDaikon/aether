@@ -248,7 +248,7 @@ export class AetherRuntime {
     // ── Initialize Phase 11 subsystems (Embedder + RAG Index) ──
     if (this.store) {
       try {
-        this.embedder = new Embedder();
+        this.embedder = new Embedder(this.logger);
         this.ragIndex = new RAGIndex(this.embedder, this.logger, {}, this.store);
         await this.ragIndex.initialize();
         this.logger.info("Runtime", "Embedder + RAGIndex initialized");

@@ -173,13 +173,13 @@ async function handleStatus(): Promise<void> {
   // Providers
   console.log("\n  Providers:");
   console.log(
-    `    Master:  ${config.providers.master.provider} (${config.providers.master.model})`,
+    `    Master:  ${config.providers.tiers.master.provider} (${config.providers.tiers.master.model})`,
   );
   console.log(
-    `    Manager: ${config.providers.manager.provider} (${config.providers.manager.model})`,
+    `    Manager: ${config.providers.tiers.manager.provider} (${config.providers.tiers.manager.model})`,
   );
   console.log(
-    `    Worker:  ${config.providers.worker.provider} (${config.providers.worker.model})`,
+    `    Worker:  ${config.providers.tiers.worker.provider} (${config.providers.tiers.worker.model})`,
   );
   console.log(
     `    Fallbacks: ${config.providers.fallbackChain.map((f) => f.provider).join(" → ") || "none"}`,

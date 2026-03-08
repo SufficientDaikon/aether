@@ -523,9 +523,11 @@ export class ConfigManager {
     }
 
     return {
-      master: primary.master,
-      manager: primary.manager,
-      worker: primary.worker,
+      tiers: {
+        master: primary.master,
+        manager: primary.manager,
+        worker: primary.worker,
+      },
       fallbackChain,
     };
   }

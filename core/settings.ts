@@ -387,7 +387,7 @@ export class SettingsManager {
       // ── Migration: old tier format → new tier format ──
       migrateTierSettings(userSettings);
 
-      const merged = deepMerge(defaults, userSettings) as AetherSettings;
+      const merged = deepMerge(defaults as unknown as Record<string, unknown>, userSettings) as unknown as AetherSettings;
       this.currentSettings = merged;
       return merged;
     } catch {
@@ -412,7 +412,7 @@ export class SettingsManager {
    */
   get<T = unknown>(path: string): T | undefined {
     if (!this.currentSettings) this.load();
-    return getByPath(this.currentSettings!, path) as T | undefined;
+    return getByPath(this.currentSettings! as unknown as Record<string, unknown>, path) as T | undefined;
   }
 
   /**
@@ -421,7 +421,7 @@ export class SettingsManager {
    */
   set(path: string, value: unknown): void {
     if (!this.currentSettings) this.load();
-    setByPath(this.currentSettings!, path, value);
+    setByPath(this.currentSettings! as unknown as Record<string, unknown>, path, value);
     this.save(this.currentSettings!);
   }
 
@@ -441,8 +441,8 @@ export class SettingsManager {
 
     // Check if section exists in defaults
     if (section in defaults) {
-      (this.currentSettings as Record<string, unknown>)[section] = (
-        defaults as Record<string, unknown>
+      (this.currentSettings as unknown as Record<string, unknown>)[section] = (
+        defaults as unknown as Record<string, unknown>
       )[section];
       this.save(this.currentSettings!);
     }

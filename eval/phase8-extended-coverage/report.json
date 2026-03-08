@@ -1,0 +1,344 @@
+{
+  "phase": "Phase 8: Extended Coverage",
+  "startedAt": "2026-03-07T22:58:30.425Z",
+  "completedAt": "2026-03-07T22:58:53.774Z",
+  "totalTests": 33,
+  "passed": 33,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 321,
+  "maxPossibleScore": 326,
+  "results": [
+    {
+      "id": "8.01.1",
+      "name": "MCP — Initialize handshake",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 5075,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Initialize succeeded: {\"protocolVersion\":\"2024-11-05\",\"capabilities\":{\"tools\":{\"listChanged\":false},\"resources\":{\"subscrib"
+    },
+    {
+      "id": "8.01.2",
+      "name": "MCP — tools/list returns tools",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 5088,
+      "score": 6,
+      "maxScore": 6,
+      "details": "Found 6/6: [submit_task, query_agents, search_memory, get_status, switch_context, get_config]"
+    },
+    {
+      "id": "8.01.3",
+      "name": "MCP — resources/list",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 5035,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Found 3 resources"
+    },
+    {
+      "id": "8.01.4",
+      "name": "MCP — invalid method error",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 5137,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Correctly returned error"
+    },
+    {
+      "id": "8.02.1",
+      "name": "CLI — version",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 456,
+      "score": 10,
+      "maxScore": 10,
+      "details": "exit=0 out=0.2.0"
+    },
+    {
+      "id": "8.02.2",
+      "name": "CLI — help",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 461,
+      "score": 10,
+      "maxScore": 10,
+      "details": "len=1379 hasUsage=true"
+    },
+    {
+      "id": "8.02.3",
+      "name": "CLI — status",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 472,
+      "score": 10,
+      "maxScore": 10,
+      "details": "exit=0 out=╔══════════════════════════════════════════╗\n║           ◈ A E T H E R ◈              ║\n║   Autonomous Agent Orchestrati"
+    },
+    {
+      "id": "8.02.4",
+      "name": "CLI — registry",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 593,
+      "score": 10,
+      "maxScore": 10,
+      "details": "hasAgents=true len=4115"
+    },
+    {
+      "id": "8.02.5",
+      "name": "CLI — scan",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 293,
+      "score": 10,
+      "maxScore": 10,
+      "details": "out=╔══════════════════════════════════════════╗\n║           ◈ A E T H E R ◈              ║\n║   Autonomous Agent Orchestrati"
+    },
+    {
+      "id": "8.02.6",
+      "name": "CLI — config get",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 458,
+      "score": 10,
+      "maxScore": 10,
+      "details": "val=3"
+    },
+    {
+      "id": "8.02.7",
+      "name": "CLI — unknown command",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 235,
+      "score": 10,
+      "maxScore": 10,
+      "details": "exit=0"
+    },
+    {
+      "id": "8.03.1",
+      "name": "SchemaValidator — extract JSON from markdown",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "valid=true errors=[]"
+    },
+    {
+      "id": "8.03.2",
+      "name": "SchemaValidator — reject non-JSON",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "valid=false (expected false)"
+    },
+    {
+      "id": "8.03.3",
+      "name": "SchemaValidator — missing required field",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "valid=false errors=[root.age: required field is missing]"
+    },
+    {
+      "id": "8.03.4",
+      "name": "SchemaValidator — type mismatch",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "valid=false errors=[root.count: expected number, got string]"
+    },
+    {
+      "id": "8.04.1",
+      "name": "ConstitutionalRules — default rules load",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "5 default rules loaded"
+    },
+    {
+      "id": "8.04.2",
+      "name": "ConstitutionalRules — block DROP TABLE for worker",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "allowed=false enforcement=block"
+    },
+    {
+      "id": "8.04.3",
+      "name": "ConstitutionalRules — allow SELECT for worker",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "allowed=true"
+    },
+    {
+      "id": "8.04.4",
+      "name": "ConstitutionalRules — block rm -rf /",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "allowed=false rule=no-rm-rf-root"
+    },
+    {
+      "id": "8.04.5",
+      "name": "ConstitutionalRules — block secret exposure",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "allowed=false rule=no-secret-exposure"
+    },
+    {
+      "id": "8.05.1",
+      "name": "StructuredLogger — construction",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 3,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Logger created: true"
+    },
+    {
+      "id": "8.05.2",
+      "name": "StructuredLogger — log and query",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 5,
+      "maxScore": 10,
+      "details": "log=false query=true"
+    },
+    {
+      "id": "8.06.1",
+      "name": "WorkspaceScanner — module exports",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Exports: [ConfigManager, WorkspaceScanner]"
+    },
+    {
+      "id": "8.06.2",
+      "name": "WorkspaceScanner — scan detects bun",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 5,
+      "score": 10,
+      "maxScore": 10,
+      "details": "packageManager=bun"
+    },
+    {
+      "id": "8.06.3",
+      "name": "WorkspaceScanner — detects TypeScript",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 2,
+      "score": 10,
+      "maxScore": 10,
+      "details": "languages=[typescript, javascript]"
+    },
+    {
+      "id": "8.06.4",
+      "name": "ConfigManager — initialization",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "ConfigManager available, exports=[ConfigManager, WorkspaceScanner]"
+    },
+    {
+      "id": "8.07.1",
+      "name": "RoundRobinSelector — cycles through agents",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "sequence=a,b,c,a"
+    },
+    {
+      "id": "8.07.2",
+      "name": "CapabilitySelector — picks by topic",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "selected=backend (expected backend)"
+    },
+    {
+      "id": "8.07.3",
+      "name": "MaxRoundsTermination — stops at limit",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "round1=false round3=true round4=true"
+    },
+    {
+      "id": "8.08.1",
+      "name": "Agent defs — 34 files found",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "Found 34 agent files"
+    },
+    {
+      "id": "8.08.2",
+      "name": "Agent defs — required frontmatter",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 6,
+      "score": 10,
+      "maxScore": 10,
+      "details": "34/34 valid. "
+    },
+    {
+      "id": "8.08.3",
+      "name": "Agent defs — valid tier values",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 4,
+      "score": 10,
+      "maxScore": 10,
+      "details": "34/34 have valid tiers"
+    },
+    {
+      "id": "8.08.4",
+      "name": "Agent defs — unique IDs",
+      "phase": "Phase 8: Extended Coverage",
+      "status": "pass",
+      "durationMs": 6,
+      "score": 10,
+      "maxScore": 10,
+      "details": "All 34 IDs unique"
+    }
+  ]
+}

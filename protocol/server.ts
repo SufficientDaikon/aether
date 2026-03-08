@@ -37,6 +37,14 @@ export interface ServerMetrics {
   channels: Record<string, number>;
 }
 
+/** Options for AetherLinkServer constructor */
+export interface AetherLinkServerOptions {
+  /** Max connection attempts per IP within the rate limit window (default: 100) */
+  rateLimitMax?: number;
+  /** Rate limit window in milliseconds (default: 60000) */
+  rateLimitWindow?: number;
+}
+
 export class AetherLinkServer {
   private port: number;
   private logDir: string;
@@ -51,13 +59,19 @@ export class AetherLinkServer {
   private registry: Map<string, unknown> | null = null;
   private authToken: string | null = null;
   private rateLimiter: Map<string, number[]> = new Map();
-  private readonly RATE_LIMIT_WINDOW = 60_000; // 1 minute
-  private readonly RATE_LIMIT_MAX = 10; // max connections per IP per window
+  private readonly RATE_LIMIT_WINDOW: number;
+  private readonly RATE_LIMIT_MAX: number;
   private healthCheckFn: (() => Record<string, unknown>) | null = null;
 
-  constructor(port: number = 9999, logDir: string = ".aether/logs") {
+  constructor(
+    port: number = 9999,
+    logDir: string = ".aether/logs",
+    options?: AetherLinkServerOptions,
+  ) {
     this.port = port;
     this.logDir = logDir;
+    this.RATE_LIMIT_WINDOW = options?.rateLimitWindow ?? 60_000;
+    this.RATE_LIMIT_MAX = options?.rateLimitMax ?? 100;
     this.logFile = join(logDir, "synapse.log");
   }
 

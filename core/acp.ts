@@ -137,8 +137,10 @@ export class ACPBus {
     content: unknown;
     meta?: Partial<ACPMeta>;
     trace?: Partial<ACPTrace>;
+    /** Optional pre-generated message ID (used by request-response) */
+    msgId?: string;
   }): Promise<ACPEnvelope> {
-    const msgId = randomUUID();
+    const msgId = params.msgId ?? randomUUID();
     const now = new Date().toISOString();
 
     const envelope: ACPEnvelope = {
@@ -227,6 +229,11 @@ export class ACPBus {
   ): Promise<ACPEnvelope> {
     const timeout = timeoutMs ?? this.config.defaultRequestTimeoutMs;
 
+    // Pre-generate message ID so we can register the pending request
+    // BEFORE sending — avoids race condition when highway delivery is
+    // synchronous and the response arrives before pendingRequests.set().
+    const requestId = randomUUID();
+
     // Set expectsResponse in meta
     const meta: Partial<ACPMeta> = {
       ...params.meta,
@@ -234,16 +241,14 @@ export class ACPBus {
       responseTimeoutMs: timeout,
     };
 
-    const envelope = await this.send({ ...params, meta });
-
-    return new Promise<ACPEnvelope>((resolve, reject) => {
+    // Register the pending request FIRST so a synchronous response
+    // from the highway subscriber is captured correctly.
+    const responsePromise = new Promise<ACPEnvelope>((resolve, reject) => {
       const timer = setTimeout(() => {
-        this.pendingRequests.delete(envelope.msgId);
+        this.pendingRequests.delete(requestId);
         this.metrics.pendingRequests--;
         reject(
-          new Error(
-            `ACP request timeout after ${timeout}ms: ${envelope.msgId}`,
-          ),
+          new Error(`ACP request timeout after ${timeout}ms: ${requestId}`),
         );
       }, timeout);
 
@@ -252,9 +257,15 @@ export class ACPBus {
         (timer as { unref: () => void }).unref();
       }
 
-      this.pendingRequests.set(envelope.msgId, { resolve, reject, timer });
+      this.pendingRequests.set(requestId, { resolve, reject, timer });
       this.metrics.pendingRequests++;
     });
+
+    // Now send the request — any synchronous response will find the
+    // pending entry already in place.
+    await this.send({ ...params, meta, msgId: requestId });
+
+    return responsePromise;
   }
 
   /** Acknowledge receipt of a message */

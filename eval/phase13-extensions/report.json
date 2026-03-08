@@ -1,0 +1,164 @@
+{
+  "phase": "Phase 13: Extension Validation",
+  "startedAt": "2026-03-07T22:59:19.200Z",
+  "completedAt": "2026-03-07T22:59:39.385Z",
+  "totalTests": 15,
+  "passed": 15,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "totalScore": 147,
+  "maxPossibleScore": 150,
+  "results": [
+    {
+      "id": "13.01.1",
+      "name": "VSCode — package.json has all required commands",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "commands: 12 missing: []"
+    },
+    {
+      "id": "13.01.2",
+      "name": "VSCode — tree views declared in package.json",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "views: [aether.agents, aether.tasks, aether.contexts, aether.knowledge] missing: []"
+    },
+    {
+      "id": "13.01.3",
+      "name": "VSCode — .vscodeignore present",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": ".vscodeignore exists: true"
+    },
+    {
+      "id": "13.01.4",
+      "name": "VSCode — activation events configured",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "activationEvents: [onStartupFinished, workspaceContains:.aether/config.json] startup=true workspace=true"
+    },
+    {
+      "id": "13.02.1",
+      "name": "Bridge — initialize returns server info",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 5039,
+      "score": 10,
+      "maxScore": 10,
+      "details": "server info present: true"
+    },
+    {
+      "id": "13.02.2",
+      "name": "Bridge — tools/list returns 6 tools",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 5024,
+      "score": 10,
+      "maxScore": 10,
+      "details": "tools found: 6/6"
+    },
+    {
+      "id": "13.02.3",
+      "name": "Bridge — resources/list returns 3 resources",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 5040,
+      "score": 10,
+      "maxScore": 10,
+      "details": "resources found: 3/3"
+    },
+    {
+      "id": "13.02.4",
+      "name": "Bridge — error on invalid method",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 5026,
+      "score": 10,
+      "maxScore": 10,
+      "details": "method-not-found error: true"
+    },
+    {
+      "id": "13.03.1",
+      "name": "gh-aether — script exists and is executable",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 10,
+      "score": 10,
+      "maxScore": 10,
+      "details": "exists=true hasBash=true"
+    },
+    {
+      "id": "13.03.2",
+      "name": "gh-aether — manifest.yml exists with required fields",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "exists=true hasName=true hasDesc=true"
+    },
+    {
+      "id": "13.03.3",
+      "name": "gh-aether — script has pr-review command",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "hasPrReview=true usesGhPr=true"
+    },
+    {
+      "id": "13.03.4",
+      "name": "gh-aether — script has issue-plan command",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "hasIssuePlan=true usesArchitect=true"
+    },
+    {
+      "id": "13.04.1",
+      "name": "Contract — MCP tool names match VS Code bridge calls",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 7,
+      "maxScore": 10,
+      "details": "MCP has all tools: true, extension uses bridge tools: false"
+    },
+    {
+      "id": "13.04.2",
+      "name": "Contract — MCP resource URIs match extension reads",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 0,
+      "score": 10,
+      "maxScore": 10,
+      "details": "extension reads aether://agents: true"
+    },
+    {
+      "id": "13.04.3",
+      "name": "Contract — chat participant slash commands match package.json",
+      "phase": "Phase 13: Extension Validation",
+      "status": "pass",
+      "durationMs": 1,
+      "score": 10,
+      "maxScore": 10,
+      "details": "slash commands: 9 missing: []"
+    }
+  ]
+}
