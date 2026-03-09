@@ -66,16 +66,40 @@ const webviewConfig = {
   plugins: [postcssPlugin],
 };
 
+// Integration tests bundle
+const integrationTestsConfig = {
+  entryPoints: [
+    "src/__integration__/runTests.ts",
+    "src/__integration__/suite/index.ts",
+    "src/__integration__/suite/activation.test.ts",
+    "src/__integration__/suite/commands.test.ts",
+    "src/__integration__/suite/bridge.test.ts",
+    "src/__integration__/suite/configuration.test.ts",
+    "src/__integration__/suite/sidebar.test.ts",
+    "src/__integration__/suite/statusbar.test.ts",
+    "src/__integration__/suite/error-handling.test.ts",
+    "src/__integration__/fixtures/extension-fixture.ts",
+  ],
+  bundle: false,
+  outdir: "dist/__integration__",
+  format: "cjs",
+  platform: "node",
+  target: "node20",
+  sourcemap: true,
+};
+
 async function build() {
   if (isWatch) {
     const extCtx = await esbuild.context(extensionConfig);
     const webCtx = await esbuild.context(webviewConfig);
-    await Promise.all([extCtx.watch(), webCtx.watch()]);
+    const testCtx = await esbuild.context(integrationTestsConfig);
+    await Promise.all([extCtx.watch(), webCtx.watch(), testCtx.watch()]);
     console.log("Watching for changes...");
   } else {
     await Promise.all([
       esbuild.build(extensionConfig),
       esbuild.build(webviewConfig),
+      esbuild.build(integrationTestsConfig),
     ]);
     console.log("Build complete.");
   }

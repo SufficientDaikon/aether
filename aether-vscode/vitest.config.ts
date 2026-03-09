@@ -4,6 +4,8 @@ import { resolve } from "node:path";
 export default defineConfig({
   test: {
     globals: true,
+    include: ["src/__tests__/**/*.{test,spec}.{ts,tsx}"],
+    exclude: ["src/__integration__/**", "src/__e2e__/**", "node_modules/**"],
     // Two environments: node for extension host, jsdom for webview UI
     environment: "node",
     environmentMatchGlobs: [
