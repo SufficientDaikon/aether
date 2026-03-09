@@ -78,6 +78,7 @@ const integrationTestsConfig = {
     "src/__integration__/suite/sidebar.test.ts",
     "src/__integration__/suite/statusbar.test.ts",
     "src/__integration__/suite/error-handling.test.ts",
+    "src/__integration__/suite/chat-participant.test.ts",
     "src/__integration__/fixtures/extension-fixture.ts",
   ],
   bundle: false,

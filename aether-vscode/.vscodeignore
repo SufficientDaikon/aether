@@ -1,5 +1,4 @@
 **/*.ts
-!dist/**
 src/**
 node_modules/**
 docs/**
@@ -12,4 +11,13 @@ postcss.config.js
 *.vsix
 .vscode/**
 .vscode-test/**
-**/*.map
+SPEC*.md
+TEST_IMPLEMENTATION_REPORT.md
+completion-report.md
+SPEC-REVIEW*.md
+playwright.config.ts
+.vscode-test.mjs
+vitest.config.ts
+test-results/**
+dist/__integration__/**
+dist/**/*.map

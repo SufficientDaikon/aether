@@ -45,6 +45,7 @@ export function Button({
       disabled={disabled || loading}
       onClick={disabled || loading ? undefined : onClick}
       title={title}
+      aria-disabled={disabled || loading || undefined}
     >
       {loading && (
         <span class="animate-spin inline-block w-3 h-3 border-2 border-current border-t-transparent rounded-full" />
@@ -178,7 +179,7 @@ export function Input({
           className,
         )}
       />
-      {error && <span class="text-[11px] text-red-400">{error}</span>}
+      {error && <span class="text-[11px] text-red-400" role="alert">{error}</span>}
     </div>
   );
 }
@@ -342,6 +343,8 @@ export function Modal({
     <div
       class="fixed inset-0 z-50 flex items-center justify-center"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
     >
       <div class="absolute inset-0 bg-black/50" />
       <div
@@ -377,7 +380,7 @@ interface ProgressProps {
 export function Progress({ value, showLabel, className }: ProgressProps) {
   const clamped = Math.max(0, Math.min(100, value));
   return (
-    <div class={clsx("flex items-center gap-2", className)}>
+    <div class={clsx("flex items-center gap-2", className)} role="progressbar" aria-valuenow={clamped} aria-valuemin={0} aria-valuemax={100}>
       <div class="flex-1 h-1.5 bg-vsc-border rounded-full overflow-hidden">
         <div
           class="h-full bg-vsc-btn-bg rounded-full transition-all duration-300"
@@ -400,6 +403,8 @@ export function Spinner({ size = 16 }: { size?: number }) {
     <span
       class="animate-spin inline-block border-2 border-current border-t-transparent rounded-full"
       style={{ width: size, height: size }}
+      role="status"
+      aria-label="Loading"
     />
   );
 }
@@ -440,7 +445,7 @@ interface TooltipProps {
 
 export function Tooltip({ text, children }: TooltipProps) {
   return (
-    <span class="relative group inline-flex" title={text}>
+    <span class="relative group inline-flex" title={text} role="tooltip">
       {children}
     </span>
   );

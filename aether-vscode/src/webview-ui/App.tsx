@@ -16,6 +16,7 @@ import { TasksView } from "./views/TasksView";
 import { ApprovalsView } from "./views/ApprovalsView";
 import { MemoryView } from "./views/MemoryView";
 import { SettingsView } from "./views/SettingsView";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import type { ChatMessage } from "./lib/types";
 import { formatRelativeTime } from "./lib/formatters";
 import MarkdownIt from "markdown-it";
@@ -235,7 +236,7 @@ function ChatThread({ onSetInput }: { onSetInput: (v: string) => void }) {
   }
 
   return (
-    <div class="chat-thread">
+    <div class="chat-thread" aria-live="polite">
       {messages.map((msg) => (
         <MessageBubble key={msg.id} message={msg} />
       ))}
@@ -267,8 +268,8 @@ function BottomPanel() {
   const panelBadges: Record<string, number> = { tasks: activeTasks.length };
 
   return (
-    <div class="bottom-panel">
-      <div class="panel-tabs">
+    <div class="bottom-panel" role="complementary">
+      <div class="panel-tabs" role="tablist">
         {BOTTOM_PANELS.map(({ id, label, icon }) => {
           const badge = panelBadges[id] || 0;
           return (
@@ -277,6 +278,8 @@ function BottomPanel() {
               class={`panel-tab ${activePanel === id ? "active" : ""}`}
               onClick={() => setActivePanel(activePanel === id ? null : id)}
               title={label}
+              role="tab"
+              aria-selected={activePanel === id}
             >
               <span>{icon}</span>
               <span class="panel-tab-label">{label}</span>
@@ -286,7 +289,7 @@ function BottomPanel() {
         })}
       </div>
       {activePanel && (
-        <div class="panel-content">
+        <div class="panel-content" role="tabpanel">
           {activePanel === "tasks" && <TasksView />}
           {activePanel === "agents" && <AgentsView />}
           {activePanel === "approvals" && <ApprovalsView />}
@@ -399,6 +402,7 @@ function ChatInput() {
           ref={textareaRef}
           class="chat-textarea"
           placeholder="Ask AETHER… (/ for commands)"
+          aria-label="Chat message input"
           value={inputValue}
           onInput={(e) => handleInput((e.target as HTMLTextAreaElement).value)}
           onKeyDown={handleKeyDown as any}
@@ -503,12 +507,16 @@ function App() {
   });
 
   return (
-    <div class="app-root">
+    <div class="app-root" role="main">
       <AppHeader />
-      <div class="chat-area">
-        <ChatThread onSetInput={setInput} />
-      </div>
-      <BottomPanel />
+      <ErrorBoundary fallbackLabel="Chat area">
+        <div class="chat-area">
+          <ChatThread onSetInput={setInput} />
+        </div>
+      </ErrorBoundary>
+      <ErrorBoundary fallbackLabel="Bottom panel">
+        <BottomPanel />
+      </ErrorBoundary>
       <ChatInput />
     </div>
   );
