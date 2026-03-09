@@ -204,6 +204,7 @@ describe("AetherSidebarProvider", () => {
 
   describe("sendChatMessage", () => {
     it("prepends slash command to message", async () => {
+      bridge.isConnected.mockReturnValue(true);
       bridge.callTool.mockResolvedValue("Done!");
       await sendRPC("sendChatMessage", { message: "build a feature", command: "run" });
       expect(bridge.callTool).toHaveBeenCalledWith("submit_task", {
@@ -212,6 +213,7 @@ describe("AetherSidebarProvider", () => {
     });
 
     it("sends plain message without command prefix", async () => {
+      bridge.isConnected.mockReturnValue(true);
       bridge.callTool.mockResolvedValue("Done!");
       await sendRPC("sendChatMessage", { message: "hello world" });
       expect(bridge.callTool).toHaveBeenCalledWith("submit_task", {
@@ -220,6 +222,7 @@ describe("AetherSidebarProvider", () => {
     });
 
     it("returns assistant message with content from bridge", async () => {
+      bridge.isConnected.mockReturnValue(true);
       bridge.callTool.mockResolvedValue("Analysis complete: 3 agents active");
       const resp = await sendRPC("sendChatMessage", { message: "status?" });
       expect(resp.result.role).toBe("assistant");
@@ -228,6 +231,7 @@ describe("AetherSidebarProvider", () => {
     });
 
     it("uses fallback content when bridge returns null", async () => {
+      bridge.isConnected.mockReturnValue(true);
       bridge.callTool.mockResolvedValue(null);
       const resp = await sendRPC("sendChatMessage", { message: "test" });
       expect(resp.result.content).toBe("Task submitted successfully.");

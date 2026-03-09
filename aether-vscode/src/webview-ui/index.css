@@ -91,6 +91,22 @@ body { overflow: hidden; height: 100vh; }
 }
 .connection-dot.disconnected { background: #f87171; }
 
+.reconnect-btn {
+  padding: 2px 6px;
+  background: transparent;
+  border: 1px solid #7C3AED55;
+  color: #a78bfa;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+.reconnect-btn:hover { background: #7C3AED22; border-color: #7C3AED; }
+.reconnect-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.reconnect-btn.spinning { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
 .header-expand-btn {
   padding: 2px 5px;
   background: transparent;

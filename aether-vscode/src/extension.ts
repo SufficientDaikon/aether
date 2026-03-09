@@ -143,6 +143,20 @@ export async function activate(context: vscode.ExtensionContext) {
   // ── Commands ─────────────────────────────────────────────
 
   context.subscriptions.push(
+    vscode.commands.registerCommand("aether.reconnect", async () => {
+      try {
+        outputChannel.appendLine("Reconnecting to AETHER runtime...");
+        await bridge?.reconnect();
+        sidebarProvider.postEvent("connected", { connected: true });
+        outputChannel.appendLine("Reconnected to AETHER runtime");
+        vscode.window.showInformationMessage("AETHER: Connected to runtime ✓");
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        outputChannel.appendLine(`Reconnect failed: ${msg}`);
+        vscode.window.showErrorMessage(`AETHER: Failed to connect — ${msg}`);
+      }
+    }),
+
     vscode.commands.registerCommand("aether.runTask", async () => {
       const description = await vscode.window.showInputBox({
         prompt: "Task description",

@@ -90,6 +90,11 @@
     },
     "commands": [
       {
+        "command": "aether.reconnect",
+        "title": "AETHER: Reconnect to Runtime",
+        "icon": "$(refresh)"
+      },
+      {
         "command": "aether.dashboard",
         "title": "AETHER: Open Dashboard",
         "icon": "$(dashboard)"

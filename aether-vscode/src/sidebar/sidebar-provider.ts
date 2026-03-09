@@ -91,6 +91,9 @@ export class AetherSidebarProvider implements vscode.WebviewViewProvider {
       case "getConfig": return this.getConfig();
       case "updateConfig": return this.updateConfig(params);
       case "applyCodeBlock": return { success: true };
+      case "reconnect":
+        await this.bridge.reconnect();
+        return { success: true };
       case "openDashboard":
         vscode.commands.executeCommand("aether.dashboard");
         return { success: true };
@@ -175,6 +178,18 @@ export class AetherSidebarProvider implements vscode.WebviewViewProvider {
   }
 
   private async sendChatMessage(params: any) {
+    if (!this.bridge.isConnected()) {
+      return {
+        id: `resp_${Date.now()}`,
+        role: "assistant",
+        content:
+          "⚠️ **AETHER runtime not connected.**\n\nMake sure the runtime is running:\n```\nbun run bin/aether-mcp.ts\n```\nOr set `aether.runtimePath` in VS Code settings, then run **AETHER: Reconnect**.",
+        timestamp: new Date().toISOString(),
+        agent: "system",
+        command: params.command,
+      };
+    }
+
     const message = params.command
       ? `/${params.command} ${params.message}`
       : params.message;

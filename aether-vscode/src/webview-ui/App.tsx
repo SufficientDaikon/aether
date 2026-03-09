@@ -436,9 +436,22 @@ function ChatInput() {
 
 function AppHeader() {
   const connected = useDashboardStore((s) => s.connected);
+  const [reconnecting, setReconnecting] = useState(false);
 
   const openDashboard = () => {
     rpcCall("openDashboard", {}).catch(() => {});
+  };
+
+  const handleReconnect = async () => {
+    setReconnecting(true);
+    try {
+      await rpcCall("reconnect", {});
+    } catch {
+      // If reconnect RPC itself fails (bridge truly dead), try the VS Code command
+      rpcCall("openDashboard", {}).catch(() => {});
+    } finally {
+      setReconnecting(false);
+    }
   };
 
   return (
@@ -449,9 +462,19 @@ function AppHeader() {
       </div>
       <AgentSelector />
       <div class="header-actions">
+        {!connected && (
+          <button
+            class={`reconnect-btn ${reconnecting ? "spinning" : ""}`}
+            onClick={handleReconnect}
+            title="Reconnect to AETHER runtime"
+            disabled={reconnecting}
+          >
+            {reconnecting ? "⟳" : "↻"}
+          </button>
+        )}
         <span
           class={`connection-dot ${connected ? "connected" : "disconnected"}`}
-          title={connected ? "Connected to AETHER runtime" : "Disconnected"}
+          title={connected ? "Connected to AETHER runtime" : "Disconnected — click ↻ to reconnect"}
         />
         <button
           class="header-expand-btn"

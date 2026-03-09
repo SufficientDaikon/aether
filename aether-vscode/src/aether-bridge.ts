@@ -121,7 +121,13 @@ export class AetherBridge extends EventEmitter {
       this.process = null;
     }
     this.connected = false;
+    this.buffer = "";
     this.rejectAllPending(new Error("Bridge disconnected"));
+  }
+
+  async reconnect(): Promise<void> {
+    this.disconnect();
+    await this.connect();
   }
 
   isConnected(): boolean {
@@ -188,6 +194,11 @@ export class AetherBridge extends EventEmitter {
     params: Record<string, unknown>,
   ): Promise<unknown> {
     return new Promise((resolve, reject) => {
+      // Only the initialize handshake is allowed before connected=true
+      if (method !== "initialize" && !this.connected) {
+        reject(new Error("Bridge not connected"));
+        return;
+      }
       if (!this.process?.stdin?.writable) {
         reject(new Error("Bridge not connected"));
         return;
@@ -287,29 +298,50 @@ export class AetherBridge extends EventEmitter {
   }
 
   private async findBun(): Promise<string | null> {
-    // Check common locations
+    const isWin = process.platform === "win32";
     const { execSync } = await import("node:child_process");
+
+    // Try platform-appropriate lookup
     try {
-      const result = execSync("which bun 2>/dev/null || where bun 2>nul", {
-        encoding: "utf-8",
-        timeout: 5000,
-      });
-      return result.trim().split("\n")[0];
+      const cmd = isWin ? "where.exe bun" : "which bun";
+      const result = execSync(cmd, { encoding: "utf-8", timeout: 5000 });
+      const lines = result
+        .trim()
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter(Boolean);
+
+      if (isWin) {
+        // On Windows spawn() requires an executable binary (.exe), not a .cmd shim
+        const exe = lines.find((l) => l.toLowerCase().endsWith(".exe"));
+        if (exe) return exe;
+        // .cmd works only with shell:true; skip and fall through to known paths
+      } else if (lines.length > 0) {
+        return lines[0];
+      }
     } catch {
-      // Try common paths
-      const paths = [
-        join(process.env.HOME ?? "", ".bun", "bin", "bun"),
-        join(process.env.USERPROFILE ?? "", ".bun", "bin", "bun.exe"),
-        "/usr/local/bin/bun",
-      ];
-      for (const p of paths) {
-        try {
-          const { statSync } = await import("node:fs");
-          statSync(p);
-          return p;
-        } catch {
-          continue;
-        }
+      // Command not found — fall through to known paths
+    }
+
+    // Try common install locations
+    const { statSync } = await import("node:fs");
+    const candidates = isWin
+      ? [
+          join(process.env.USERPROFILE ?? "", ".bun", "bin", "bun.exe"),
+          join(process.env.LOCALAPPDATA ?? "", "bun", "bun.exe"),
+        ]
+      : [
+          join(process.env.HOME ?? "", ".bun", "bin", "bun"),
+          "/usr/local/bin/bun",
+          "/opt/homebrew/bin/bun",
+        ];
+
+    for (const p of candidates) {
+      try {
+        statSync(p);
+        return p;
+      } catch {
+        continue;
       }
     }
     return null;
