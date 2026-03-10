@@ -1,0 +1,54 @@
+name: Issue Triage
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  triage:
+    name: Classify & Comment
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Classify issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: bun run scripts/issue-automation/classifier.ts
+
+      - name: Generate comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: bun run scripts/issue-automation/comment-generator.ts
+
+      - name: Detect duplicates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: bun run scripts/issue-automation/duplicate-detector.ts
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🏷️ Issue Triage — #${{ github.event.issue.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Title:** ${{ github.event.issue.title }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Author:** @${{ github.event.issue.user.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** ${{ github.event.issue.html_url }}" >> $GITHUB_STEP_SUMMARY

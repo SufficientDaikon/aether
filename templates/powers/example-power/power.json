@@ -1,0 +1,34 @@
+{
+  "name": "example-power",
+  "version": "1.0.0",
+  "description": "An example power demonstrating all manifest features",
+  "provider": "aether-team",
+  "homepage": "https://github.com/SufficientDaikon/aether",
+  "license": "BSL-1.1",
+  "mcp": {
+    "server": "@aether/example-mcp",
+    "command": "bun",
+    "args": ["run", "server.ts", "--stdio"],
+    "env": {
+      "LOG_LEVEL": "info"
+    },
+    "config": {
+      "maxConnections": 5
+    }
+  },
+  "steering": [
+    "steering.md"
+  ],
+  "hooks": [
+    "hooks/on-change.hook.json"
+  ],
+  "activation": {
+    "keywords": ["example", "demo", "tutorial"],
+    "filePatterns": ["**/*.example", "**/examples/**"],
+    "manual": false
+  },
+  "dependencies": {
+    "powers": [],
+    "npm": {}
+  }
+}

@@ -486,26 +486,42 @@ export class ConfigManager {
         manager: { provider: "ollama", model: "local" },
         worker: { provider: "ollama", model: "local" },
       },
+      copilot: {
+        master: { provider: "copilot", model: "gpt-4o" },
+        manager: { provider: "copilot", model: "gpt-4o" },
+        worker: { provider: "copilot", model: "gpt-4o-mini" },
+      },
+      lmstudio: {
+        master: { provider: "lmstudio", model: "local" },
+        manager: { provider: "lmstudio", model: "local" },
+        worker: { provider: "lmstudio", model: "local" },
+      },
     };
 
     // Pick the best available provider for primary use
     const preferred: LLMProvider = keys.includes("claude")
       ? "claude"
-      : keys.includes("openai")
-        ? "openai"
-        : keys.includes("gemini")
-          ? "gemini"
-          : keys.includes("ollama")
-            ? "ollama"
-            : "claude"; // fallback to claude even if unconfigured
+      : keys.includes("copilot")
+        ? "copilot"
+        : keys.includes("openai")
+          ? "openai"
+          : keys.includes("gemini")
+            ? "gemini"
+            : keys.includes("lmstudio")
+              ? "lmstudio"
+              : keys.includes("ollama")
+                ? "ollama"
+                : "claude"; // fallback to claude even if unconfigured
 
     const primary = providerTiers[preferred];
 
     // Build fallback chain from remaining providers
     const fallbackOrder: LLMProvider[] = [
       "claude",
+      "copilot",
       "openai",
       "gemini",
+      "lmstudio",
       "ollama",
     ];
     const fallbackChain: ProviderModelConfig[] = [];

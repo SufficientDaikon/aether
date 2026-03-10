@@ -1,0 +1,21 @@
+{
+  "name": "auto-lint",
+  "description": "Automatically run linting and fix issues on file save",
+  "enabled": true,
+  "trigger": {
+    "event": "file_save",
+    "pattern": "**/*.ts",
+    "exclude": ["node_modules/**", "dist/**", "*.d.ts"]
+  },
+  "condition": {
+    "fileSize": { "max": 51200 }
+  },
+  "action": {
+    "agent": "code-hardener",
+    "prompt": "Lint and review ${filePath} for code quality issues. Check for: unused imports, type safety, naming conventions, and potential bugs. Suggest fixes but only apply safe auto-fixes.",
+    "mode": "notify",
+    "timeout": 30000
+  },
+  "debounce": 2000,
+  "maxConcurrent": 2
+}

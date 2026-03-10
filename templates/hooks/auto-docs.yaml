@@ -1,0 +1,20 @@
+{
+  "name": "auto-docs",
+  "description": "Automatically update documentation when source files change",
+  "enabled": true,
+  "trigger": {
+    "event": "file_save",
+    "pattern": "src/**/*.ts",
+    "exclude": ["**/*.test.ts", "**/*.spec.ts"]
+  },
+  "action": {
+    "agent": "general",
+    "prompt": "Update the documentation for ${filePath}. Generate or update JSDoc comments, README sections, and any related docs/ files. Follow existing documentation patterns.",
+    "context": ["docs/", "README.md"],
+    "output": "docs/",
+    "mode": "background",
+    "timeout": 90000
+  },
+  "debounce": 5000,
+  "maxConcurrent": 1
+}

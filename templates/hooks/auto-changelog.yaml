@@ -1,0 +1,18 @@
+{
+  "name": "auto-changelog",
+  "description": "Automatically add a changelog entry on each git commit",
+  "enabled": true,
+  "trigger": {
+    "event": "git_commit"
+  },
+  "action": {
+    "agent": "general",
+    "prompt": "Add a changelog entry for the commit: ${commitMessage}. Categorize the change (Added, Changed, Fixed, Removed) and append it to CHANGELOG.md following Keep a Changelog format.",
+    "context": ["CHANGELOG.md"],
+    "output": "CHANGELOG.md",
+    "mode": "background",
+    "timeout": 30000
+  },
+  "debounce": 1000,
+  "maxConcurrent": 1
+}

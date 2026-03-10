@@ -49,6 +49,10 @@ import type { ACPBus } from "./acp.ts";
 import type { StructuredLogger } from "./structured-logger.ts";
 import type { SharedStateBus } from "./shared-state.ts";
 
+// New subsystem imports: Security + Steering
+import { sanitizePromptInput } from "./security/index.ts";
+import { loadSteering, compose, type SteeringFile } from "./steering/index.ts";
+
 // ─────────────────────────────────────────────────────────────
 
 /** Options for configuring executor behavior */
@@ -109,6 +113,8 @@ export interface ExecutorSubsystems {
   acpBus?: ACPBus;
   structuredLogger?: StructuredLogger;
   sharedState?: SharedStateBus;
+  // Steering files for prompt injection
+  steeringFiles?: SteeringFile[];
 }
 
 /** Execution context threaded through recursive calls */
@@ -165,6 +171,9 @@ export class AgentExecutor {
   private acpBus: ACPBus | null = null;
   private structuredLogger: StructuredLogger | null = null;
   private sharedState: SharedStateBus | null = null;
+
+  // Steering files for prompt injection
+  private steeringFiles: SteeringFile[] = [];
 
   // Task history for introspection
   private taskHistory: TaskResult[] = [];
@@ -233,6 +242,9 @@ export class AgentExecutor {
     if (subsystems.structuredLogger)
       this.structuredLogger = subsystems.structuredLogger;
     if (subsystems.sharedState) this.sharedState = subsystems.sharedState;
+
+    // Steering files
+    if (subsystems.steeringFiles) this.steeringFiles = subsystems.steeringFiles;
 
     // Auto-enable interaction net if both net + scheduler provided
     if (this.interactionNet && this.scheduler) {
@@ -577,11 +589,29 @@ export class AgentExecutor {
 
     // ── Local LLM Path ──────────────────────────────────────
     try {
+      // Sanitize user-provided task description before building prompt
+      const sanitized = sanitizePromptInput(task.description, { field: "task" });
+      if (sanitized.patternsDetected.length > 0) {
+        this.logger.warn("Executor", `Prompt security: detected patterns in task "${task.id}": ${sanitized.patternsDetected.join(", ")}`);
+      }
+      const sanitizedTask = { ...task, description: sanitized.sanitized };
+
       // Load the agent's prompt template
-      const systemPrompt = await this.loadAgentPrompt(agent);
+      let systemPrompt = await this.loadAgentPrompt(agent);
+
+      // Inject steering context if steering files are loaded
+      if (this.steeringFiles.length > 0) {
+        const steering = compose(this.steeringFiles, agent.id, 4000);
+        if (steering.content) {
+          systemPrompt = systemPrompt + `\n\n## Project Steering\n\n${steering.content}`;
+          if (steering.truncated) {
+            this.logger.warn("Executor", `Steering context truncated for agent "${agent.id}"`);
+          }
+        }
+      }
 
       // Build the full prompt (includes RAG context if enabled)
-      const prompt = await this.buildPromptWithRAG(task, ctx, agent);
+      const prompt = await this.buildPromptWithRAG(sanitizedTask, ctx, agent);
 
       // Record task start in MemoryHighway
       if (this.options.useMemoryHighway && this.highway) {
@@ -875,7 +905,7 @@ export class AgentExecutor {
     const timeoutMs = this.options.defaultTimeout;
 
     const baseOpts = {
-      model: overrides?.model ?? agent.llmRequirement,
+      model: overrides?.model ?? undefined,
       maxTokens: this.options.maxTokens,
       temperature: this.options.temperature,
       systemPrompt,

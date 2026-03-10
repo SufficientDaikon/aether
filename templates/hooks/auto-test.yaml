@@ -1,0 +1,23 @@
+{
+  "name": "auto-test",
+  "description": "Automatically generate/update tests when source files change",
+  "enabled": true,
+  "trigger": {
+    "event": "file_save",
+    "pattern": "src/**/*.ts",
+    "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/tests/**"]
+  },
+  "condition": {
+    "fileSize": { "max": 102400 }
+  },
+  "action": {
+    "agent": "playwright-tester",
+    "prompt": "Generate or update unit tests for the file ${filePath}. Ensure coverage of all exported functions and edge cases. Use the existing test patterns in the project.",
+    "context": ["src/", "tests/"],
+    "output": "tests/",
+    "mode": "background",
+    "timeout": 120000
+  },
+  "debounce": 3000,
+  "maxConcurrent": 1
+}

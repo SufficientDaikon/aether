@@ -1,0 +1,18 @@
+{
+  "name": "auto-security-scan",
+  "description": "Run a security audit when dependency files change",
+  "enabled": true,
+  "trigger": {
+    "event": "file_save",
+    "pattern": "package.json"
+  },
+  "action": {
+    "agent": "dependency-sentinel",
+    "prompt": "Run a security audit on the project dependencies in ${filePath}. Check for known vulnerabilities, outdated packages with security issues, and suspicious dependency patterns. Report findings with severity levels.",
+    "context": ["package.json", "bun.lock"],
+    "mode": "background",
+    "timeout": 60000
+  },
+  "debounce": 5000,
+  "maxConcurrent": 1
+}

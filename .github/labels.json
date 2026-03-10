@@ -1,0 +1,31 @@
+[
+  { "name": "agents",                    "color": "0075ca", "description": "Related to agent subsystem" },
+  { "name": "providers",                 "color": "0075ca", "description": "Related to LLM providers" },
+  { "name": "core",                      "color": "0075ca", "description": "Related to core runtime" },
+  { "name": "mcp",                       "color": "0075ca", "description": "Related to MCP protocol" },
+  { "name": "cli",                       "color": "0075ca", "description": "Related to CLI interface" },
+  { "name": "vscode-extension",          "color": "0075ca", "description": "Related to VS Code extension" },
+  { "name": "hooks",                     "color": "0075ca", "description": "Related to hooks system" },
+  { "name": "powers",                    "color": "0075ca", "description": "Related to powers system" },
+  { "name": "specs",                     "color": "0075ca", "description": "Related to specs/configuration" },
+  { "name": "autonomous",                "color": "0075ca", "description": "Related to autonomous mode" },
+  { "name": "docs",                      "color": "0075ca", "description": "Documentation improvements" },
+
+  { "name": "os:windows",               "color": "e4e669", "description": "Windows-specific issue" },
+  { "name": "os:mac",                   "color": "e4e669", "description": "macOS-specific issue" },
+  { "name": "os:linux",                 "color": "e4e669", "description": "Linux-specific issue" },
+
+  { "name": "theme:performance",        "color": "f9d0c4", "description": "Performance related" },
+  { "name": "theme:agent-quality",      "color": "f9d0c4", "description": "Agent output quality" },
+  { "name": "theme:provider-error",     "color": "f9d0c4", "description": "LLM provider errors" },
+  { "name": "theme:config",             "color": "f9d0c4", "description": "Configuration issues" },
+  { "name": "theme:security",           "color": "d93f0b", "description": "Security related" },
+
+  { "name": "pending-triage",           "color": "ededed", "description": "Awaiting initial triage" },
+  { "name": "pending-response",         "color": "fef2c0", "description": "Waiting for author response / stale" },
+  { "name": "pending-maintainer-response", "color": "fef2c0", "description": "Waiting for maintainer review" },
+  { "name": "duplicate",                "color": "cfd3d7", "description": "This issue already exists" },
+  { "name": "question",                 "color": "d876e3", "description": "Further information requested" },
+  { "name": "enhancement",              "color": "a2eeef", "description": "New feature or request" },
+  { "name": "bug",                      "color": "d73a4a", "description": "Something isn't working" }
+]

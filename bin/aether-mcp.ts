@@ -61,8 +61,14 @@ let initialized = false;
 
 async function ensureRuntime(): Promise<AetherRuntime> {
   if (!runtime) {
+    console.error(`[aether-mcp] Initializing runtime at: ${workspacePath}`);
     runtime = new AetherRuntime(workspacePath);
     await runtime.init();
+    const providers = runtime.providers;
+    console.error(`[aether-mcp] Available providers: ${providers?.getAvailableProviders().join(", ") || "none"}`);
+    const config = providers?.getConfig();
+    console.error(`[aether-mcp] Worker tier: ${config?.tiers?.worker?.provider}/${config?.tiers?.worker?.model}`);
+    console.error(`[aether-mcp] Has apiKeys: ${!!config?.apiKeys}, copilot key: ${config?.apiKeys?.copilot ? "YES" : "NO"}`);
   }
   return runtime;
 }

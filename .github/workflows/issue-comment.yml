@@ -1,0 +1,44 @@
+name: Issue Comment Handler
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  spam-check:
+    name: Spam Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    # Only process comments on issues (not PRs)
+    if: github.event.issue.pull_request == null
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Check for spam
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MODE: single
+          COMMENT_ID: ${{ github.event.comment.id }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: bun run scripts/issue-automation/spam-detector.ts
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🚨 Comment Spam Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Issue:** #${{ github.event.issue.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Comment author:** @${{ github.event.comment.user.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Author association:** ${{ github.event.comment.author_association }}" >> $GITHUB_STEP_SUMMARY

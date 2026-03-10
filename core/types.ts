@@ -17,7 +17,7 @@ export interface TierSettingsEntry {
 }
 
 /** Supported LLM provider identifiers */
-export type LLMProvider = "claude" | "openai" | "gemini" | "ollama";
+export type LLMProvider = "claude" | "openai" | "gemini" | "ollama" | "copilot" | "lmstudio";
 
 /** LLM model tiers mapped to providers */
 export type LLMModelTier =
@@ -158,6 +158,8 @@ export interface ProviderModelConfig {
 export interface ProviderConfig {
   tiers: Record<string, ProviderModelConfig>;
   fallbackChain: ProviderModelConfig[];
+  /** Optional API keys per provider — avoids relying on env vars */
+  apiKeys?: Partial<Record<LLMProvider, string>>;
 }
 
 /** Aether project configuration — lives in .aether/config.json */

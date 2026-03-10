@@ -11,6 +11,12 @@ import type { LLMProvider } from "../core/types.ts";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
+// New module imports for CLI commands
+import { createSpec, listSpecs, validateSpecByPath, updateTaskStatus } from "../core/specs/index.ts";
+import { HookRegistry, EventBus } from "../core/hooks/index.ts";
+import { PowerRegistry, PowerInstaller } from "../core/powers/index.ts";
+import { loadSteering, compose } from "../core/steering/index.ts";
+
 const VERSION = "0.2.0";
 
 const BANNER = `
@@ -888,6 +894,192 @@ async function handleContext(contextArgs: string[]): Promise<void> {
   }
 }
 
+// ── Spec Command Handler ──────────────────────────────────────
+async function handleSpec(specArgs: string[]): Promise<void> {
+  const subCmd = specArgs[0];
+  const workspace = process.cwd();
+
+  switch (subCmd) {
+    case "create": {
+      const name = specArgs[1];
+      if (!name) { console.error("Usage: aether spec create <name>"); process.exit(1); }
+      const info = createSpec(workspace, name);
+      console.log(`Created spec: ${info.name} at ${info.path}`);
+      break;
+    }
+    case "list": {
+      const specs = listSpecs(workspace);
+      if (specs.length === 0) { console.log("No specs found."); break; }
+      for (const s of specs) {
+        console.log(`  ${pad(s.name, 24)} [R:${s.hasRequirements} D:${s.hasDesign} T:${s.hasTasks}]`);
+      }
+      break;
+    }
+    case "validate": {
+      const specName = specArgs[1];
+      if (!specName) { console.error("Usage: aether spec validate <name>"); process.exit(1); }
+      const specPath = join(workspace, ".aether", "specs", specName);
+      const result = validateSpecByPath(specPath);
+      console.log(`Valid: ${result.valid}`);
+      result.errors.forEach((e: string) => console.error(`  ERROR: ${e}`));
+      result.warnings.forEach((w: string) => console.warn(`  WARN: ${w}`));
+      break;
+    }
+    case "status":
+    case "done":
+    case "fail": {
+      const specName = specArgs[1];
+      const taskId = specArgs[2];
+      if (!specName || !taskId) { console.error("Usage: aether spec done|fail <specName> <taskId>"); process.exit(1); }
+      const status = subCmd === "done" ? "done" : (subCmd === "fail" ? "failed" : "pending");
+      const specPath = join(workspace, ".aether", "specs", specName);
+      updateTaskStatus(specPath, taskId, status as any);
+      console.log(`Task ${taskId} marked as ${status}`);
+      break;
+    }
+    default:
+      console.log("Usage: aether spec [create|list|validate|done|fail]");
+      process.exit(1);
+  }
+}
+
+// ── Hooks Command Handler ──────────────────────────────────────
+async function handleHooks(hookArgs: string[]): Promise<void> {
+  const subCmd = hookArgs[0];
+  const workspace = process.cwd();
+  const hooksDir = join(workspace, ".aether", "hooks");
+
+  const bus = new EventBus();
+  const registry = new HookRegistry(bus);
+  if (existsSync(hooksDir)) {
+    await registry.loadFromDirectory(hooksDir);
+  }
+
+  switch (subCmd) {
+    case "list": {
+      const hooks = registry.listHooks();
+      if (hooks.length === 0) { console.log("No hooks found."); break; }
+      for (const h of hooks) {
+        console.log(`  ${h.enabled ? "✓" : "✗"} ${pad(h.name, 20)} — ${h.trigger.event} ${h.trigger.pattern ?? "*"}`);
+      }
+      break;
+    }
+    case "enable": {
+      const name = hookArgs[1];
+      if (!name) { console.error("Usage: aether hooks enable <name>"); process.exit(1); }
+      registry.enableHook(name);
+      console.log(`Hook "${name}" enabled`);
+      break;
+    }
+    case "disable": {
+      const name = hookArgs[1];
+      if (!name) { console.error("Usage: aether hooks disable <name>"); process.exit(1); }
+      registry.disableHook(name);
+      console.log(`Hook "${name}" disabled`);
+      break;
+    }
+    case "init": {
+      const { mkdirSync } = await import("node:fs");
+      mkdirSync(hooksDir, { recursive: true });
+      console.log(`Hooks directory created at ${hooksDir}`);
+      break;
+    }
+    default:
+      console.log("Usage: aether hooks [list|enable|disable|init]");
+      process.exit(1);
+  }
+}
+
+// ── Power Command Handler ──────────────────────────────────────
+async function handlePower(powerArgs: string[]): Promise<void> {
+  const subCmd = powerArgs[0];
+  const workspace = process.cwd();
+  const powersDir = join(workspace, ".aether", "powers");
+
+  const registry = new PowerRegistry();
+  if (existsSync(powersDir)) {
+    await registry.loadInstalled(powersDir);
+  }
+
+  switch (subCmd) {
+    case "list": {
+      const powers = registry.getInstalled();
+      if (powers.length === 0) { console.log("No powers installed."); break; }
+      for (const p of powers) {
+        console.log(`  ${pad(p.manifest.name, 24)} v${p.manifest.version} — ${p.manifest.description ?? ""}`);
+      }
+      break;
+    }
+    case "install": {
+      const source = powerArgs[1];
+      if (!source) { console.error("Usage: aether power install <source>"); process.exit(1); }
+      const installer = new PowerInstaller();
+      const result = await installer.install(source, powersDir);
+      console.log(`Installed power: ${result.power.manifest.name}`);
+      break;
+    }
+    case "remove": {
+      const name = powerArgs[1];
+      if (!name) { console.error("Usage: aether power remove <name>"); process.exit(1); }
+      const installer = new PowerInstaller();
+      const result = await installer.remove(name, powersDir);
+      console.log(`Removed power: ${name}`);
+      break;
+    }
+    default:
+      console.log("Usage: aether power [list|install|remove]");
+      process.exit(1);
+  }
+}
+
+// ── Steer Command Handler ──────────────────────────────────────
+async function handleSteer(steerArgs: string[]): Promise<void> {
+  const subCmd = steerArgs[0];
+  const workspace = process.cwd();
+
+  switch (subCmd) {
+    case "list": {
+      const result = loadSteering(workspace);
+      if (result.files.length === 0) { console.log("No steering files found."); break; }
+      console.log(`Source: ${result.source}`);
+      for (const f of result.files) {
+        console.log(`  ${pad(f.meta.scope ?? "global", 12)} ${pad(String(f.meta.priority ?? 5), 4)} ${f.filename}`);
+      }
+      break;
+    }
+    case "preview": {
+      const agentId = steerArgs[1] ?? "general";
+      const result = loadSteering(workspace);
+      const composed = compose(result.files, agentId, 4000);
+      console.log(`Agent: ${agentId} | Tokens: ${composed.totalTokens} | Truncated: ${composed.truncated}`);
+      console.log(`Sources: ${composed.sources.join(", ")}`);
+      if (composed.content) {
+        console.log("\n--- Composed Steering ---");
+        console.log(composed.content);
+      }
+      break;
+    }
+    case "validate": {
+      const result = loadSteering(workspace);
+      console.log(`Found ${result.files.length} steering files (source: ${result.source})`);
+      for (const f of result.files) {
+        const issues: string[] = [];
+        if (!f.meta.scope) issues.push("missing scope");
+        if (!f.meta.priority) issues.push("missing priority");
+        if (issues.length) {
+          console.warn(`  ⚠ ${f.path}: ${issues.join(", ")}`);
+        } else {
+          console.log(`  ✓ ${f.path}`);
+        }
+      }
+      break;
+    }
+    default:
+      console.log("Usage: aether steer [list|preview|validate]");
+      process.exit(1);
+  }
+}
+
 function showHelp(): void {
   console.log(BANNER);
   console.log("Commands:");
@@ -899,6 +1091,10 @@ function showHelp(): void {
   console.log("  spawn <id>  Activate a specific agent");
   console.log("  config      View and manage settings");
   console.log("  context     Manage agent namespaces/contexts");
+  console.log("  spec        Manage spec-driven development");
+  console.log("  hooks       Manage event-driven hooks");
+  console.log("  power       Manage installable powers");
+  console.log("  steer       Manage steering/context files");
   console.log("  scan        Scan workspace and display tech stack");
   console.log("  version     Show version");
   console.log("  help        Show this help");
@@ -958,6 +1154,18 @@ async function main(): Promise<void> {
       break;
     case "context":
       await handleContext(args.slice(1));
+      break;
+    case "spec":
+      await handleSpec(args.slice(1));
+      break;
+    case "hooks":
+      await handleHooks(args.slice(1));
+      break;
+    case "power":
+      await handlePower(args.slice(1));
+      break;
+    case "steer":
+      await handleSteer(args.slice(1));
       break;
     case "version":
     case "--version":

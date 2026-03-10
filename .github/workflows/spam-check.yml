@@ -1,0 +1,50 @@
+name: Bulk Spam Check
+
+on:
+  schedule:
+    # Run daily at 03:00 UTC
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  spam-scan:
+    name: Daily Spam Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Run bulk spam scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MODE: bulk
+          REPO: ${{ github.repository }}
+        run: bun run scripts/issue-automation/spam-detector.ts
+
+      - name: Upload audit log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spam-audit-log-${{ github.run_id }}
+          path: /tmp/spam-audit.jsonl
+          if-no-files-found: ignore
+          retention-days: 90
+
+      - name: Summary header
+        if: always()
+        run: |
+          echo "## 🚨 Daily Spam Scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Run ID:** ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY

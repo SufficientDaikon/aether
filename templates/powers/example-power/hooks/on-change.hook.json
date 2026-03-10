@@ -1,0 +1,21 @@
+{
+  "name": "on-change",
+  "description": "Triggered when a file matching the power's patterns is modified",
+  "event": "file:change",
+  "match": {
+    "filePatterns": ["**/*.example"]
+  },
+  "actions": [
+    {
+      "type": "notify",
+      "message": "Example file changed — consider re-running validation"
+    },
+    {
+      "type": "invoke-tool",
+      "tool": "validate_example",
+      "args": {
+        "file": "{{changedFile}}"
+      }
+    }
+  ]
+}

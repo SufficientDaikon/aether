@@ -1,0 +1,30 @@
+{
+  "name": "my-power",
+  "version": "0.1.0",
+  "description": "A short description of what this power does",
+  "provider": "your-name-or-org",
+  "homepage": "https://github.com/you/my-power",
+  "license": "MIT",
+  "mcp": {
+    "server": "@your-scope/mcp-server-name",
+    "command": "node",
+    "args": ["--stdio"],
+    "env": {
+      "API_KEY": ""
+    },
+    "config": {}
+  },
+  "steering": [
+    "steering.md"
+  ],
+  "hooks": [],
+  "activation": {
+    "keywords": ["keyword1", "keyword2"],
+    "filePatterns": ["**/*.ext"],
+    "manual": false
+  },
+  "dependencies": {
+    "powers": [],
+    "npm": {}
+  }
+}

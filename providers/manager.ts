@@ -8,7 +8,10 @@ import { ClaudeProvider } from "./claude.ts";
 import { OpenAIProvider } from "./openai.ts";
 import { GeminiProvider } from "./gemini.ts";
 import { OllamaProvider } from "./ollama.ts";
+import { CopilotProvider } from "./copilot.ts";
+import { LMStudioProvider } from "./lmstudio.ts";
 import type { AgentTier, LLMProvider, ProviderConfig } from "../core/types.ts";
+import { FallbackChainManager } from "../core/fallback/index.ts";
 
 /** Default provider config: Claude across all tiers */
 const DEFAULT_CONFIG: ProviderConfig = {
@@ -27,19 +30,28 @@ const DEFAULT_CONFIG: ProviderConfig = {
 export class ProviderManager {
   private providers: Map<string, BaseLLMProvider> = new Map();
   private config: ProviderConfig;
+  private fallbackChain: FallbackChainManager | null = null;
 
   constructor(config?: ProviderConfig) {
     this.config = config ?? DEFAULT_CONFIG;
     this.initializeProviders();
   }
 
+  /** Attach a FallbackChainManager for model-level fallback */
+  setFallbackChain(chain: FallbackChainManager): void {
+    this.fallbackChain = chain;
+  }
+
   // ── Provider Initialization ──────────────────────────────
 
   private initializeProviders(): void {
-    this.providers.set("claude", new ClaudeProvider());
-    this.providers.set("openai", new OpenAIProvider());
-    this.providers.set("gemini", new GeminiProvider());
+    const keys = this.config.apiKeys ?? {};
+    this.providers.set("claude", new ClaudeProvider(keys.claude));
+    this.providers.set("openai", new OpenAIProvider(keys.openai));
+    this.providers.set("gemini", new GeminiProvider(keys.gemini));
     this.providers.set("ollama", new OllamaProvider());
+    this.providers.set("copilot", new CopilotProvider(keys.copilot));
+    this.providers.set("lmstudio", new LMStudioProvider());
   }
 
   // ── Tier-based Routing ───────────────────────────────────
@@ -53,13 +65,35 @@ export class ProviderManager {
     prompt: string,
     options?: Partial<LLMOptions>,
   ): Promise<LLMResponse> {
+    // If a FallbackChainManager is attached, delegate to it for model-level fallback
+    if (this.fallbackChain) {
+      try {
+        return await this.fallbackChain.executeWithFallback(tier, async (model) => {
+          // Find the provider that can serve this model, or fall through to tier routing
+          for (const [, provider] of this.providers) {
+            if (provider.isConfigured()) {
+              try {
+                return await provider.send(prompt, { ...options, model });
+              } catch {
+                continue;
+              }
+            }
+          }
+          throw new Error(`No provider available for model "${model}"`);
+        });
+      } catch {
+        // FallbackChain exhausted — fall through to original tier routing
+      }
+    }
+
     const tierConfig = this.config.tiers[tier] ?? {
       provider: "claude",
       model: "haiku",
     };
     const fullOptions: LLMOptions = {
-      model: tierConfig.model,
       ...options,
+      // Tier config model is the default; only override if caller passes a truthy model
+      model: options?.model || tierConfig.model,
     };
 
     // Try the primary provider for this tier
@@ -175,6 +209,22 @@ export class ProviderManager {
     if (process.env.GOOGLE_AI_KEY) {
       detected.push("gemini");
     }
+    if (process.env.GITHUB_TOKEN || process.env.GH_TOKEN) {
+      detected.push("copilot");
+    } else {
+      // Try gh auth token
+      try {
+        const { execSync } = await import("node:child_process");
+        const token = execSync("gh auth token", {
+          encoding: "utf-8",
+          timeout: 3000,
+          stdio: ["pipe", "pipe", "pipe"],
+        }).trim();
+        if (token) detected.push("copilot");
+      } catch {
+        // gh not installed or not authenticated
+      }
+    }
 
     // Check Ollama reachability
     try {
@@ -187,7 +237,21 @@ export class ProviderManager {
         detected.push("ollama");
       }
     } catch {
-      // Ollama not reachable — skip
+      // Ollama not reachable
+    }
+
+    // Check LM Studio reachability
+    try {
+      const host = process.env.LMSTUDIO_HOST ?? "http://localhost:1234/v1";
+      const response = await fetch(`${host}/models`, {
+        method: "GET",
+        signal: AbortSignal.timeout(2000),
+      });
+      if (response.ok) {
+        detected.push("lmstudio");
+      }
+    } catch {
+      // LM Studio not reachable
     }
 
     return detected;

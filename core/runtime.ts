@@ -59,6 +59,12 @@ import { TierRegistry } from "./tier-registry.ts";
 import { AgentForge } from "./forge.ts";
 import { SystemSentinel } from "./sentinel.ts";
 
+// New subsystems: Hooks, Powers, Steering, Fallback
+import { EventBus, HookRegistry } from "./hooks/index.ts";
+import { PowerRegistry } from "./powers/index.ts";
+import { loadSteering, type LoadSteeringResult } from "./steering/index.ts";
+import { FallbackChainManager, FallbackLogger } from "./fallback/index.ts";
+
 // ─────────────────────────────────────────────────────────────
 
 export class AetherRuntime {
@@ -99,6 +105,14 @@ export class AetherRuntime {
   // Phase 9: Settings
   public settings: AetherSettings;
   public settingsManager: SettingsManager;
+
+  // New subsystems: Hooks, Powers, Steering, Fallback
+  public hookEventBus: EventBus | null = null;
+  public hookRegistry: HookRegistry | null = null;
+  public powerRegistry: PowerRegistry | null = null;
+  public steeringResult: LoadSteeringResult | null = null;
+  public fallbackChain: FallbackChainManager | null = null;
+  public fallbackLogger: FallbackLogger | null = null;
 
   private rootPath: string;
   private aetherConfig: AetherConfig | null = null;
@@ -184,16 +198,45 @@ export class AetherRuntime {
     // and rebuild tier mapping if the saved config references unconfigured providers
     try {
       const detected = await ProviderManager.detectProviders();
+
+      // Normalize config: support both flat {master,manager,worker} and nested {tiers:{...}}
+      const rawProviders = this.aetherConfig.providers as any;
+      const normalizedConfig: import("./types.ts").ProviderConfig =
+        rawProviders.tiers
+          ? rawProviders
+          : {
+              tiers: {
+                ...(rawProviders.master && { master: rawProviders.master }),
+                ...(rawProviders.manager && { manager: rawProviders.manager }),
+                ...(rawProviders.worker && { worker: rawProviders.worker }),
+                ...(rawProviders.sentinel && { sentinel: rawProviders.sentinel }),
+                ...(rawProviders.forge && { forge: rawProviders.forge }),
+              },
+              fallbackChain: rawProviders.fallbackChain ?? [],
+              apiKeys: rawProviders.apiKeys,
+            };
+      // Write back normalized form so downstream code always sees {tiers, fallbackChain}
+      this.aetherConfig.providers = normalizedConfig;
+
+      // Providers with explicit apiKeys in config are always considered available
+      if (normalizedConfig.apiKeys) {
+        for (const provider of Object.keys(normalizedConfig.apiKeys) as LLMProvider[]) {
+          if (normalizedConfig.apiKeys[provider] && !detected.includes(provider)) {
+            detected.push(provider);
+          }
+        }
+      }
+
       const savedPrimary =
-        this.aetherConfig.providers.tiers?.master?.provider ??
-        this.aetherConfig.providers.tiers?.[
-          Object.keys(this.aetherConfig.providers.tiers ?? {})[0]
+        normalizedConfig.tiers?.master?.provider ??
+        normalizedConfig.tiers?.[
+          Object.keys(normalizedConfig.tiers ?? {})[0]
         ]?.provider;
       const primaryAvailable = detected.includes(savedPrimary as LLMProvider);
 
       if (primaryAvailable) {
         // Saved config matches an available provider — use it
-        this.providers = new ProviderManager(this.aetherConfig.providers);
+        this.providers = new ProviderManager(normalizedConfig);
       } else if (detected.length > 0) {
         // Saved config doesn't match — rebuild from detected providers
         const providerConfig = AetherRuntime.buildProviderConfig(detected);
@@ -204,13 +247,15 @@ export class AetherRuntime {
         );
       } else {
         // No providers detected — use saved config (will fail at call time)
-        this.providers = new ProviderManager(this.aetherConfig.providers);
+        this.providers = new ProviderManager(normalizedConfig);
       }
 
       this.logger.info(
         "Runtime",
         `Providers initialized. Available: ${this.providers.getAvailableProviders().join(", ") || "none"}`,
       );
+
+      // Attach FallbackChainManager to ProviderManager (wired later in init)
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       this.logger.warn("Runtime", `Provider init warning: ${msg}`);
@@ -401,6 +446,60 @@ export class AetherRuntime {
       this.logger.warn("Runtime", `Forge/Sentinel init warning: ${msg}`);
     }
 
+    // ── Initialize new subsystems: Hooks, Powers, Steering, Fallback ──
+    try {
+      this.hookEventBus = new EventBus();
+      this.hookRegistry = new HookRegistry(this.hookEventBus);
+      const hooksDir = join(this.rootPath, ".aether", "hooks");
+      if (existsSync(hooksDir)) {
+        await this.hookRegistry.loadFromDirectory(hooksDir);
+      }
+      this.logger.info("Runtime", "HookRegistry initialized");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn("Runtime", `HookRegistry init warning: ${msg}`);
+    }
+
+    try {
+      this.powerRegistry = new PowerRegistry();
+      const powersDir = join(this.rootPath, ".aether", "powers");
+      if (existsSync(powersDir)) {
+        await this.powerRegistry.loadInstalled(powersDir);
+      }
+      this.logger.info("Runtime", "PowerRegistry initialized");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn("Runtime", `PowerRegistry init warning: ${msg}`);
+    }
+
+    try {
+      this.steeringResult = loadSteering(this.rootPath);
+      this.logger.info("Runtime", `Steering loaded: ${this.steeringResult.files.length} files (${this.steeringResult.source})`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn("Runtime", `Steering init warning: ${msg}`);
+    }
+
+    try {
+      this.fallbackLogger = new FallbackLogger();
+      this.fallbackChain = new FallbackChainManager({
+        chains: {
+          master:  ["claude-opus-4-6",  "gpt-4o",      "gemini-2.5-pro"],
+          manager: ["claude-sonnet-4",  "gpt-4o-mini",  "llama3.1:70b"],
+          worker:  ["claude-haiku",     "gpt-4o-mini",  "local"],
+        },
+      });
+      this.logger.info("Runtime", "FallbackChainManager initialized");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn("Runtime", `FallbackChainManager init warning: ${msg}`);
+    }
+
+    // Wire fallback chain into provider manager
+    if (this.fallbackChain && this.providers) {
+      this.providers.setFallbackChain(this.fallbackChain);
+    }
+
     this.running = true;
     this.startTime = Date.now();
     this.logger.info("Runtime", "AETHER runtime started");
@@ -501,6 +600,14 @@ export class AetherRuntime {
       this.structuredLogger = null;
     }
 
+    // Tear down new subsystems
+    this.hookEventBus = null;
+    this.hookRegistry = null;
+    this.powerRegistry = null;
+    this.steeringResult = null;
+    this.fallbackChain = null;
+    this.fallbackLogger = null;
+
     // Close persistent store (flushes WAL)
     if (this.store) {
       try {
@@ -587,6 +694,8 @@ export class AetherRuntime {
         ? { structuredLogger: this.structuredLogger }
         : {}),
       ...(this.sharedStateBus ? { sharedState: this.sharedStateBus } : {}),
+      // Steering files
+      ...(this.steeringResult?.files?.length ? { steeringFiles: this.steeringResult.files } : {}),
     });
 
     // Resolve target agent
@@ -1391,6 +1500,20 @@ export class AetherRuntime {
         worker: "gemini-flash",
       },
       ollama: {
+        sentinel: "local",
+        forge: "local",
+        master: "local",
+        manager: "local",
+        worker: "local",
+      },
+      copilot: {
+        sentinel: "gpt-4o",
+        forge: "gpt-4o",
+        master: "gpt-4o",
+        manager: "gpt-4o",
+        worker: "gpt-4o-mini",
+      },
+      lmstudio: {
         sentinel: "local",
         forge: "local",
         master: "local",
