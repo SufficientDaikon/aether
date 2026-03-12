@@ -4,6 +4,12 @@ All notable changes to AETHER will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Notice
+
+- **Development paused** — Project is on hold while the future direction is being reconsidered. Expect to resume in ~1 week.
+
 ## [0.2.0] — 2026-03-08
 
 ### Added

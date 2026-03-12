@@ -69,7 +69,7 @@
       /* ── Navigation ────────────────────────────────── */
       nav {
         position: fixed;
-        top: 0;
+        top: 2.2rem;
         left: 0;
         right: 0;
         z-index: 100;
@@ -1285,6 +1285,26 @@
         </li>
       </ul>
     </nav>
+
+    <!-- Development Paused Banner -->
+    <div style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      background: linear-gradient(90deg, rgba(255, 179, 71, 0.15), rgba(255, 107, 107, 0.15));
+      border-bottom: 1px solid rgba(255, 179, 71, 0.3);
+      padding: 0.6rem 2rem;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: #ffb347;
+      backdrop-filter: blur(12px);
+      letter-spacing: 0.03em;
+    ">
+      Development paused — figuring out the next direction for the project. Back in ~1 week.
+    </div>
 
     <!-- Hero -->
     <section class="hero">

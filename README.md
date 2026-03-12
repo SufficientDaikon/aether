@@ -1,5 +1,7 @@
 # AETHER
 
+> **Development Paused** — AETHER is currently on hold while I figure out the direction I want to take the project. Expect development to resume in a week or so. The codebase, docs, and MCP server all remain functional as-is.
+
 **Autonomous Agent Orchestration Framework**
 
 AETHER is a multi-agent LLM orchestration framework built on Bun. It coordinates a 3-tier agent hierarchy (Master/Manager/Worker) across 28 subsystems — including context-aware routing, pre/post LLM guardrails, durable workflows with checkpoint/resume, a typed Agent Communication Protocol, entity-level knowledge accumulation, and a plugin system with 8 lifecycle hooks. Agents are defined as `.agent.md` files and can be backed by any LLM provider (Claude, OpenAI, Gemini, Ollama). All state persists in a single SQLite database (19 tables, WAL mode, sqlite-vec + FTS5).
