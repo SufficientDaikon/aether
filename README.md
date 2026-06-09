@@ -1,5 +1,7 @@
 # AETHER
 
+## [website](https://sufficientdaikon.github.io/aether/) 
+
 > **Development Paused**  AETHER is currently on hold while I figure out the direction I want to take the project. do keep in mind that it's still a work in progress so instalation is not easy.
 
 **Autonomous Agent Orchestration Framework**
