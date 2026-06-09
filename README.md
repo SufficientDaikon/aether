@@ -59,29 +59,29 @@ bun run dev -- status
 
 **Key Subsystems:**
 
-- **Registry**  Agent discovery and multi-index capability lookup
-- **Escalation**  Circuit-breaker-protected escalation chains
-- **MemoryHighway**  Pub/sub messaging with persistent history and automatic RAG indexing
-- **RAGIndex**  SQLite-vec + FTS5 hybrid search across 6 namespaces
-- **InteractionNet**  Graph-based parallel task execution (interaction combinators)
-- **Aether-Link**  WebSocket server with BAP-02 binary protocol
-- **AgentRouter**  6-strategy context-aware routing with confidence scoring
-- **GuardrailsPipeline**  Pre/post LLM safety filters (injection, PII, code safety)
-- **SchemaValidator**  Structured output validation with correction-prompt retry
-- **ConversationManager**  Multi-turn conversation tracking with checkpoint/resume
-- **EntityMemory**  Entity-level knowledge accumulation across sessions
-- **HandoffManager**  Horizontal peer-to-peer agent transfer with cycle detection
-- **GroupChat**  Multi-agent round-table discussions with pluggable speaker selection
-- **StateGraph**  Conditional-edge state machines with reflection loops
-- **ProgressTracker**  Stall, loop, and budget exhaustion detection
-- **DurableWorkflow**  Checkpoint/resume workflows that survive crashes
-- **ACPBus**  Typed message envelopes, request-response, dead-letter queue
-- **ConflictResolver**  Multi-output contradiction detection and resolution
-- **SharedStateBus**  Observable immutable state with versioned transitions
-- **StructuredLogger**  JSON logging, scoped context, LLM call instrumentation
-- **PluginRegistry**  8 lifecycle hook slots for external extensions
-- **ReactionEngine**  Event-driven autonomous workflow triggers
-- **SettingsManager**  Unified settings with 13 configurable subsystem groups
+- **Registry**:  Agent discovery and multi-index capability lookup
+- **Escalation**:  Circuit-breaker-protected escalation chains
+- **MemoryHighway**:  Pub/sub messaging with persistent history and automatic RAG indexing
+- **RAGIndex**:  SQLite-vec + FTS5 hybrid search across 6 namespaces
+- **InteractionNet**:  Graph-based parallel task execution (interaction combinators)
+- **Aether-Link**:  WebSocket server with BAP-02 binary protocol
+- **AgentRouter**:  6-strategy context-aware routing with confidence scoring
+- **GuardrailsPipeline**:  Pre/post LLM safety filters (injection, PII, code safety)
+- **SchemaValidator**:  Structured output validation with correction-prompt retry
+- **ConversationManager**:  Multi-turn conversation tracking with checkpoint/resume
+- **EntityMemory**:  Entity-level knowledge accumulation across sessions
+- **HandoffManager**:  Horizontal peer-to-peer agent transfer with cycle detection
+- **GroupChat**:  Multi-agent round-table discussions with pluggable speaker selection
+- **StateGraph**:  Conditional-edge state machines with reflection loops
+- **ProgressTracker**:  Stall, loop, and budget exhaustion detection
+- **DurableWorkflow**:  Checkpoint/resume workflows that survive crashes
+- **ACPBus**:  Typed message envelopes, request-response, dead-letter queue
+- **ConflictResolver**:  Multi-output contradiction detection and resolution
+- **SharedStateBus**:  Observable immutable state with versioned transitions
+- **StructuredLogger**:  JSON logging, scoped context, LLM call instrumentation
+- **PluginRegistry**:  8 lifecycle hook slots for external extensions
+- **ReactionEngine**:  Event-driven autonomous workflow triggers
+- **SettingsManager**:  Unified settings with 13 configurable subsystem groups
 
 ## Agent Authoring
 
