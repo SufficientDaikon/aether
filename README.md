@@ -1,10 +1,12 @@
 # AETHER
 
-> **Development Paused** — AETHER is currently on hold while I figure out the direction I want to take the project. Expect development to resume in a week or so. The codebase, docs, and MCP server all remain functional as-is.
+> **Development Paused**  AETHER is currently on hold while I figure out the direction I want to take the project. do keep in mind that it's still a work in progress so instalation is not easy.
 
 **Autonomous Agent Orchestration Framework**
 
 AETHER is a multi-agent LLM orchestration framework built on Bun. It coordinates a 3-tier agent hierarchy (Master/Manager/Worker) across 28 subsystems — including context-aware routing, pre/post LLM guardrails, durable workflows with checkpoint/resume, a typed Agent Communication Protocol, entity-level knowledge accumulation, and a plugin system with 8 lifecycle hooks. Agents are defined as `.agent.md` files and can be backed by any LLM provider (Claude, OpenAI, Gemini, Ollama). All state persists in a single SQLite database (19 tables, WAL mode, sqlite-vec + FTS5).
+
+TLDR, it saves you money and time by having different ai models do different work all being managed by a model that should be incredibly good, like opus.
 
 ## Quick Start
 
@@ -57,29 +59,29 @@ bun run dev -- status
 
 **Key Subsystems:**
 
-- **Registry** — Agent discovery and multi-index capability lookup
-- **Escalation** — Circuit-breaker-protected escalation chains
-- **MemoryHighway** — Pub/sub messaging with persistent history and automatic RAG indexing
-- **RAGIndex** — SQLite-vec + FTS5 hybrid search across 6 namespaces
-- **InteractionNet** — Graph-based parallel task execution (interaction combinators)
-- **Aether-Link** — WebSocket server with BAP-02 binary protocol
-- **AgentRouter** — 6-strategy context-aware routing with confidence scoring
-- **GuardrailsPipeline** — Pre/post LLM safety filters (injection, PII, code safety)
-- **SchemaValidator** — Structured output validation with correction-prompt retry
-- **ConversationManager** — Multi-turn conversation tracking with checkpoint/resume
-- **EntityMemory** — Entity-level knowledge accumulation across sessions
-- **HandoffManager** — Horizontal peer-to-peer agent transfer with cycle detection
-- **GroupChat** — Multi-agent round-table discussions with pluggable speaker selection
-- **StateGraph** — Conditional-edge state machines with reflection loops
-- **ProgressTracker** — Stall, loop, and budget exhaustion detection
-- **DurableWorkflow** — Checkpoint/resume workflows that survive crashes
-- **ACPBus** — Typed message envelopes, request-response, dead-letter queue
-- **ConflictResolver** — Multi-output contradiction detection and resolution
-- **SharedStateBus** — Observable immutable state with versioned transitions
-- **StructuredLogger** — JSON logging, scoped context, LLM call instrumentation
-- **PluginRegistry** — 8 lifecycle hook slots for external extensions
-- **ReactionEngine** — Event-driven autonomous workflow triggers
-- **SettingsManager** — Unified settings with 13 configurable subsystem groups
+- **Registry**  Agent discovery and multi-index capability lookup
+- **Escalation**  Circuit-breaker-protected escalation chains
+- **MemoryHighway**  Pub/sub messaging with persistent history and automatic RAG indexing
+- **RAGIndex**  SQLite-vec + FTS5 hybrid search across 6 namespaces
+- **InteractionNet**  Graph-based parallel task execution (interaction combinators)
+- **Aether-Link**  WebSocket server with BAP-02 binary protocol
+- **AgentRouter**  6-strategy context-aware routing with confidence scoring
+- **GuardrailsPipeline**  Pre/post LLM safety filters (injection, PII, code safety)
+- **SchemaValidator**  Structured output validation with correction-prompt retry
+- **ConversationManager**  Multi-turn conversation tracking with checkpoint/resume
+- **EntityMemory**  Entity-level knowledge accumulation across sessions
+- **HandoffManager**  Horizontal peer-to-peer agent transfer with cycle detection
+- **GroupChat**  Multi-agent round-table discussions with pluggable speaker selection
+- **StateGraph**  Conditional-edge state machines with reflection loops
+- **ProgressTracker**  Stall, loop, and budget exhaustion detection
+- **DurableWorkflow**  Checkpoint/resume workflows that survive crashes
+- **ACPBus**  Typed message envelopes, request-response, dead-letter queue
+- **ConflictResolver**  Multi-output contradiction detection and resolution
+- **SharedStateBus**  Observable immutable state with versioned transitions
+- **StructuredLogger**  JSON logging, scoped context, LLM call instrumentation
+- **PluginRegistry**  8 lifecycle hook slots for external extensions
+- **ReactionEngine**  Event-driven autonomous workflow triggers
+- **SettingsManager**  Unified settings with 13 configurable subsystem groups
 
 ## Agent Authoring
 
@@ -110,7 +112,7 @@ components using TypeScript and modern patterns...
 
 After `aether init`, configuration lives in two files:
 
-**`.aether/config.json`** — Auto-generated workspace config (not intended for manual editing):
+**`.aether/config.json`**  Auto-generated workspace config (not intended for manual editing):
 
 ```json
 {
@@ -131,7 +133,7 @@ After `aether init`, configuration lives in two files:
 }
 ```
 
-**`.aether/settings.json`** — User-editable tuning knobs for all 28 subsystems:
+**`.aether/settings.json`**  User-editable tuning knobs for all 28 subsystems:
 
 ```json
 {
@@ -216,15 +218,15 @@ Compile with: `bun run compile -- workflow.syn`
 
 ## Storage
 
-AETHER uses a single SQLite database at `.aether/aether.db` (WAL mode) with sqlite-vec for vector embeddings and FTS5 for full-text search. Nineteen tables store all state — agent registry, task history, escalation records, messages, RAG index, conversations, entity knowledge, workflow checkpoints, file ownership rules, progress events, and metrics — persisting across restarts.
+AETHER uses a single SQLite database at `.aether/aether.db` (WAL mode) with sqlite-vec for vector embeddings and FTS5 for full-text search. Nineteen tables store all state — agent registry, task history, escalation records, messages, RAG index, conversations, entity knowledge, workflow checkpoints, file ownership rules, progress events, and metrics  persisting across restarts.
 
 ## Security
 
-- **WebSocket auth** — Token-based authentication on connection upgrade
-- **Origin validation** — Localhost-only by default
-- **Rate limiting** — Connection attempt throttling per IP
-- **Input validation** — Message size limits, field format validation, timestamp range checks
-- **Health endpoints** — `/health` (liveness), `/metrics` (Prometheus format)
+- **WebSocket auth**  Token-based authentication on connection upgrade
+- **Origin validation** Localhost-only by default
+- **Rate limiting**  Connection attempt throttling per IP
+- **Input validation**  Message size limits, field format validation, timestamp range checks
+- **Health endpoints**  `/health` (liveness), `/metrics` (Prometheus format)
 
 ## Development
 
